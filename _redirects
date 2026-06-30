@@ -1,0 +1,2 @@
+# Domínio principal: sem www. Redireciona www -> sem www (301 permanente).
+https://www.matheusribeiroadv.com.br/*  https://matheusribeiroadv.com.br/:splat  301!

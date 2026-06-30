@@ -1,0 +1,25 @@
+# === Dependências e ferramentas (não vão para o site) ===
+node_modules/
+.claude/
+.agents/
+skills-lock.json
+package-lock.json
+
+# === Arquivos originais / fontes pesadas (mantidos só localmente) ===
+imagens/
+
+# === Pasta de deploy manual (desnecessária com o deploy automático) ===
+deploy/
+
+# === Imagens não utilizadas pelo site (backup local, fora do repositório) ===
+assets/bg-agro.jpeg
+assets/hero-rural.jpg
+assets/logo-full.png
+assets/matheus.png
+assets/produtor.jpg
+assets/produtor.png
+
+# === Sistema ===
+.DS_Store
+Thumbs.db
+*.log
