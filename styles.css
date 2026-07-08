@@ -309,6 +309,25 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .sobre-text p{color:rgba(244,241,234,.82);margin-bottom:16px}
 .sobre-badges{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
 .badge{padding:10px 18px;border-radius:40px;font-size:.84rem;letter-spacing:.04em;color:var(--gold-light)}
+/* Missão (destaque dentro da seção Sobre) */
+.sobre-missao{
+  border-left:3px solid var(--gold);padding:8px 0 8px 18px;margin:20px 0 6px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.2rem;line-height:1.42;color:var(--gold-light);
+}
+.sobre-missao strong{color:var(--cream);font-style:normal;font-weight:600}
+/* Valores */
+.valores{margin-top:72px;text-align:center}
+.valores .eyebrow{margin-bottom:26px}
+.valores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;text-align:left}
+.valor{
+  padding:28px 24px;border-radius:16px;background:var(--glass-bg);
+  border:1px solid var(--glass-border);border-top:2px solid var(--gold);
+  backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));
+  transition:transform .35s var(--ease),border-color .35s var(--ease)
+}
+.valor:hover{transform:translateY(-5px);border-top-color:var(--gold-light)}
+.valor h3{font-size:1.16rem;color:#fff;margin-bottom:10px}
+.valor p{color:rgba(244,241,234,.72);font-size:.9rem;line-height:1.5}
 
 /* ===== Quem Somos / Equipe ===== */
 .equipe{background:linear-gradient(180deg,#06222a 0%, var(--navy-deep) 100%)}
@@ -550,6 +569,8 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   .toggle{display:flex;z-index:950}
   .problema-grid,.sobre-grid{grid-template-columns:1fr;gap:40px}
   .steps{grid-template-columns:repeat(2,1fr)}
+  .valores{margin-top:56px}
+  .valores-grid{grid-template-columns:repeat(2,1fr)}
 
   /* Áreas de Atuação: 2 colunas no tablet (cards neumórficos vêm do estilo base) */
   .atuacao{padding:88px 0}
@@ -567,6 +588,7 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 }
 @media (max-width:560px){
   .steps{grid-template-columns:1fr}
+  .valores-grid{grid-template-columns:1fr}
   .areas-fallback{grid-template-columns:1fr;gap:30px;max-width:460px}
   .area-card{padding:28px 24px}
   .area-card h3{margin-top:16px}
