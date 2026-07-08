@@ -386,6 +386,7 @@ navLinks.querySelectorAll('a').forEach(a =>
       if (!json.success) throw new Error(json.message || 'falha');
       status.textContent = '✓ Recebemos seus dados. Em breve entraremos em contato.';
       status.className = 'lead-status ok';
+      if (window.umami) umami.track('lead-formulario'); // conversão: formulário enviado
       form.reset();
       // limpa marcações de validação após enviar
       Object.keys(rules).forEach(name => {
