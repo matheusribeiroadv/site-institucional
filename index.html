@@ -497,7 +497,7 @@
               <label for="lfCity">Cidade / Estado</label>
               <input id="lfCity" name="city" type="text" placeholder="Ex.: Rio Verde — GO" />
             </div>
-            <div class="field field-full">
+            <div class="field">
               <label for="lfType">Tipo de caso</label>
               <select id="lfType" name="type" required>
                 <option value="" disabled selected>Selecione...</option>
@@ -507,6 +507,25 @@
                 <option>Renegociação de dívida</option>
                 <option>Ação revisional</option>
                 <option>Outro</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="lfOverdue">Possui dívida vencida?</label>
+              <select id="lfOverdue" name="overdue" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>Sim</option>
+                <option>Não</option>
+              </select>
+            </div>
+            <div class="field field-full">
+              <label for="lfAmount">Valor aproximado da dívida</label>
+              <select id="lfAmount" name="amount" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option>Até R$ 500 mil</option>
+                <option>R$ 500 mil a R$ 2 milhões</option>
+                <option>R$ 2 a R$ 10 milhões</option>
+                <option>Acima de R$ 10 milhões</option>
+                <option>Prefiro não informar</option>
               </select>
             </div>
             <div class="field field-full">

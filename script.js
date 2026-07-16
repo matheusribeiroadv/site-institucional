@@ -301,6 +301,8 @@ navLinks.querySelectorAll('a').forEach(a =>
       return null;
     },
     type: v => (!v ? 'Selecione o tipo de caso.' : null),
+    overdue: v => (!v ? 'Informe se possui dívida vencida.' : null),
+    amount: v => (!v ? 'Selecione uma faixa de valor (ou "Prefiro não informar").' : null),
     message: () => null // opcional
   };
 
@@ -348,7 +350,7 @@ navLinks.querySelectorAll('a').forEach(a =>
     if (trap && trap.value) return;
 
     // valida todos os campos; foca o primeiro inválido
-    const order = ['name', 'phone', 'city', 'type'];
+    const order = ['name', 'phone', 'city', 'type', 'overdue', 'amount'];
     let firstBad = null;
     order.forEach(name => { if (!validateField(name) && !firstBad) firstBad = name; });
     if (firstBad) {
@@ -360,7 +362,7 @@ navLinks.querySelectorAll('a').forEach(a =>
 
     const data = {
       name: val('name'), phone: val('phone'), city: val('city'),
-      type: val('type'), message: val('message')
+      type: val('type'), overdue: val('overdue'), amount: val('amount'), message: val('message')
     };
 
     // envia o e-mail direto para a caixa do escritório (sem abrir Gmail/Outlook)
@@ -379,6 +381,8 @@ navLinks.querySelectorAll('a').forEach(a =>
           WhatsApp: data.phone,
           'Cidade/UF': data.city || '—',
           'Tipo de caso': data.type,
+          'Dívida vencida': data.overdue,
+          'Valor aproximado': data.amount,
           'Descrição': data.message || '—'
         })
       });
