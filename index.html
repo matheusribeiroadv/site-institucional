@@ -7,6 +7,9 @@
   <meta name="description" content="Matheus Ribeiro Advogados — especialistas em Direito Bancário do Agronegócio. Revisão de contratos rurais, defesa do produtor e reequilíbrio de dívidas com bancos." />
   <link rel="canonical" href="https://matheusribeiroadv.com.br/" />
 
+  <!-- Preload da imagem do hero (melhora o LCP / carregamento percebido) -->
+  <link rel="preload" as="image" href="assets/bg-producao-rural.webp" fetchpriority="high" />
+
   <!-- Open Graph / compartilhamento (WhatsApp, LinkedIn, Facebook) -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Matheus Ribeiro Advogados" />
@@ -38,7 +41,7 @@
     "description": "Escritório especializado em Direito Bancário do Agronegócio: revisão de contratos rurais, defesa do produtor e reequilíbrio de dívidas com bancos.",
     "url": "https://matheusribeiroadv.com.br/",
     "logo": "https://matheusribeiroadv.com.br/assets/shield.png",
-    "image": "https://matheusribeiroadv.com.br/assets/bg-producao-rural.jpg",
+    "image": "https://matheusribeiroadv.com.br/assets/og-image.jpg",
     "telephone": "+55-62-8225-4519",
     "email": "contato@matheusribeiroadv.com.br",
     "areaServed": "BR",
@@ -182,7 +185,7 @@
 
   <!-- Hero -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="heroBg" style="background-image:url('assets/bg-producao-rural.jpg')"></div>
+    <div class="hero-bg" id="heroBg" style="background-image:url('assets/bg-producao-rural.webp')"></div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
       <span class="eyebrow reveal">Seja Bem-vindo ao Escritório</span>
@@ -246,39 +249,84 @@
     </div>
 
     <div class="areas-fallback">
-      <article class="area-card reveal" data-num="01" data-icon="⚖️">
+      <article class="area-card reveal">
         <span class="area-num">01</span>
-        <div class="card-icon">⚖️</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/>
+            <path d="M14.5 3 19 7.5V12"/>
+            <path d="M14.5 3v4.5H19"/>
+            <path d="M8.5 9.5h4"/><path d="M8.5 13h3"/>
+            <circle cx="16.6" cy="16.6" r="3.1"/>
+            <path d="m18.9 18.9 2.2 2.2"/>
+          </svg>
+        </div>
         <h3>Revisão de Contratos Bancários</h3>
         <p>Análise técnica de CCB, cédulas rurais e financiamentos para expurgar juros abusivos e encargos ilegais.</p>
       </article>
-      <article class="area-card reveal" data-num="02" data-icon="🌾" data-delay="1">
+      <article class="area-card reveal" data-delay="1">
         <span class="area-num">02</span>
-        <div class="card-icon">🌾</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21V9.5"/>
+            <path d="M12 9.5c0-3 1.5-5.2 3.2-6.3.7 2.8-.5 5.4-3.2 6.3z"/>
+            <path d="M12 9.5C12 6.5 10.5 4.3 8.8 3.2 8.1 6 9.3 8.6 12 9.5z"/>
+            <path d="M12 14.8c-2.2 0-3.9-1.2-4.5-3 2.4-.5 4.2.8 4.5 3z"/>
+            <path d="M12 14.8c2.2 0 3.9-1.2 4.5-3-2.4-.5-4.2.8-4.5 3z"/>
+          </svg>
+        </div>
         <h3>Crédito Rural &amp; Custeio</h3>
         <p>Defesa em operações de custeio, investimento, PRONAMP e PRONAF, com foco no reequilíbrio das parcelas.</p>
       </article>
-      <article class="area-card reveal" data-num="03" data-icon="🛡️" data-delay="2">
+      <article class="area-card reveal" data-delay="2">
         <span class="area-num">03</span>
-        <div class="card-icon">🛡️</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 5 5.9v5.4c0 4.2 2.9 7.8 7 9.4 4.1-1.6 7-5.2 7-9.4V5.9z"/>
+            <path d="m9.3 12.1 1.9 1.9 3.6-3.9"/>
+          </svg>
+        </div>
         <h3>Defesa do Patrimônio</h3>
         <p>Proteção de terras, maquinário e safra contra penhoras e execuções indevidas movidas por bancos.</p>
       </article>
-      <article class="area-card reveal" data-num="04" data-icon="📊">
+      <article class="area-card reveal">
         <span class="area-num">04</span>
-        <div class="card-icon">📊</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4v16h16"/>
+            <path d="m7.5 15.2 3.1-3.5 2.7 2.2 4.6-5.4"/>
+            <path d="M14.6 8.5h3.4v3.4"/>
+          </svg>
+        </div>
         <h3>Projeção de Endividamento</h3>
         <p>Memória de cálculo e cenários de dívida que mostram, em números, o real saldo devedor do contrato.</p>
       </article>
-      <article class="area-card reveal" data-num="05" data-icon="🤝" data-delay="1">
+      <article class="area-card reveal" data-delay="1">
         <span class="area-num">05</span>
-        <div class="card-icon">🤝</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.5 11.5a8.5 8.5 0 0 1 14.2-6.3"/>
+            <path d="M20.5 12.5a8.5 8.5 0 0 1-14.2 6.3"/>
+            <path d="M18.4 2.6v3.1h-3.1"/>
+            <path d="M5.6 21.4v-3.1h3.1"/>
+            <path d="M9.4 12h5.2"/>
+          </svg>
+        </div>
         <h3>Renegociação Estratégica</h3>
         <p>Mesa de negociação com a instituição financeira em condições justas e sustentáveis para a propriedade.</p>
       </article>
-      <article class="area-card reveal" data-num="06" data-icon="📑" data-delay="2">
+      <article class="area-card reveal" data-delay="2">
         <span class="area-num">06</span>
-        <div class="card-icon">📑</div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m13.4 12.3-8.1 8.1a1.9 1.9 0 0 1-2.7-2.7l8.1-8.1"/>
+            <path d="m15.2 15.1 5.4-5.4"/>
+            <path d="m7.9 7.8 5.4-5.4"/>
+            <path d="m8.6 6.6 8.2 8.2"/>
+            <path d="m19.9 10.4-8.2-8.2"/>
+            <path d="M13 21.5h8.5"/>
+          </svg>
+        </div>
         <h3>Ações Revisionais</h3>
         <p>Ajuizamento de revisionais e exceções de pré-executividade para suspender cobranças indevidas.</p>
       </article>
@@ -323,7 +371,7 @@
     <div class="container sobre-grid">
       <div class="sobre-photo reveal">
         <div class="photo-frame glass">
-          <img src="assets/essencia-escritorio.jpg" alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
+          <img src="assets/essencia-escritorio.webp" alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
         </div>
         <img src="assets/shield.png" alt="" class="sobre-shield" aria-hidden="true" />
       </div>
@@ -383,7 +431,7 @@
       <!-- Carrossel expansível (adaptado de Simey / CodePen) -->
       <ul class="team-carousel" id="teamCarousel">
         <li class="tc-item" tabindex="0" data-active>
-          <div class="tc-photo"><img src="assets/team-matheus.jpg" alt="Matheus Vieira Ribeiro" loading="lazy" style="object-position:center 24%" /></div>
+          <div class="tc-photo"><img src="assets/team-matheus.webp" alt="Matheus Vieira Ribeiro" loading="lazy" style="object-position:center 24%" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Matheus Vieira Ribeiro</h3>
             <p class="tc-title">Advogado · CEO</p>
@@ -392,7 +440,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-mike.jpg" alt="Nayon Mike" loading="lazy" /></div>
+          <div class="tc-photo"><img src="assets/team-mike.webp" alt="Nayon Mike" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Nayon Mike</h3>
             <p class="tc-title">Advogado</p>
@@ -401,7 +449,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-vitor.jpg" alt="Vitor Hugo" loading="lazy" /></div>
+          <div class="tc-photo"><img src="assets/team-vitor.webp" alt="Vitor Hugo" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Vitor Hugo</h3>
             <p class="tc-title">Advogado</p>
@@ -410,7 +458,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-guilherme.jpg" alt="Guilherme Augusto" loading="lazy" /></div>
+          <div class="tc-photo"><img src="assets/team-guilherme.webp" alt="Guilherme Augusto" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Guilherme Augusto</h3>
             <p class="tc-title">Advogado</p>
@@ -419,7 +467,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-igor.jpg" alt="Igor Takel" loading="lazy" /></div>
+          <div class="tc-photo"><img src="assets/team-igor.webp" alt="Igor Takel" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Igor Takel</h3>
             <p class="tc-title">Advogado</p>
@@ -449,7 +497,7 @@
         <article class="post-card post-card--featured">
           <a href="blog/revisao-contrato-bancario-rural.html">
             <div class="post-thumb-wrap">
-              <img class="post-thumb" src="assets/bg-producao-rural.jpg" alt="Lavoura ao amanhecer" loading="lazy" />
+              <img class="post-thumb" src="assets/bg-producao-rural.webp" alt="Lavoura ao amanhecer" loading="lazy" />
             </div>
             <div class="post-body">
               <span class="post-tag">Revisão de Contratos</span>

@@ -266,10 +266,13 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .area-card:hover{transform:translateY(-4px);box-shadow:13px 13px 34px #001216, -13px -13px 30px #003e48}
 .area-card:active{transform:scale(.995);box-shadow:inset 8px 8px 20px #001216, inset -8px -8px 20px #003e48}
 .area-card .card-icon{
-  grid-area:icon;margin:0;width:60px;height:60px;font-size:1.85rem;
+  grid-area:icon;margin:0;width:60px;height:60px;color:var(--gold-light);
   display:grid;place-items:center;border-radius:18px;background:var(--navy);border:none;
   box-shadow:inset 5px 5px 10px #001216, inset -5px -5px 10px #003e48;
+  transition:color .35s var(--ease);
 }
+.area-card .card-icon svg{width:29px;height:29px;display:block}
+.area-card:hover .card-icon{color:var(--gold)}
 .area-card .area-num{
   grid-area:num;justify-self:end;align-self:center;position:static;
   font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--gold);opacity:.3;line-height:1;
@@ -576,7 +579,8 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   .atuacao{padding:88px 0}
   .areas-fallback{grid-template-columns:repeat(2,1fr);gap:28px;padding:0 30px}
   .area-card{padding:30px 26px;border-radius:30px;column-gap:14px}
-  .area-card .card-icon{width:54px;height:54px;font-size:1.65rem}
+  .area-card .card-icon{width:54px;height:54px}
+  .area-card .card-icon svg{width:26px;height:26px}
   .area-card .area-num{font-size:2.7rem}
   .area-card h3{margin:18px 0 8px;font-size:1.32rem}
   .area-card p{font-size:.92rem}
