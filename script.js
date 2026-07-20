@@ -502,3 +502,35 @@ navLinks.querySelectorAll('a').forEach(a =>
 
   setActive(active);
 })();
+
+// ===== "Como Atuamos" — trilha que se desenha conforme o scroll =====
+(function () {
+  const steps = document.querySelector('.steps');
+  const line = document.querySelector('.steps-line i');
+  if (!steps || !line) return;
+
+  // movimento reduzido: mostra a trilha completa, sem animar
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    line.style.transform = 'scaleX(1)';
+    return;
+  }
+
+  let ticking = false;
+  const update = () => {
+    const rect = steps.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    // começa a desenhar quando o topo dos passos chega a 85% da tela
+    // e completa quando chega a 40% — acompanha a leitura de 01 → 04
+    const start = vh * 0.85, end = vh * 0.40;
+    const p = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
+    line.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    ticking = false;
+  };
+  const onScrollEvt = () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  };
+
+  window.addEventListener('scroll', onScrollEvt, { passive: true });
+  window.addEventListener('resize', onScrollEvt);
+  update();
+})();

@@ -298,6 +298,18 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   transform:translateY(-3px);color:var(--gold);
   box-shadow:10px 10px 22px #001216, -10px -10px 22px #003e48;
 }
+/* Trilha que liga os passos — passa por trás dos medalhões.
+   Geometria: medalhão de 58px dentro de .step (padding 32px 24px)
+   -> centro em x=53px, y=61px. Grid de 4 colunas com gap de 24px. */
+.steps-line{
+  position:absolute;top:61px;left:53px;right:calc(25% - 71px);height:1px;
+  background:rgba(214,183,128,.16);overflow:hidden;pointer-events:none;
+}
+.steps-line i{
+  display:block;height:100%;width:100%;
+  transform:scaleX(0);transform-origin:left center;will-change:transform;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold),var(--gold-light));
+}
 .step h3{font-size:1.4rem;margin-bottom:10px;color:#fff}
 .step p{color:rgba(244,241,234,.72);font-size:.94rem}
 
@@ -572,6 +584,7 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   .toggle{display:flex;z-index:950}
   .problema-grid,.sobre-grid{grid-template-columns:1fr;gap:40px}
   .steps{grid-template-columns:repeat(2,1fr)}
+  .steps-line{display:none}   /* grade 2x2 não comporta uma trilha única */
   .valores{margin-top:56px}
   .valores-grid{grid-template-columns:repeat(2,1fr)}
 
@@ -591,7 +604,20 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   .sobre-shield{width:90px;right:0}
 }
 @media (max-width:560px){
-  .steps{grid-template-columns:1fr}
+  /* Mobile: vira uma timeline — medalhão à esquerda, texto à direita,
+     e a trilha desce pela coluna do medalhão (sem cruzar o texto). */
+  .steps{grid-template-columns:1fr;gap:30px}
+  .step{
+    display:grid;grid-template-columns:58px 1fr;column-gap:18px;
+    padding:0;align-items:start;
+  }
+  .step-num{grid-column:1;grid-row:1;margin-bottom:0}
+  .step h3{grid-column:2;grid-row:1;align-self:center;margin-bottom:0}
+  .step p{grid-column:2;grid-row:2;margin-top:10px}
+  .step:not(:last-child)::after{
+    content:'';position:absolute;left:29px;top:66px;bottom:-30px;width:1px;
+    background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
+  }
   .valores-grid{grid-template-columns:1fr}
   .areas-fallback{grid-template-columns:1fr;gap:30px;max-width:460px}
   .area-card{padding:28px 24px}
