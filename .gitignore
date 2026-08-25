@@ -11,6 +11,9 @@ imagens/
 # === Pasta de deploy manual (desnecessária com o deploy automático) ===
 deploy/
 
+# === Rascunhos (não vão para o site) ===
+drafts/
+
 # === Imagens não utilizadas pelo site (backup local, fora do repositório) ===
 assets/bg-agro.jpeg
 assets/hero-rural.jpg
