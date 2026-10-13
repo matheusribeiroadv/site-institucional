@@ -8,7 +8,11 @@
   --gold-deep:#8C6E3A;
   --cream:#F4F1EA;
   --ink:#0E1A1C;
-  --muted:#6E8084;
+  --muted:#9AACB0;         /* cinza secundário — contraste AA em todos os fundos escuros */
+  --gold-text:#7A5C2A;     /* dourado para TEXTO sobre fundo creme (AA 5.5:1) */
+  --ink-muted:#4A5B5F;     /* texto secundário sobre creme (AA 6.3:1) */
+  --card-bg:rgba(255,255,255,.035);        /* card plano unificado (fundos escuros) */
+  --card-border:rgba(214,183,128,.16);
   --glass-bg:rgba(255,255,255,.08);
   --glass-border:rgba(214,183,128,.22);
   --glass-blur:18px;
@@ -28,61 +32,13 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 .container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
-.section{position:relative;padding:120px 0;z-index:2}
+.section{position:relative;padding:92px 0;z-index:2}
 h1,h2,h3,blockquote{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1.1}
 em{font-style:italic;color:var(--gold-light)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
-
-/* ===== Intro / abertura animada (dirigida pela Anime.js) ===== */
-body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
-.intro{
-  position:fixed;inset:0;z-index:2000;display:grid;place-items:center;
-  background:radial-gradient(120% 120% at 50% 40%, var(--navy) 0%, var(--navy-deep) 70%);
-  will-change:opacity, transform;
-}
-.intro-objects{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold)}
-.intro-ring{width:min(70vw,520px);opacity:.12}
-.intro-inner{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center}
-.intro-shield-wrap{position:relative;margin-bottom:26px}
-.intro-shield{
-  width:96px;height:auto;position:relative;z-index:2;opacity:0;
-  filter:drop-shadow(0 14px 34px rgba(0,0,0,.5));
-}
-.intro-glow{
-  position:absolute;left:calc(50% - 100px);top:calc(50% - 100px);
-  width:200px;height:200px;border-radius:50%;transform-origin:center;
-  transform:scale(.4);z-index:1;opacity:0;filter:blur(6px);
-  background:radial-gradient(circle, rgba(214,183,128,.45), transparent 62%);
-}
-.intro-name{opacity:0}
-.intro-line{
-  display:block;font-family:'Cormorant Garamond',serif;font-weight:600;
-  font-size:clamp(2rem,5.4vw,3.1rem);color:var(--cream);line-height:1.05;letter-spacing:.02em;
-}
-.intro-sub{
-  display:block;font-size:.7rem;letter-spacing:.5em;color:var(--gold-light);margin-top:8px;
-}
-.intro-rule{
-  display:block;height:1px;width:min(60vw,260px);margin:22px auto 16px;transform:scaleX(0);
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-.intro-tag{
-  font-size:.82rem;letter-spacing:.16em;color:rgba(244,241,234,.65);text-transform:uppercase;opacity:0;
-}
-/* char wrappers gerados pelo splitText da Anime.js */
-.intro-char{display:inline-block;will-change:transform,opacity}
-
-/* fallback: se a Anime.js não carregar, revela tudo estaticamente */
-.intro.intro-static .intro-shield,
-.intro.intro-static .intro-name,
-.intro.intro-static .intro-tag{opacity:1}
-.intro.intro-static .intro-rule{transform:none}
-
-@media (prefers-reduced-motion:reduce){
-  .intro-shield,.intro-name,.intro-tag{opacity:1}
-  .intro-rule{transform:none}
-}
+/* botões e campos herdam a fonte do site (por padrão o navegador usa Arial) */
+button,input,select,textarea{font-family:inherit}
 
 /* ===== Barra de progressão discreta ===== */
 .scroll-progress{
@@ -203,25 +159,62 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
       rgba(0,26,31,.93) 90%,
       rgba(0,26,31,1) 100%);
 }
-.hero-content{position:relative;z-index:2;padding-top:120px;padding-bottom:80px;max-width:880px}
+.hero-content{position:relative;z-index:2;padding-top:120px;padding-bottom:100px;max-width:880px} /* folga p/ o indicador de rolagem */
 .eyebrow{
   display:inline-block;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
   color:var(--gold-light);margin-bottom:22px;font-weight:500;
 }
 .hero-title{font-size:clamp(2.6rem,6vw,4.8rem);margin-bottom:24px;letter-spacing:-.01em}
 .hero-sub{font-size:clamp(1.02rem,1.6vw,1.22rem);max-width:620px;color:rgba(244,241,234,.84);margin-bottom:38px}
-.hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px}
-.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:480px}
-.stat{padding:20px 22px;border-radius:14px}
-.stat strong{display:block;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold-light)}
-.stat span{font-size:.82rem;color:rgba(244,241,234,.7);letter-spacing:.02em}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
 
-.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:3;width:24px;height:40px;border:1px solid var(--glass-border);border-radius:14px;display:flex;justify-content:center;padding-top:8px}
-.scroll-hint span{width:3px;height:8px;border-radius:3px;background:var(--gold-light);animation:scrolldot 1.8s infinite}
-@keyframes scrolldot{0%{opacity:0;transform:translateY(-4px)}40%{opacity:1}80%{opacity:0;transform:translateY(12px)}}
+/* título em linhas (cada linha é uma "máscara" de onde o texto sobe) */
+.hero-title .ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em} /* não corta ç, q, p */
+.hero-title .ln > span{display:block}
+.hero-end{display:inline-block}
+/* "produz": dourado com brilho; padding evita cortar a inclinação do itálico */
+.hero-produz{
+  display:inline-block;padding:0 .08em;margin:0 -.08em;color:transparent;
+  background:linear-gradient(110deg,var(--gold-light) 0%,var(--gold-light) 42%,#FFF1CF 50%,var(--gold-light) 58%,var(--gold-light) 100%);
+  background-size:260% 100%;background-position:0 0;
+  -webkit-background-clip:text;background-clip:text;
+}
+/* fio dourado ao lado do "Seja bem-vindo" */
+.hero .eyebrow::before{
+  content:'';display:inline-block;vertical-align:middle;width:34px;height:1px;margin:-3px 14px 0 0;
+  background:var(--gold);transform-origin:left center;
+}
+
+/* Indicador de rolagem: fio dourado vertical com uma gota de luz descendo.
+   Some sozinho quando o visitante começa a rolar (classe .is-hidden via script.js). */
+.scroll-hint{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;
+  display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--gold-light);
+}
+.scroll-hint > *{transition:opacity .45s var(--ease)}
+.scroll-hint.is-hidden > *{opacity:0}
+.scroll-hint.is-hidden{pointer-events:none}
+.scroll-hint-label{
+  font-size:.64rem;letter-spacing:.34em;padding-left:.34em; /* compensa o espaçamento p/ centralizar */
+  text-transform:uppercase;font-weight:500;opacity:.8;
+}
+.scroll-hint:hover .scroll-hint-label{opacity:1}
+.scroll-hint-line{position:relative;display:block;width:1px;height:46px;background:rgba(214,183,128,.25);overflow:hidden}
+.scroll-hint-line::after{
+  content:'';position:absolute;left:0;top:0;width:1px;height:45%;
+  background:linear-gradient(180deg,transparent,var(--gold-light));
+  animation:scrollDrop 2.2s cubic-bezier(.65,0,.35,1) infinite;
+}
+@keyframes scrollDrop{from{transform:translateY(-100%)}to{transform:translateY(230%)}}
+@media (prefers-reduced-motion:reduce){
+  .scroll-hint-line::after{animation:none;transform:translateY(60%)}
+}
+/* telas muito baixas: o conteúdo já ocupa a tela e o indicador ficaria colado nos
+   botões / cortado na borda — melhor não mostrar (medido: cabe bem a partir de 720px) */
+@media (max-height:719px){ .scroll-hint{display:none} }
 
 /* ===== Section heads ===== */
-.section-head{text-align:center;max-width:680px;margin:0 auto 64px}
+.section-head{text-align:center;max-width:680px;margin:0 auto 52px}
 .section-head h2{font-size:clamp(2.1rem,4vw,3.2rem);margin:6px 0 16px}
 .section-head p{color:rgba(244,241,234,.72)}
 
@@ -243,61 +236,60 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 }
 
 /* ===== Áreas de Atuação ===== */
-.atuacao{position:relative;background:var(--navy);padding:120px 0}
+.atuacao{position:relative;background:var(--navy);padding:92px 0}
 .atuacao-head{text-align:center}
 .atuacao-head h2{font-size:clamp(2.1rem,4vw,3.2rem);margin:6px 0 14px}
 .atuacao-sub{color:rgba(244,241,234,.72);max-width:560px;margin:0 auto}
 
-/* Grade de cards neumórficos (soft UI) nas cores da marca — "extrudados" do fundo navy.
-   Sombra escura (baixo/dir.) + brilho teal claro (cima/esq.). */
+/* Grade de cards planos (estilo unificado do site): fundo sutil, borda fina dourada,
+   leve elevação + borda acesa no hover. */
 .areas-fallback{
-  max-width:var(--maxw);margin:56px auto 0;padding:0 24px;
-  display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
+  max-width:var(--maxw);margin:52px auto 0;padding:0 24px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
 }
 .area-card{
   display:grid;grid-template-columns:auto 1fr;
   grid-template-areas:"icon num" "title title" "desc desc";
   align-items:center;column-gap:16px;
-  padding:34px 32px;border-radius:34px;
-  background:var(--navy);border:none;backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:9px 9px 26px #001216, -9px -9px 24px #003e48;
-  transition:box-shadow .35s var(--ease),transform .35s var(--ease);
+  padding:32px 30px;border-radius:20px;
+  background:var(--card-bg);border:1px solid var(--card-border);
+  transition:transform .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease);
 }
-.area-card:hover{transform:translateY(-4px);box-shadow:13px 13px 34px #001216, -13px -13px 30px #003e48}
-.area-card:active{transform:scale(.995);box-shadow:inset 8px 8px 20px #001216, inset -8px -8px 20px #003e48}
+.area-card:hover{
+  transform:translateY(-4px);border-color:rgba(214,183,128,.45);background:rgba(255,255,255,.055);
+  box-shadow:0 26px 50px -30px rgba(0,0,0,.75);
+}
 .area-card .card-icon{
-  grid-area:icon;margin:0;width:60px;height:60px;color:var(--gold-light);
-  display:grid;place-items:center;border-radius:18px;background:var(--navy);border:none;
-  box-shadow:inset 5px 5px 10px #001216, inset -5px -5px 10px #003e48;
-  transition:color .35s var(--ease);
+  grid-area:icon;margin:0;width:56px;height:56px;color:var(--gold-light);
+  display:grid;place-items:center;border-radius:14px;
+  background:rgba(184,146,83,.08);border:1px solid rgba(214,183,128,.28);
+  transition:color .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
 }
 .area-card .card-icon svg{width:29px;height:29px;display:block}
-.area-card:hover .card-icon{color:var(--gold)}
+.area-card:hover .card-icon{color:var(--gold);border-color:var(--gold);background:rgba(184,146,83,.14)}
 .area-card .area-num{
   grid-area:num;justify-self:end;align-self:center;position:static;
   font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--gold);opacity:.3;line-height:1;
 }
 .area-card h3{grid-area:title;margin:20px 0 10px;font-size:1.45rem;color:#fff}
 .area-card p{grid-area:desc;color:rgba(244,241,234,.74);font-size:.96rem;line-height:1.55}
+/* dica de swipe — só aparece no celular */
+.areas-hint{display:none;text-align:center;font-size:.8rem;letter-spacing:.06em;color:var(--muted);margin-top:4px}
 
 /* ===== Processo ===== */
 .processo{background:linear-gradient(180deg,var(--navy),var(--navy-deep))}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
 .step{padding:32px 24px;border-radius:16px;position:relative}
-/* medalhão neumórfico: mesmo relevo 3D dos cards de Áreas de Atuação */
+/* medalhão plano: círculo opaco (cobre a trilha) com aro dourado fino */
 .step-num{
   font-family:'Cormorant Garamond',serif;font-size:1.6rem;line-height:1;color:var(--gold-light);
   width:58px;height:58px;display:grid;place-items:center;
-  border:none;border-radius:50%;background:var(--navy);
-  box-shadow:7px 7px 16px #001216, -7px -7px 16px #003e48;
+  border:1px solid rgba(214,183,128,.45);border-radius:50%;background:var(--navy);
   padding-bottom:4px; /* compensa o assentamento óptico das numerais serifadas */
-  margin-bottom:24px;
-  transition:box-shadow .35s var(--ease),transform .35s var(--ease),color .35s var(--ease);
+  margin-bottom:24px;position:relative;z-index:1;
+  transition:transform .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
 }
-.step:hover .step-num{
-  transform:translateY(-3px);color:var(--gold);
-  box-shadow:10px 10px 22px #001216, -10px -10px 22px #003e48;
-}
+.step:hover .step-num{transform:translateY(-3px);color:var(--gold);border-color:var(--gold)}
 /* Trilha que liga os passos — passa por trás dos medalhões.
    Geometria: medalhão de 58px dentro de .step (padding 32px 24px)
    -> centro em x=53px, y=61px. Grid de 4 colunas com gap de 24px. */
@@ -335,9 +327,8 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .valores .eyebrow{margin-bottom:26px}
 .valores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;text-align:left}
 .valor{
-  padding:28px 24px;border-radius:16px;background:var(--glass-bg);
-  border:1px solid var(--glass-border);border-top:2px solid var(--gold);
-  backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));
+  padding:28px 24px;border-radius:16px;background:var(--card-bg);
+  border:1px solid var(--card-border);border-top:2px solid var(--gold);
   transition:transform .35s var(--ease),border-color .35s var(--ease)
 }
 .valor:hover{transform:translateY(-5px);border-top-color:var(--gold-light)}
@@ -345,7 +336,8 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .valor p{color:rgba(244,241,234,.72);font-size:.9rem;line-height:1.5}
 
 /* ===== Quem Somos / Equipe ===== */
-.equipe{background:linear-gradient(180deg,#06222a 0%, var(--navy-deep) 100%)}
+/* começa e termina no mesmo tom da seção acima (sem degrau); brilho suave atrás dos cards */
+.equipe{background:radial-gradient(70% 55% at 50% 55%, rgba(0,45,53,.6), transparent 72%), var(--navy-deep)}
 .team-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;margin-top:8px}
 .team-card{width:330px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;padding:0;
   transition:transform .4s var(--ease),border-color .4s,box-shadow .4s}
@@ -457,7 +449,8 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 @keyframes tcSlideIn{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
 /* ===== Contato ===== */
-.contato{background:linear-gradient(180deg,var(--navy-deep),var(--navy))}
+/* sobe ao petróleo e volta ao escuro: encontra o rodapé no mesmo tom (sem emenda) */
+.contato{background:linear-gradient(180deg,var(--navy-deep) 0%,var(--navy) 48%,var(--navy-deep) 100%)}
 .contato-card{max-width:780px;margin:0 auto;text-align:center;padding:60px 48px}
 .contato-logo{width:88px;margin:0 auto 26px;filter:drop-shadow(0 8px 24px rgba(184,146,83,.35))}
 .contato-card h2{font-size:clamp(1.9rem,3.4vw,2.8rem);margin-bottom:16px}
@@ -513,14 +506,21 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .contato-or{flex-basis:100%;font-size:.85rem;color:var(--muted);margin-bottom:2px}
 
 /* ===== Footer ===== */
-.site-footer{background:var(--navy-deep);border-top:1px solid var(--glass-border);padding:56px 0 40px;position:relative;z-index:2}
+.site-footer{background:var(--navy-deep);padding:56px 0 40px;position:relative;z-index:2}
+/* divisória: fio dourado que esmaece nas pontas (no lugar da linha de ponta a ponta) */
+.site-footer::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:min(var(--maxw),90%);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(214,183,128,.3),transparent);
+}
 .footer-inner{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:32px;align-items:center}
 .footer-brand{display:flex;align-items:center;gap:14px}
 .footer-mark{width:42px}
 .footer-brand strong{font-family:'Cormorant Garamond',serif;font-size:1.2rem;display:block}
 .footer-brand span{font-size:.78rem;color:var(--gold-light);letter-spacing:.04em}
-.footer-nav{display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
-.footer-nav a{font-size:.88rem;color:rgba(244,241,234,.7);transition:color .25s}
+/* grade 3 + 3 + 2 (cabe na coluna do meio sem quebrar os nomes) */
+.footer-nav{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;column-gap:24px;row-gap:12px}
+.footer-nav a{font-size:.88rem;color:rgba(244,241,234,.7);transition:color .25s;white-space:nowrap}
 .footer-nav a:hover{color:var(--gold-light)}
 .footer-meta{text-align:right;display:flex;flex-direction:column;gap:8px;font-size:.78rem;color:var(--muted);line-height:1.55}
 .footer-meta a{color:var(--gold-light);transition:color .25s}
@@ -541,10 +541,11 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .example-2 .icon-content:hover .tooltip{opacity:1;visibility:visible;top:-38px}
 .example-2 .icon-content a{
   position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;
-  width:46px;height:46px;border-radius:50%;color:#4d4d4d;background-color:#fff;
+  width:46px;height:46px;border-radius:50%;color:var(--gold-light);
+  background-color:transparent;border:1px solid var(--glass-border);
   transition:all .3s ease-in-out;
 }
-.example-2 .icon-content a:hover{box-shadow:3px 2px 45px 0 rgba(0,0,0,.12);color:#fff}
+.example-2 .icon-content a:hover{box-shadow:3px 2px 45px 0 rgba(0,0,0,.12);color:#fff;border-color:transparent}
 .example-2 .icon-content a svg{position:relative;z-index:1;width:24px;height:24px}
 .example-2 .icon-content a .filled{
   position:absolute;top:auto;bottom:0;left:0;width:100%;height:0;
@@ -560,6 +561,74 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 .example-2 .icon-content a[data-social="email"] .filled,
 .example-2 .icon-content a[data-social="email"] ~ .tooltip{background-color:var(--gold)}
 
+/* ===== Entrada do hero (substitui a antiga tela de abertura) =====
+   Nada bloqueia: a página rola desde o primeiro instante. As animações só existem
+   quando o script do <head> marca .hero-anim; ficam pausadas até as fontes chegarem
+   (.hero-go, no máx. 1s). Total ≈ 1,6s. */
+@keyframes heroSettle{from{scale:1.08}to{scale:1}}
+@keyframes heroFade{from{opacity:0}to{opacity:1}}
+@keyframes heroFadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes heroLineUp{from{transform:translateY(110%)}to{transform:none}}
+@keyframes heroRule{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes heroShimmer{from{background-position:100% 0}to{background-position:0 0}}
+
+.hero-anim .hero-bg{animation:heroSettle 1.8s cubic-bezier(.16,1,.3,1) both}
+.hero-anim .site-header{animation:heroFade .8s ease both}
+.hero-anim .hero .eyebrow{animation:heroFadeUp .7s var(--ease) .1s both}
+.hero-anim .hero .eyebrow::before{animation:heroRule .9s cubic-bezier(.16,1,.3,1) .25s both}
+.hero-anim .hero-title .ln > span{animation:heroLineUp 1s cubic-bezier(.16,1,.3,1) .2s both}
+.hero-anim .hero-title .ln + .ln > span{animation-delay:.34s}
+.hero-anim .hero-end{animation:heroFadeUp .8s var(--ease) .75s both}          /* "produz." entra junto */
+.hero-anim .hero-produz{animation:heroShimmer 1.4s ease-in-out 1.05s both}
+.hero-anim .hero-sub{animation:heroFadeUp .8s var(--ease) .55s both}
+.hero-anim .hero-actions{animation:heroFadeUp .8s var(--ease) .7s both}
+.hero-anim .scroll-hint{animation:heroFade .8s ease 1.3s both}
+/* aguardando as fontes: tudo parado no quadro inicial */
+.hero-anim:not(.hero-go) .hero-in,
+.hero-anim:not(.hero-go) .hero-bg,
+.hero-anim:not(.hero-go) .site-header,
+.hero-anim:not(.hero-go) .hero-produz,
+.hero-anim:not(.hero-go) .hero-end,
+.hero-anim:not(.hero-go) .hero .eyebrow::before{animation-play-state:paused}
+
+@media (prefers-reduced-motion:reduce){
+  .hero-anim .hero-in,.hero-anim .hero-bg,.hero-anim .site-header,.hero-anim .hero-end,
+  .hero-anim .hero-produz,.hero-anim .hero .eyebrow::before{animation:none}
+}
+
+/* ===== Seções claras (ritmo claro/escuro) =====
+   Fundo creme com texto petróleo. Usadas em: O Cenário, Como Atuamos e Do nosso Blog. */
+.section.section--light{background:var(--cream);color:var(--ink)}
+.section--light .eyebrow,
+.section--light em{color:var(--gold-text)}
+.section--light h2,.section--light h3{color:var(--ink)}
+.section--light .section-head p{color:var(--ink-muted)}
+/* O Cenário */
+.section--light .quote-mark{color:var(--gold);opacity:.55}
+.section--light .quote-author{color:var(--gold-text)}
+.section--light .problema-text p{color:var(--ink-muted)}
+.section--light .check-list li{color:var(--ink)}
+.section--light .check-list li::before{color:#fff;box-shadow:0 0 0 4px rgba(184,146,83,.16)}
+/* Como Atuamos — medalhões e trilha sobre o creme */
+.section--light .step h3{color:var(--ink)}
+.section--light .step p{color:var(--ink-muted)}
+.section--light .step-num{background:var(--cream);color:var(--gold-text);border-color:rgba(122,92,42,.4)}
+.section--light .step:hover .step-num{color:var(--gold-text);border-color:var(--gold)}
+.section--light .steps-line{background:rgba(122,92,42,.16)}
+/* Do nosso Blog — card branco com sombra suave */
+.section--light .post-card{
+  background:#fff;border:1px solid rgba(122,92,42,.14);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:0 22px 48px -30px rgba(14,26,28,.35);
+}
+.section--light .post-card:hover{border-color:rgba(184,146,83,.6);box-shadow:0 30px 60px -30px rgba(14,26,28,.45)}
+.section--light .post-card h2{color:var(--ink)}
+.section--light .post-card:hover h2{color:var(--gold-text)}
+.section--light .post-excerpt,
+.section--light .post-meta{color:var(--ink-muted)}
+.section--light .btn-ghost{border-color:rgba(14,26,28,.22);color:var(--ink);backdrop-filter:none}
+.section--light .btn-ghost:hover{border-color:var(--gold);color:var(--gold-text)}
+
 /* ===== Reveal animations ===== */
 /* estado inicial oculto — a animação de entrada é dirigida pela Anime.js */
 .reveal{opacity:0;transform:translateY(38px)}
@@ -572,7 +641,7 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
 
 /* ===== Responsivo ===== */
 @media (max-width:900px){
-  .section{padding:88px 0}
+  .section{padding:72px 0}
   .nav-links{
     position:fixed;top:0;right:0;left:auto;bottom:auto;
     width:min(78vw,320px);height:100vh;height:100dvh;overflow-y:auto;
@@ -588,16 +657,15 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
   .valores{margin-top:56px}
   .valores-grid{grid-template-columns:repeat(2,1fr)}
 
-  /* Áreas de Atuação: 2 colunas no tablet (cards neumórficos vêm do estilo base) */
-  .atuacao{padding:88px 0}
-  .areas-fallback{grid-template-columns:repeat(2,1fr);gap:28px;padding:0 30px}
-  .area-card{padding:30px 26px;border-radius:30px;column-gap:14px}
+  /* Áreas de Atuação: 2 colunas no tablet */
+  .atuacao{padding:72px 0}
+  .areas-fallback{grid-template-columns:repeat(2,1fr);gap:20px;padding:0 30px}
+  .area-card{padding:28px 24px;border-radius:18px;column-gap:14px}
   .area-card .card-icon{width:54px;height:54px}
   .area-card .card-icon svg{width:26px;height:26px}
   .area-card .area-num{font-size:2.7rem}
   .area-card h3{margin:18px 0 8px;font-size:1.32rem}
   .area-card p{font-size:.92rem}
-  .hero-stats{grid-template-columns:1fr}
   .footer-inner{grid-template-columns:1fr;text-align:center;gap:24px}
   .footer-brand,.footer-meta{justify-content:center;text-align:center}
   .footer-meta{align-items:center}
@@ -619,12 +687,25 @@ body.intro-lock{overflow:hidden;height:100vh;height:100dvh}
     background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
   }
   .valores-grid{grid-template-columns:1fr}
-  .areas-fallback{grid-template-columns:1fr;gap:30px;max-width:460px}
-  .area-card{padding:28px 24px}
+  .section,.atuacao{padding:64px 0}
+  /* Áreas: carrossel horizontal com swipe (o próximo card "espia" à direita) */
+  .areas-fallback{
+    display:flex;gap:14px;overflow-x:auto;max-width:none;margin-top:36px;
+    padding:4px 24px 14px;scroll-snap-type:x mandatory;scroll-padding-left:24px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .areas-fallback::-webkit-scrollbar{display:none}
+  .area-card{flex:0 0 82%;scroll-snap-align:start;padding:26px 22px}
   .area-card h3{margin-top:16px}
+  /* dentro do carrossel os cards já aparecem prontos (sem animação de entrada) */
+  .areas-fallback .reveal{opacity:1!important;transform:none!important}
+  .areas-hint{display:block}
+  .footer-nav{display:flex;flex-wrap:wrap;gap:12px 20px}
   .contato-card{padding:44px 26px}
   .lead-grid{grid-template-columns:1fr}
   .hero-content{padding-top:130px}
+  .hero .eyebrow{letter-spacing:.24em}
+  .hero .eyebrow::before{width:22px;margin-right:10px}
   .float-obj{display:none}
 }
 

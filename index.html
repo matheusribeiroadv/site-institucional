@@ -35,6 +35,20 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="blog.css" />
 
+  <!-- Entrada do hero: espera as fontes (no máx. 1s) para animar sem trocar a tipografia
+       no meio do movimento. Sem JS, o hero aparece pronto, sem animação. -->
+  <script>
+    (function (d) {
+      var h = d.documentElement, done = false;
+      var go = function () { if (!done) { done = true; h.classList.add('hero-go'); } };
+      h.classList.add('hero-anim');
+      try {
+        Promise.all([d.fonts.load('600 1em "Cormorant Garamond"'), d.fonts.load('400 1em Jost')]).then(go, go);
+      } catch (e) { go(); }
+      setTimeout(go, 1000);
+    })(document);
+  </script>
+
   <!-- Dados estruturados: escritório de advocacia (SEO local) -->
   <script type="application/ld+json">
   {
@@ -80,25 +94,6 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="15bda1c5-726a-4f71-923d-2145b2f368bb"></script>
 </head>
 <body>
-
-  <!-- Intro / abertura animada (primeira visita) -->
-  <div class="intro" id="intro">
-    <div class="intro-objects" aria-hidden="true">
-      <svg class="intro-ring" viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-    </div>
-    <div class="intro-inner">
-      <div class="intro-shield-wrap">
-        <span class="intro-glow" aria-hidden="true"></span>
-        <img src="assets/shield.png" alt="" class="intro-shield" />
-      </div>
-      <div class="intro-name">
-        <span class="intro-line">Matheus Ribeiro</span>
-        <span class="intro-sub">ADVOGADOS</span>
-      </div>
-      <span class="intro-rule" aria-hidden="true"></span>
-      <span class="intro-tag">Direito Bancário do Agronegócio</span>
-    </div>
-  </div>
 
   <!-- Barra de progressão discreta -->
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -191,30 +186,28 @@
     <div class="hero-bg" id="heroBg" style="background-image:url('assets/bg-producao-rural.webp')"></div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
-      <span class="eyebrow reveal">Seja Bem-vindo ao Escritório</span>
-      <h1 class="hero-title reveal" data-delay="1">
-        A balança do Direito <br/>ao lado de quem <em>produz</em>.
+      <span class="eyebrow hero-in">Seja Bem-vindo ao Escritório</span>
+      <h1 class="hero-title">
+        <span class="ln"><span class="hero-in">A balança do Direito</span></span>
+        <span class="ln"><span class="hero-in">ao lado de quem <span class="hero-end"><em class="hero-produz">produz</em>.</span></span></span>
       </h1>
-      <p class="hero-sub reveal" data-delay="2">
+      <p class="hero-sub hero-in">
         Defesa especializada do produtor rural diante dos bancos. Revisamos contratos,
         combatemos abusividades e reequilibramos dívidas para que sua terra continue produzindo.
       </p>
-      <div class="hero-actions reveal" data-delay="3">
+      <div class="hero-actions hero-in">
         <a href="#contato" class="btn btn-primary">Analisar meu caso</a>
         <a href="#atuacao" class="btn btn-ghost">Conhecer a atuação</a>
       </div>
-      <div class="hero-stats reveal" data-delay="4">
-        <div class="stat glass"><strong>Crédito Rural</strong><span>CCB · Custeio · PRONAMP</span></div>
-        <div class="stat glass"><strong>Foco total</strong><span>no produtor do agro</span></div>
-      </div>
     </div>
-    <a href="#problema" class="scroll-hint" aria-label="Rolar para baixo">
-      <span></span>
+    <a href="#problema" class="scroll-hint hero-in" id="scrollHint" aria-label="Rolar para baixo">
+      <span class="scroll-hint-label">Role</span>
+      <span class="scroll-hint-line"></span>
     </a>
   </section>
 
   <!-- Problema / quote -->
-  <section class="problema section" id="problema">
+  <section class="problema section section--light" id="problema">
     <div class="container problema-grid">
       <div class="problema-quote reveal">
         <span class="quote-mark">“</span>
@@ -334,10 +327,11 @@
         <p>Ajuizamento de revisionais e exceções de pré-executividade para suspender cobranças indevidas.</p>
       </article>
     </div>
+    <p class="areas-hint" aria-hidden="true">Deslize para ver todas as áreas →</p>
   </section>
 
   <!-- Processo -->
-  <section class="processo section" id="processo">
+  <section class="processo section section--light" id="processo">
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Método</span>
@@ -506,7 +500,7 @@
   </section>
 
   <!-- Destaque do Blog -->
-  <section class="blog-teaser section" id="blog">
+  <section class="blog-teaser section section--light" id="blog">
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Conhecimento que protege</span>

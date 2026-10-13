@@ -1,133 +1,19 @@
-// ===== Sempre iniciar no topo (abertura + reveals consistentes) =====
-if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-window.scrollTo(0, 0);
-
 // ===== Ano dinâmico no rodapé =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// ===== Intro / abertura animada com Anime.js (1x por sessão) =====
-(function () {
-  const intro = document.getElementById('intro');
-  if (!intro) return;
-
-  const SEEN = 'mradv_intro_seen';
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const params = new URLSearchParams(location.search);
-  const debug = params.has('introdebug'); // congela o intro p/ inspeção
-
-  let seen = false;
-  try { seen = sessionStorage.getItem(SEEN) === '1'; } catch (e) { }
-  if (seen && !debug) { intro.remove(); return; }
-
-  const anime = window.anime;
-
-  // Encerramento: levanta a cortina e revela a página
-  function finish() {
-    try { sessionStorage.setItem(SEEN, '1'); } catch (e) { }
-    const done = () => { document.body.classList.remove('intro-lock'); intro.remove(); };
-    if (anime && anime.animate) {
-      anime.animate(intro, {
-        opacity: [1, 0],
-        translateY: [0, -28],
-        duration: 850,
-        ease: 'inOutQuad',
-        onComplete: done
-      });
-    } else {
-      intro.style.transition = 'opacity .8s, transform .8s';
-      intro.style.opacity = '0';
-      intro.style.transform = 'translateY(-28px)';
-      window.setTimeout(done, 850);
-    }
-  }
-
-  document.body.classList.add('intro-lock');
-
-  // Fallback sem Anime.js (ou movimento reduzido): revela estático e sai
-  if (!anime || !anime.createTimeline || reduce) {
-    intro.classList.add('intro-static');
-    if (!debug) window.setTimeout(finish, reduce ? 650 : 1400);
-    return;
-  }
-
-  const { createTimeline, createDrawable, splitText, stagger } = anime;
-  const spring = anime.spring || anime.createSpring;
-
-  // Quebra texto em caracteres animáveis
-  function toChars(sel) {
-    try { return splitText(sel, { chars: { class: 'intro-char' }, accessible: true }).chars || []; }
-    catch (e) { return []; }
-  }
-  const chars = toChars('.intro-line');     // "Matheus Ribeiro"
-  const subChars = toChars('.intro-sub');   // "ADVOGADOS"
-  intro.querySelector('.intro-name').style.opacity = 1;
-  chars.concat(subChars).forEach(c => { c.style.opacity = 0; });
-
-  const tl = createTimeline({ defaults: { ease: 'outExpo' } });
-
-  // 1) Anel desenhado
-  try {
-    const ring = createDrawable('.intro-ring circle');
-    tl.add(ring, { draw: ['0 0', '0 1'], duration: 1500, ease: 'inOutSine' }, 0);
-  } catch (e) { }
-
-  // 2) Brilho dourado expandindo
-  tl.add('.intro-glow', {
-    opacity: [0, 0.55, 0.32],
-    scale: [0.4, 1.15],
-    duration: 1400, ease: 'outQuad'
-  }, 150);
-
-  // 3) Escudo com mola
-  tl.add('.intro-shield', {
-    opacity: [0, 1],
-    scale: [0.7, 1],
-    translateY: [16, 0],
-    duration: 900,
-    ease: spring({ stiffness: 120, damping: 12 })
-  }, 200);
-
-  // 4) Letras do nome sobem em sequência
-  if (chars.length) {
-    tl.add(chars, {
-      opacity: [0, 1],
-      translateY: [42, 0],
-      rotateZ: [6, 0],
-      duration: 750,
-      delay: stagger(34),
-      ease: 'outExpo'
-    }, 550);
-  }
-
-  // 5) "ADVOGADOS" — letras em sequência
-  if (subChars.length) {
-    tl.add(subChars, {
-      opacity: [0, 1],
-      translateY: [16, 0],
-      duration: 520,
-      delay: stagger(28),
-      ease: 'outExpo'
-    }, '-=280');
-  }
-
-  // 6) Linha dourada
-  tl.add('.intro-rule', { scaleX: [0, 1], duration: 700, ease: 'inOutQuad' }, '-=450');
-
-  // 7) Selo / tagline
-  tl.add('.intro-tag', { opacity: [0, 1], translateY: [10, 0], duration: 600 }, '-=350');
-
-  // Ao concluir, encerra (a menos que em modo debug)
-  tl.then(() => { if (!debug) window.setTimeout(finish, 500); });
-})();
+// A entrada do hero é feita em CSS (ver "Entrada do hero" no styles.css + script no <head>).
 
 // ===== Header glass + parallax da imagem do hero =====
 const header = document.getElementById('siteHeader');
 const heroBg = document.getElementById('heroBg');
+const scrollHint = document.getElementById('scrollHint');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let headerTicking = false;
 function syncHeader() {
   const y = window.scrollY || document.documentElement.scrollTop;
   header.classList.toggle('scrolled', y > 40);
+  // indicador de rolagem some assim que o visitante começa a rolar
+  if (scrollHint) scrollHint.classList.toggle('is-hidden', y > 60);
   // imagem rural do hero desce mais devagar que o scroll (parallax)
   if (heroBg && !reduceMotion && y < 1100) {
     heroBg.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(1) + 'px,0)';
