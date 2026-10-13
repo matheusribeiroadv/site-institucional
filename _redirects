@@ -3,3 +3,7 @@ https://www.matheusribeiroadv.com.br/*  https://matheusribeiroadv.com.br/:splat 
 
 # Favicon padrão (/favicon.ico) serve o PNG do ícone — ajuda navegadores e buscadores.
 /favicon.ico  /assets/favicon.png  200
+
+# Link curto para avaliações no Google (WhatsApp, QR code, rodapé).
+# Se o Google trocar o link, basta atualizar aqui.
+/avaliar  https://g.page/r/CQGwdV0y88xQEBM/review  302
