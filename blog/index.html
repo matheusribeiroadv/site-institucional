@@ -37,6 +37,7 @@
     "publisher": {
       "@type": "LegalService",
       "name": "Matheus Ribeiro Advogados",
+      "legalName": "Matheus Ribeiro Sociedade Individual de Advocacia",
       "image": "https://matheusribeiroadv.com.br/assets/shield.png",
       "address": {
         "@type": "PostalAddress",
@@ -62,19 +63,20 @@
         <img src="../assets/shield.png" alt="Matheus Ribeiro Advogados" class="brand-mark" />
         <span class="brand-name">Matheus Ribeiro<small>ADVOGADOS</small></span>
       </a>
-      <nav class="nav-links" id="navLinks">
+      <!-- fundo escurecido atrás do menu mobile (tocar fecha o menu) -->
+      <div class="nav-overlay" id="navOverlay"></div>
+      <nav class="nav-links" id="navLinks" aria-label="Menu principal">
         <a href="../index.html#problema">O Cenário</a>
         <a href="../index.html#atuacao">Atuação</a>
         <a href="../index.html#sobre">O Escritório</a>
         <a href="index.html">Blog</a>
         <a href="../index.html#contato" class="nav-cta">Fale Conosco</a>
       </nav>
-      <input type="checkbox" id="checkbox" aria-hidden="true" tabindex="-1" />
-      <label class="toggle" for="checkbox" aria-label="Abrir menu">
-        <span class="bars" id="bar1"></span>
-        <span class="bars" id="bar2"></span>
-        <span class="bars" id="bar3"></span>
-      </label>
+      <button class="toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+        <span class="bars"></span>
+        <span class="bars"></span>
+        <span class="bars"></span>
+      </button>
     </div>
   </header>
 
@@ -99,7 +101,7 @@
         <article class="post-card reveal">
           <a href="revisao-contrato-bancario-rural.html">
             <div class="post-thumb-wrap">
-              <img class="post-thumb" src="../assets/bg-producao-rural.webp" alt="Lavoura ao amanhecer" loading="lazy" />
+              <img class="post-thumb" src="../assets/blog-revisao-contrato.webp" alt="Mãos de produtor rural segurando um relatório financeiro com gráficos" loading="lazy" />
             </div>
             <div class="post-body">
               <span class="post-tag">Revisão de Contratos</span>
@@ -139,6 +141,7 @@
         <span>Ed. Eldorado Business Tower — Av. C-255, 400, Sala 1317<br />Nova Suíça, Goiânia — GO, 74280-010</span>
         <span>Atendimento: 08:30 — 19:30 · <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a></span>
         <span><a href="/avaliar" target="_blank" rel="noopener" data-umami-event="avaliar-google">★ Já é nosso cliente? Avalie nosso atendimento no Google</a></span>
+        <span>Matheus Ribeiro Sociedade Individual de Advocacia<br />Registro OAB/GO 6.080 · CNPJ 52.781.702/0001-53</span>
         <span>© <span id="year"></span> Matheus Ribeiro Advogados. Todos os direitos reservados.</span>
       </div>
     </div>

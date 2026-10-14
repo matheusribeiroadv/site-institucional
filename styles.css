@@ -39,6 +39,8 @@ a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 /* botões e campos herdam a fonte do site (por padrão o navegador usa Arial) */
 button,input,select,textarea{font-family:inherit}
+/* texto só para leitores de tela */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* ===== Barra de progressão discreta ===== */
 .scroll-progress{
@@ -69,11 +71,14 @@ button,input,select,textarea{font-family:inherit}
 /* ===== Header ===== */
 .site-header{
   position:fixed;top:0;left:0;width:100%;z-index:900;
-  padding:18px 0;transition:all .4s var(--ease);
+  padding:18px 0;
+  /* propriedades explícitas (antes "all", que animava até o desfoque). O padding anima,
+     mas como o header é fixo só ele é recalculado — não a página */
+  transition:padding .4s var(--ease),background-color .4s var(--ease),border-color .4s var(--ease);
 }
 .site-header.scrolled{
   padding:10px 0;
-  background:rgba(0,26,31,.72);
+  background:rgba(0,26,31,.93); /* quase sólido: continua petróleo sobre as seções creme */
   backdrop-filter:blur(var(--glass-blur));
   -webkit-backdrop-filter:blur(var(--glass-blur));
   border-bottom:1px solid var(--glass-border);
@@ -85,50 +90,70 @@ button,input,select,textarea{font-family:inherit}
   font-family:'Cormorant Garamond',serif;font-size:1.32rem;font-weight:600;
   letter-spacing:.02em;display:flex;flex-direction:column;line-height:1;
 }
-.brand-name small{font-family:'Jost',sans-serif;font-size:.52rem;letter-spacing:.42em;color:var(--gold);margin-top:3px;font-weight:400}
+.brand-name small{font-family:'Jost',sans-serif;font-size:.58rem;letter-spacing:.38em;color:var(--gold);margin-top:3px;font-weight:400}
 .nav-links{display:flex;align-items:center;gap:30px}
 .nav-links a{font-size:.92rem;letter-spacing:.03em;color:rgba(244,241,234,.82);transition:color .25s,opacity .25s;position:relative}
 .nav-links a:not(.nav-cta)::after{
   content:'';position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--gold-light);transition:width .3s var(--ease);
 }
-.nav-links a:not(.nav-cta):hover{color:#fff}
-.nav-links a:not(.nav-cta):hover::after{width:100%}
+.nav-links a:not(.nav-cta):hover,
+.nav-links a.is-active{color:#fff}
+.nav-links a:not(.nav-cta):hover::after,
+.nav-links a.is-active::after{width:100%}   /* .is-active = seção visível na tela (script.js) */
+.nav-links a:not(.nav-cta):focus-visible{outline:2px solid var(--gold-light);outline-offset:4px;border-radius:2px}
 .nav-cta{
   border:1px solid var(--gold);color:var(--gold-light);
-  padding:9px 20px;border-radius:40px;transition:all .3s var(--ease);
+  padding:9px 20px;border-radius:40px;transition:background-color .3s var(--ease),color .3s var(--ease);
 }
-.nav-cta:hover{background:var(--gold);color:var(--navy-deep)}
-/* Toggle do menu mobile — hambúrguer animado (checkbox + label) */
-#checkbox{display:none}
+@media (hover:hover){ .nav-cta:hover{background:var(--gold);color:var(--navy-deep)} }
+.nav-cta:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+/* Botão do menu mobile — hambúrguer que vira X (aria-expanded controlado pelo JS) */
 .toggle{
-  display:none;position:relative;width:34px;height:34px;cursor:pointer;
-  flex-direction:column;align-items:center;justify-content:center;gap:9px;
-  transition-duration:.3s;
+  display:none;position:relative;width:40px;height:40px;padding:0;margin-right:-4px;
+  background:none;border:0;cursor:pointer;color:var(--cream);
+  flex-direction:column;align-items:center;justify-content:center;gap:7px;
 }
 .bars{
-  width:100%;height:3px;background-color:var(--cream);border-radius:5px;transition-duration:.3s;
+  display:block;width:28px;height:2px;background-color:currentColor;border-radius:2px;
+  transition:transform .35s var(--ease),opacity .2s ease;
 }
-#checkbox:checked + .toggle #bar2{
-  transform:translateY(12px) rotate(60deg);margin-left:0;transform-origin:right;transition-duration:.3s;z-index:2;
-}
-#checkbox:checked + .toggle #bar1{
-  transform:translateY(24px) rotate(-60deg);transition-duration:.3s;transform-origin:left;z-index:1;
-}
-#checkbox:checked + .toggle{transform:rotate(-90deg)}
+.toggle[aria-expanded="true"] .bars:nth-child(1){transform:translateY(9px) rotate(45deg)}
+.toggle[aria-expanded="true"] .bars:nth-child(2){opacity:0}
+.toggle[aria-expanded="true"] .bars:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+.toggle:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;border-radius:6px}
+.nav-overlay{display:none}
 
 /* ===== Botões ===== */
 .btn{
   display:inline-block;padding:14px 30px;border-radius:40px;
-  font-size:.95rem;letter-spacing:.04em;font-weight:500;cursor:pointer;
-  transition:all .35s var(--ease);border:1px solid transparent;
+  font-size:.95rem;letter-spacing:.04em;font-weight:500;cursor:pointer;border:1px solid transparent;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease),
+             color .35s var(--ease),background-color .35s var(--ease),opacity .25s ease;
 }
 .btn-primary{
   background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));
   color:var(--navy-deep);box-shadow:0 12px 30px -10px rgba(184,146,83,.7);
 }
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 40px -10px rgba(184,146,83,.9)}
 .btn-ghost{border-color:var(--glass-border);color:var(--cream);backdrop-filter:blur(6px)}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);transform:translateY(-3px)}
+/* "subir" só em quem tem mouse — no toque o efeito ficaria grudado depois do toque */
+@media (hover:hover){
+  .btn-primary:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 18px 40px -10px rgba(184,146,83,.9)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);transform:translateY(-3px)}
+}
+/* ao pressionar (mouse ou dedo): leve "afundar", como um botão físico */
+.btn:active,
+.btn-primary:not(:disabled):active,
+.btn-ghost:active{transform:scale(.97);transition-duration:.08s}
+/* foco pelo teclado: anel dourado (não aparece no clique com o mouse) */
+.btn:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+/* enviando: botão bloqueado, levemente apagado, com indicador girando */
+.btn:disabled{cursor:wait;opacity:.8}
+.btn.is-loading::before{
+  content:'';display:inline-block;width:14px;height:14px;margin:-3px 10px 0 0;vertical-align:middle;
+  border:2px solid currentColor;border-right-color:transparent;border-radius:50%;
+  animation:btnSpin .7s linear infinite;
+}
+@keyframes btnSpin{to{transform:rotate(360deg)}}
 
 /* ===== Glass ===== */
 .glass{
@@ -226,14 +251,38 @@ button,input,select,textarea{font-family:inherit}
 .problema-quote blockquote{font-size:clamp(1.8rem,3.2vw,2.7rem);font-style:italic;font-weight:500;margin:-18px 0 18px}
 .quote-author{color:var(--gold-light);letter-spacing:.04em;font-size:.95rem}
 .problema-text p{margin-bottom:18px;color:rgba(244,241,234,.82)}
-.check-list{list-style:none;margin-top:24px;display:grid;gap:12px}
-.check-list li{position:relative;padding-left:32px;color:rgba(244,241,234,.9)}
-.check-list li::before{
-  content:'✓';position:absolute;left:0;top:7px;width:16px;height:16px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 0 4px rgba(184,146,83,.18);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.62rem;line-height:1;color:var(--navy-deep);font-weight:700;
+/* título da seção é um h2 (para o Google e leitores de tela) com cara de rótulo */
+.problema-quote .eyebrow{font-family:inherit;line-height:inherit;margin-bottom:16px}
+/* rótulo com fio dourado que separa texto de uma lista
+   (O Cenário: "Sinais de alerta" · Contato: "Como funciona") */
+.label-rule{
+  display:flex;align-items:center;gap:14px;margin-top:30px;
+  font-family:inherit;font-size:.74rem;font-weight:600;line-height:1.4;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold-light);
 }
+.label-rule::after{content:'';flex:1;height:1px;background:rgba(214,183,128,.28)}
+.alert-list{list-style:none;margin-top:18px;display:grid;gap:12px}
+.alert-list li{position:relative;padding-left:32px;color:rgba(244,241,234,.9)}
+/* marcador: ícone de alerta em traço fino (mesmo traço 1.5 dos ícones das áreas) */
+.alert-list li::before{
+  content:'';position:absolute;left:0;top:3px;width:20px;height:20px;background:var(--gold-light);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9.25'/%3E%3Cpath d='M12 7.5v5.5'/%3E%3Cpath d='M12 16.5v.01' stroke-width='2.2'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9.25'/%3E%3Cpath d='M12 7.5v5.5'/%3E%3Cpath d='M12 16.5v.01' stroke-width='2.2'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+/* "Reconheceu algum desses sinais? Fale com a equipe →" */
+.problema-text .problema-cta{margin:30px 0 0}
+.problema-cta a{
+  display:inline-block;padding:6px 0; /* área de toque maior no celular */
+  color:var(--gold-light);font-weight:600;white-space:nowrap;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:rgba(214,183,128,.45);
+  transition:text-decoration-color .25s var(--ease);
+}
+.problema-cta a span{display:inline-block;transition:transform .3s var(--ease)}
+@media (hover:hover){
+  .problema-cta a:hover{text-decoration-color:currentColor}
+  .problema-cta a:hover span{transform:translateX(4px)}
+}
+.problema-cta a:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:2px}
 
 /* ===== Áreas de Atuação ===== */
 .atuacao{position:relative;background:var(--navy);padding:92px 0}
@@ -310,7 +359,9 @@ button,input,select,textarea{font-family:inherit}
 .sobre-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:72px;align-items:center}
 .sobre-photo{position:relative}
 .photo-frame{padding:14px;border-radius:22px;overflow:hidden}
-.photo-frame img{border-radius:14px;width:100%;object-fit:cover;aspect-ratio:3/4}
+/* a foto original é horizontal (16:9): no computador, recorte quadrado deslocado para incluir
+   as divisórias de vidro e a equipe ao fundo; no celular/tablet ela aparece inteira (ver media queries) */
+.photo-frame img{display:block;border-radius:14px;width:100%;object-fit:cover;aspect-ratio:1/1;object-position:62% center}
 .sobre-shield{position:absolute;width:120px;bottom:-30px;right:-20px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5));animation:floaty 9s ease-in-out infinite}
 .sobre-text h2{font-size:clamp(2rem,3.5vw,3rem);margin:6px 0 20px}
 .sobre-text p{color:rgba(244,241,234,.82);margin-bottom:16px}
@@ -325,14 +376,20 @@ button,input,select,textarea{font-family:inherit}
 /* Valores */
 .valores{margin-top:72px;text-align:center}
 .valores .eyebrow{margin-bottom:26px}
-.valores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;text-align:left}
+.valores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;text-align:left}
+/* subgrid: título e descrição ocupam as mesmas linhas em todos os cartões —
+   um título que quebra em 2 linhas não desalinha as descrições dos vizinhos */
 .valor{
-  padding:28px 24px;border-radius:16px;background:var(--card-bg);
+  display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:10px;align-content:start;
+  padding:28px 20px;border-radius:16px;background:var(--card-bg);
   border:1px solid var(--card-border);border-top:2px solid var(--gold);
   transition:transform .35s var(--ease),border-color .35s var(--ease)
 }
-.valor:hover{transform:translateY(-5px);border-top-color:var(--gold-light)}
-.valor h3{font-size:1.16rem;color:#fff;margin-bottom:10px}
+/* "subir" só com mouse — no toque o efeito ficaria preso depois do toque */
+@media (hover:hover){ .valor:hover{transform:translateY(-5px);border-top-color:var(--gold-light)} }
+/* 1.06rem: "Responsabilidade e transparência" cabe em 1 linha a partir de 1200px
+   (medido: precisa de ~222px, o cartão oferece ~228px). No tablet/celular volta a 1.16rem. */
+.valor h3{font-size:1.06rem;color:#fff}
 .valor p{color:rgba(244,241,234,.72);font-size:.9rem;line-height:1.5}
 
 /* ===== Quem Somos / Equipe ===== */
@@ -418,9 +475,31 @@ button,input,select,textarea{font-family:inherit}
 .team-nav button{
   width:46px;height:46px;border-radius:50%;border:1px solid var(--glass-border);
   background:rgba(255,255,255,.04);color:var(--cream);font-size:1.5rem;line-height:1;cursor:pointer;
-  display:grid;place-items:center;transition:all .3s var(--ease);
+  display:grid;place-items:center;
+  transition:transform .3s var(--ease),border-color .3s var(--ease),color .3s var(--ease),background-color .3s var(--ease);
 }
-.team-nav button:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(184,146,83,.12);transform:translateY(-2px)}
+@media (hover:hover){
+  .team-nav button:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(184,146,83,.12);transform:translateY(-2px)}
+}
+.team-nav button:active{transform:scale(.92);transition-duration:.08s}
+.team-nav button:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+/* pausar/retomar a troca automática */
+.team-nav .tc-pause svg{width:15px;height:15px}
+.tc-pause .ic-play,.tc-pause.is-paused .ic-pause{display:none}
+.tc-pause.is-paused .ic-play{display:block}
+/* posição "2 / 6" — só no celular, onde aparece um card por vez */
+.tc-count{display:none;text-align:center;margin-top:12px;font-size:.78rem;letter-spacing:.14em;color:var(--muted)}
+
+/* nome na vertical nos cards fechados (desktop/tablet): dá para ver quem é quem sem passar o mouse.
+   Elemento criado pelo script.js com aria-hidden (o nome real continua no h3 do card) */
+.team-carousel .tc-vname{
+  position:absolute;left:50%;bottom:24px;z-index:2;pointer-events:none;
+  writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);
+  font-family:'Cormorant Garamond',serif;font-size:1.12rem;font-weight:600;letter-spacing:.03em;white-space:nowrap;
+  color:var(--cream);text-shadow:0 2px 12px rgba(0,0,0,.7);
+  transition:opacity .35s var(--ease);
+}
+.team-carousel .tc-item[data-active] .tc-vname{opacity:0}
 
 @media (prefers-reduced-motion:reduce){
   .team-carousel .tc-name,.team-carousel .tc-title,.team-carousel .tc-oab{transition:none}
@@ -445,34 +524,68 @@ button,input,select,textarea{font-family:inherit}
   /* degradê e texto ocupam toda a largura do card */
   .team-carousel .tc-contents{width:100%}
   .team-nav{display:flex;margin-top:24px}                  /* setas para trocar de card */
+  .team-carousel .tc-vname{display:none}                   /* um card por vez: nome já aparece no card */
+  .tc-count{display:block}
 }
 @keyframes tcSlideIn{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
 /* ===== Contato ===== */
 /* sobe ao petróleo e volta ao escuro: encontra o rodapé no mesmo tom (sem emenda) */
 .contato{background:linear-gradient(180deg,var(--navy-deep) 0%,var(--navy) 48%,var(--navy-deep) 100%)}
-.contato-card{max-width:780px;margin:0 auto;text-align:center;padding:60px 48px}
-.contato-logo{width:88px;margin:0 auto 26px;filter:drop-shadow(0 8px 24px rgba(184,146,83,.35))}
-.contato-card h2{font-size:clamp(1.9rem,3.4vw,2.8rem);margin-bottom:16px}
-.contato-card p{color:rgba(244,241,234,.82);max-width:560px;margin:0 auto 30px}
-.contato-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
-.contato-fine{font-size:.82rem;color:var(--muted);letter-spacing:.04em}
+.contato{padding-top:64px} /* ao clicar em "Fale Conosco", o cartão chega mais perto do topo */
+/* Computador: duas colunas — título, "como funciona" e atalho do WhatsApp | formulário.
+   A ordem no HTML é a do celular (título → atalho → formulário → como funciona);
+   aqui a grade reposiciona os blocos sem duplicar nada. */
+.contato-card{
+  max-width:1120px;margin:0 auto;padding:48px 52px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);column-gap:56px;
+  grid-template-areas:"head form" "how form" "alt form";
+  grid-template-rows:auto auto 1fr;align-items:start;
+}
+.contato-head{grid-area:head}
+.contato-how{grid-area:how}
+.contato-alt{grid-area:alt}
+.lead-form{grid-area:form}
+.contato-head .eyebrow{margin-bottom:14px}
+.contato-card h2{font-size:clamp(1.9rem,2.8vw,2.45rem);margin-bottom:14px}
+.contato-intro{color:rgba(244,241,234,.82)}
+/* "Como funciona": 3 passos ligados por um fio */
+.contato-steps{list-style:none;display:grid;gap:12px;margin-top:16px;counter-reset:passo}
+.contato-steps li{
+  position:relative;padding-left:44px;min-height:30px;counter-increment:passo;
+  font-size:.93rem;line-height:1.55;color:rgba(244,241,234,.74);
+}
+.contato-steps li::before{
+  content:counter(passo);position:absolute;left:0;top:-3px;width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(214,183,128,.45);display:grid;place-items:center;
+  font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;line-height:1;color:var(--gold-light);
+  font-variant-numeric:lining-nums; /* o "1" no estilo antigo da Cormorant parece um "ı" */
+}
+.contato-steps li:not(:last-child)::after{content:'';position:absolute;left:15px;top:31px;bottom:-11px;width:1px;background:rgba(214,183,128,.2)}
+.contato-steps strong{color:var(--cream);font-weight:500}
+/* atalho para quem prefere conversar (no celular aparece ANTES do formulário) */
+.contato-alt{margin-top:28px;padding-top:22px;border-top:1px solid rgba(214,183,128,.16)}
+.contato-or{display:block;font-size:.9rem;color:var(--muted);margin-bottom:12px}
+.contato-actions{display:flex;gap:12px;flex-wrap:wrap}
+.contato-actions .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 22px}
+.contato-actions svg{width:17px;height:17px;flex:none}
+.contato-fine{margin-top:18px;font-size:.82rem;color:var(--muted);letter-spacing:.04em}
 
 /* ----- Formulário de captação ----- */
-.lead-form{max-width:600px;margin:8px auto 26px;text-align:left}
-.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lead-form{margin:0;text-align:left}
+.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
 .field{display:flex;flex-direction:column;gap:7px}
 .field-full{grid-column:1 / -1}
-.lead-form label{font-size:.8rem;letter-spacing:.04em;color:var(--gold-light);font-weight:500}
+.lead-form label{font-size:.875rem;letter-spacing:.03em;color:var(--gold-light);font-weight:500}
 .lead-form label .opt{color:var(--muted);font-weight:400;letter-spacing:0}
 .lead-form input,.lead-form select,.lead-form textarea{
-  width:100%;padding:13px 15px;border-radius:12px;
+  width:100%;padding:12px 15px;border-radius:12px;
   background:rgba(255,255,255,.05);
   border:1px solid var(--glass-border);
   color:var(--cream);font-family:inherit;font-size:.96rem;line-height:1.4;
   transition:border-color .25s var(--ease),background .25s,box-shadow .25s;
 }
-.lead-form textarea{resize:vertical;min-height:108px}
+.lead-form textarea{resize:vertical;min-height:92px}
 .lead-form input::placeholder,.lead-form textarea::placeholder{color:rgba(244,241,234,.4)}
 .lead-form select{
   appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:42px;
@@ -495,15 +608,18 @@ button,input,select,textarea{font-family:inherit}
   max-height:0;opacity:0;overflow:hidden;transition:max-height .2s var(--ease),opacity .2s;
 }
 .field.invalid .field-error{max-height:3em;opacity:1;margin-top:1px}
-.lead-submit{margin-top:22px;width:100%}
+.lead-submit{margin-top:20px;width:100%}
 .lead-status{margin-top:14px;font-size:.9rem;text-align:center;min-height:1.2em}
 .lead-status.error{color:#ff9b8a}
 .lead-status.ok{color:var(--gold-light)}
+/* durante o envio o botão já mostra "Enviando…": aqui fica só para leitores de tela */
+.lead-status.is-sending{color:transparent} /* mantém o espaço (sem "pulo" no layout) */
 .lead-consent{margin-top:12px;font-size:.76rem;text-align:center;color:var(--muted)}
 .lead-consent a{color:var(--gold-light);text-decoration:underline;text-underline-offset:2px}
 .lead-consent a:hover{color:var(--gold)}
-.contato-actions--alt{align-items:center;margin-bottom:18px}
-.contato-or{flex-basis:100%;font-size:.85rem;color:var(--muted);margin-bottom:2px}
+@media (max-width:1100px){
+  .contato-card{padding:42px 40px;column-gap:40px}
+}
 
 /* ===== Footer ===== */
 .site-footer{background:var(--navy-deep);padding:56px 0 40px;position:relative;z-index:2}
@@ -538,7 +654,9 @@ button,input,select,textarea{font-family:inherit}
   color:#fff;padding:6px 10px;border-radius:5px;opacity:0;visibility:hidden;
   font-size:13px;white-space:nowrap;transition:all .3s ease;z-index:2;
 }
-.example-2 .icon-content:hover .tooltip{opacity:1;visibility:visible;top:-38px}
+.example-2 .icon-content:hover .tooltip,
+.example-2 .icon-content a:focus-visible ~ .tooltip{opacity:1;visibility:visible;top:-38px}
+.example-2 .icon-content a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
 .example-2 .icon-content a{
   position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;
   width:46px;height:46px;border-radius:50%;color:var(--gold-light);
@@ -607,8 +725,12 @@ button,input,select,textarea{font-family:inherit}
 .section--light .quote-mark{color:var(--gold);opacity:.55}
 .section--light .quote-author{color:var(--gold-text)}
 .section--light .problema-text p{color:var(--ink-muted)}
-.section--light .check-list li{color:var(--ink)}
-.section--light .check-list li::before{color:#fff;box-shadow:0 0 0 4px rgba(184,146,83,.16)}
+.section--light .label-rule{color:var(--gold-text)}
+.section--light .label-rule::after{background:rgba(122,92,42,.22)}
+.section--light .alert-list li{color:var(--ink)}
+.section--light .alert-list li::before{background:var(--gold-text)}
+.section--light .problema-cta a{color:var(--gold-text);text-decoration-color:rgba(122,92,42,.4)}
+.section--light .problema-cta a:focus-visible{outline-color:var(--gold-text)}
 /* Como Atuamos — medalhões e trilha sobre o creme */
 .section--light .step h3{color:var(--ink)}
 .section--light .step p{color:var(--ink-muted)}
@@ -627,7 +749,8 @@ button,input,select,textarea{font-family:inherit}
 .section--light .post-excerpt,
 .section--light .post-meta{color:var(--ink-muted)}
 .section--light .btn-ghost{border-color:rgba(14,26,28,.22);color:var(--ink);backdrop-filter:none}
-.section--light .btn-ghost:hover{border-color:var(--gold);color:var(--gold-text)}
+@media (hover:hover){ .section--light .btn-ghost:hover{border-color:var(--gold);color:var(--gold-text)} }
+.section--light .btn:focus-visible{outline-color:var(--gold-text)} /* anel com contraste sobre o creme */
 
 /* ===== Reveal animations ===== */
 /* estado inicial oculto — a animação de entrada é dirigida pela Anime.js */
@@ -640,22 +763,58 @@ button,input,select,textarea{font-family:inherit}
 }
 
 /* ===== Responsivo ===== */
+@keyframes navItemIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+/* "reduzir movimento": cabeçalho e menu mudam de estado sem animar */
+@media (prefers-reduced-motion:reduce){
+  .site-header,.bars,.nav-links,.nav-overlay,.nav-links a,.nav-links a::after{transition:none!important}
+  .nav-links.open > a{animation:none!important}
+}
+
+/* ===== Menu mobile/tablet (abaixo de 1100px os 7 itens não cabem numa linha) ===== */
+@media (max-width:1100px){
+  .toggle{display:flex;z-index:950}
+  .nav-links{
+    position:fixed;top:0;right:0;left:auto;bottom:auto;z-index:940;
+    width:min(80vw,320px);height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain;
+    flex-direction:column;align-items:flex-start;gap:26px;padding:100px 32px 40px;
+    background:var(--navy-deep);   /* sólido: o desfoque não funciona dentro do header desfocado */
+    border-left:1px solid var(--glass-border);box-shadow:-24px 0 60px -20px rgba(0,0,0,.6);
+    transform:translateX(100%);visibility:hidden;
+    transition:transform .4s var(--ease),visibility 0s linear .4s;   /* fechado: fora do Tab */
+  }
+  .nav-links.open{transform:none;visibility:visible;transition:transform .4s var(--ease),visibility 0s}
+  /* links entram em cascata enquanto o painel desliza (mesma linguagem da entrada do hero) */
+  .nav-links.open > a{animation:navItemIn .5s var(--ease) both}
+  .nav-links.open > a:nth-child(1){animation-delay:.10s}
+  .nav-links.open > a:nth-child(2){animation-delay:.14s}
+  .nav-links.open > a:nth-child(3){animation-delay:.18s}
+  .nav-links.open > a:nth-child(4){animation-delay:.22s}
+  .nav-links.open > a:nth-child(5){animation-delay:.26s}
+  .nav-links.open > a:nth-child(6){animation-delay:.30s}
+  .nav-links.open > a:nth-child(7){animation-delay:.34s}
+  .nav-links a{font-size:1.05rem}
+  .nav-cta{margin-top:6px}
+  /* fundo escurecido: tocar fecha o menu. Tamanho em vw/dvh porque o header (com desfoque)
+     vira referência dos elementos fixos dentro dele */
+  .nav-overlay{
+    display:block;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;
+    background:rgba(0,10,12,.62);opacity:0;visibility:hidden;
+    transition:opacity .35s var(--ease),visibility 0s linear .35s;
+  }
+  .nav-overlay.open{opacity:1;visibility:visible;transition:opacity .35s var(--ease),visibility 0s}
+  body.menu-open{overflow:hidden}   /* página atrás não rola com o menu aberto */
+  body.menu-open .whatsapp-float{opacity:0;visibility:hidden}   /* não compete com o menu */
+}
+
 @media (max-width:900px){
   .section{padding:72px 0}
-  .nav-links{
-    position:fixed;top:0;right:0;left:auto;bottom:auto;
-    width:min(78vw,320px);height:100vh;height:100dvh;overflow-y:auto;
-    flex-direction:column;
-    background:rgba(0,26,31,.96);backdrop-filter:blur(20px);padding:100px 32px;
-    gap:26px;transform:translateX(100%);transition:transform .4s var(--ease);align-items:flex-start;
-  }
-  .nav-links.open{transform:none}
-  .toggle{display:flex;z-index:950}
   .problema-grid,.sobre-grid{grid-template-columns:1fr;gap:40px}
   .steps{grid-template-columns:repeat(2,1fr)}
   .steps-line{display:none}   /* grade 2x2 não comporta uma trilha única */
   .valores{margin-top:56px}
   .valores-grid{grid-template-columns:repeat(2,1fr)}
+  .valor{padding:28px 24px}
+  .valor h3{font-size:1.16rem}   /* cartões largos: o título cabe no tamanho maior */
 
   /* Áreas de Atuação: 2 colunas no tablet */
   .atuacao{padding:72px 0}
@@ -666,10 +825,17 @@ button,input,select,textarea{font-family:inherit}
   .area-card .area-num{font-size:2.7rem}
   .area-card h3{margin:18px 0 8px;font-size:1.32rem}
   .area-card p{font-size:.92rem}
+  /* Contato: uma coluna, na ordem do HTML — título → atalho do WhatsApp → formulário → como funciona */
+  .contato-card{grid-template-columns:1fr;grid-template-areas:"head" "alt" "form" "how";grid-template-rows:auto;max-width:680px}
+  .contato-alt{margin-top:24px}
+  .lead-form{margin-top:32px}
+  .contato-how .label-rule{margin-top:36px}
   .footer-inner{grid-template-columns:1fr;text-align:center;gap:24px}
   .footer-brand,.footer-meta{justify-content:center;text-align:center}
   .footer-meta{align-items:center}
-  .sobre-shield{width:90px;right:0}
+  /* Nossa Essência: a foto aparece inteira, no formato horizontal original */
+  .photo-frame img{aspect-ratio:16/9;object-position:center}
+  .sobre-shield{width:76px;right:0;bottom:-24px}
 }
 @media (max-width:560px){
   /* Mobile: vira uma timeline — medalhão à esquerda, texto à direita,
@@ -686,7 +852,15 @@ button,input,select,textarea{font-family:inherit}
     content:'';position:absolute;left:29px;top:66px;bottom:-30px;width:1px;
     background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
   }
-  .valores-grid{grid-template-columns:1fr}
+  /* Valores: lista compacta (sem caixas) com fio dourado — mesmo estilo de "Sinais de alerta" */
+  .valores{text-align:left}
+  .valores .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:2px}
+  .valores .eyebrow::after{content:'';flex:1;height:1px;background:rgba(214,183,128,.28)}
+  .valores-grid{grid-template-columns:1fr;gap:0}
+  .valor{display:block;grid-row:auto;padding:18px 0;border:0;border-radius:0;background:none}
+  .valor + .valor{border-top:1px solid rgba(214,183,128,.14)}
+  .valor h3{margin-bottom:6px}
+  .sobre-shield{width:60px;bottom:-18px}
   .section,.atuacao{padding:64px 0}
   /* Áreas: carrossel horizontal com swipe (o próximo card "espia" à direita) */
   .areas-fallback{
@@ -701,7 +875,7 @@ button,input,select,textarea{font-family:inherit}
   .areas-fallback .reveal{opacity:1!important;transform:none!important}
   .areas-hint{display:block}
   .footer-nav{display:flex;flex-wrap:wrap;gap:12px 20px}
-  .contato-card{padding:44px 26px}
+  .contato-card{padding:40px 22px}
   .lead-grid{grid-template-columns:1fr}
   .hero-content{padding-top:130px}
   .hero .eyebrow{letter-spacing:.24em}
@@ -721,10 +895,15 @@ button,input,select,textarea{font-family:inherit}
 .whatsapp-float svg{width:32px;height:32px;position:relative;z-index:1}
 .whatsapp-float::before{
   content:'';position:absolute;inset:0;border-radius:50%;background:#25D366;z-index:0;
-  animation:waPulse 2.4s ease-out infinite;
+  /* pulsa 3 vezes depois que o hero assenta, e então fica quieto (não compete com a leitura) */
+  animation:waPulse 2.4s ease-out 1.6s 3 both;
 }
 @keyframes waPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(1.7);opacity:0}100%{opacity:0}}
-.whatsapp-float:hover{transform:scale(1.08);box-shadow:0 16px 38px -6px rgba(37,211,102,.75),0 4px 14px rgba(0,0,0,.4)}
+@media (hover:hover){
+  .whatsapp-float:hover{transform:scale(1.08);box-shadow:0 16px 38px -6px rgba(37,211,102,.75),0 4px 14px rgba(0,0,0,.4)}
+}
+.whatsapp-float:active{transform:scale(.94);transition-duration:.08s}
+.whatsapp-float:focus-visible{outline:2px solid var(--gold-light);outline-offset:4px}
 .wa-tip{
   position:absolute;right:70px;white-space:nowrap;
   background:rgba(0,26,31,.94);color:var(--cream);font-size:.82rem;letter-spacing:.02em;

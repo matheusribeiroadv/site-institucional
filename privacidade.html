@@ -27,19 +27,20 @@
         <img src="assets/shield.png" alt="Matheus Ribeiro Advogados" class="brand-mark" />
         <span class="brand-name">Matheus Ribeiro<small>ADVOGADOS</small></span>
       </a>
-      <nav class="nav-links" id="navLinks">
+      <!-- fundo escurecido atrás do menu mobile (tocar fecha o menu) -->
+      <div class="nav-overlay" id="navOverlay"></div>
+      <nav class="nav-links" id="navLinks" aria-label="Menu principal">
         <a href="index.html#problema">O Cenário</a>
         <a href="index.html#atuacao">Atuação</a>
         <a href="index.html#sobre">O Escritório</a>
         <a href="blog/index.html">Blog</a>
         <a href="index.html#contato" class="nav-cta">Fale Conosco</a>
       </nav>
-      <input type="checkbox" id="checkbox" aria-hidden="true" tabindex="-1" />
-      <label class="toggle" for="checkbox" aria-label="Abrir menu">
-        <span class="bars" id="bar1"></span>
-        <span class="bars" id="bar2"></span>
-        <span class="bars" id="bar3"></span>
-      </label>
+      <button class="toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+        <span class="bars"></span>
+        <span class="bars"></span>
+        <span class="bars"></span>
+      </button>
     </div>
   </header>
 
@@ -52,7 +53,7 @@
           </nav>
           <h1 class="article-title">Política de Privacidade</h1>
           <div class="article-meta">
-            <time datetime="2026-07-16">Última atualização: 16 de julho de 2026</time>
+            <time datetime="2026-10-14">Última atualização: 14 de outubro de 2026</time>
           </div>
         </header>
       </div>
@@ -64,7 +65,8 @@
           <h2>1. Quem é o responsável pelos seus dados</h2>
           <p>O controlador dos dados pessoais coletados neste site é:</p>
           <ul>
-            <li><strong>Matheus Ribeiro Advogados</strong></li>
+            <li><strong>Matheus Ribeiro Sociedade Individual de Advocacia</strong> (Matheus Ribeiro Advogados)</li>
+            <li>CNPJ 52.781.702/0001-53 · Registro OAB/GO nº 6.080</li>
             <li>Ed. Eldorado Business Tower — Av. C-255, 400, Sala 1317, Nova Suíça, Goiânia — GO, 74280-010</li>
             <li>E-mail: <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a></li>
           </ul>
@@ -87,15 +89,17 @@
           <p>Seus dados <strong>não são vendidos</strong> nem utilizados para finalidades diversas das aqui informadas.</p>
 
           <h2>4. Bases legais</h2>
-          <p>O tratamento dos seus dados se fundamenta nas hipóteses previstas na LGPD, em especial: o <strong>consentimento</strong> fornecido ao enviar o formulário; os <strong>procedimentos preliminares relacionados a um contrato</strong> de prestação de serviços advocatícios a seu pedido; e o <strong>legítimo interesse</strong> em responder e atender o interessado.</p>
+          <p>O tratamento dos seus dados se fundamenta nas hipóteses do art. 7º da LGPD, em especial: os <strong>procedimentos preliminares relacionados a um contrato</strong> de prestação de serviços advocatícios, a seu pedido (inciso V); o <strong>cumprimento de obrigações legais e regulatórias</strong> (inciso II); o <strong>legítimo interesse</strong> em responder e atender o interessado (inciso IX); e, quando aplicável, o seu <strong>consentimento</strong> (inciso I).</p>
 
           <h2>5. Compartilhamento com terceiros</h2>
           <p>Para que o site funcione, utilizamos prestadores de serviço que podem processar dados em nosso nome, sempre limitados à finalidade contratada:</p>
           <ul>
-            <li><strong>Serviço de envio de formulário</strong> (processa o conteúdo do formulário para entregá-lo ao nosso e-mail);</li>
-            <li><strong>Serviço de hospedagem do site</strong> (mantém o site no ar e pode registrar dados técnicos de acesso);</li>
-            <li><strong>Provedor de fontes tipográficas</strong> (carregamento de fontes para exibição das páginas).</li>
+            <li><strong>Envio do formulário — Web3Forms</strong> (processa o conteúdo do formulário para entregá-lo ao nosso e-mail);</li>
+            <li><strong>Hospedagem do site — Netlify</strong> (mantém o site no ar e pode registrar dados técnicos de acesso);</li>
+            <li><strong>Fontes tipográficas — Google Fonts</strong> (entrega as fontes das páginas; para isso, recebe dados técnicos como o endereço IP do seu navegador).</li>
           </ul>
+          <p>Se você optar por falar conosco pelo <strong>WhatsApp</strong>, a conversa também estará sujeita aos termos e à política de privacidade do próprio aplicativo.</p>
+          <p><strong>Transferência internacional:</strong> alguns desses prestadores armazenam ou processam dados em servidores fora do Brasil (por exemplo, nos Estados Unidos). Essa transferência ocorre nas hipóteses permitidas pelo art. 33 da LGPD e se limita ao necessário para atender à sua solicitação.</p>
           <p>Também poderemos compartilhar dados quando exigido por lei, ordem judicial ou autoridade competente.</p>
 
           <h2>6. Cookies e tecnologias</h2>
@@ -104,16 +108,19 @@
           <h2>7. Por quanto tempo guardamos</h2>
           <p>Mantemos os dados apenas pelo tempo necessário às finalidades acima ou para o cumprimento de obrigações legais. Após esse período, os dados são eliminados ou anonimizados, salvo quando sua guarda for exigida por lei.</p>
 
-          <h2>8. Os seus direitos</h2>
+          <h2>8. Os seus direitos e como exercê-los</h2>
           <p>Nos termos do artigo 18 da LGPD, você pode, a qualquer momento, solicitar:</p>
           <ul>
             <li>Confirmação da existência de tratamento e <strong>acesso</strong> aos seus dados;</li>
             <li><strong>Correção</strong> de dados incompletos, inexatos ou desatualizados;</li>
             <li><strong>Anonimização, bloqueio ou eliminação</strong> de dados desnecessários ou tratados em desconformidade com a lei;</li>
             <li><strong>Portabilidade</strong> e informação sobre o compartilhamento;</li>
+            <li><strong>Oposição</strong> a tratamento realizado em desconformidade com a LGPD;</li>
+            <li>Informação sobre a <strong>possibilidade de não fornecer consentimento</strong> e sobre as consequências da negativa;</li>
             <li><strong>Revogação do consentimento</strong> e eliminação dos dados tratados com base nele.</li>
           </ul>
-          <p>Para exercer qualquer um desses direitos, basta escrever para <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a>.</p>
+          <p><strong>Canal de atendimento ao titular:</strong> o e-mail <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a> é o canal para exercer esses direitos e tratar de qualquer assunto sobre os seus dados pessoais. Responderemos nos prazos previstos na LGPD.</p>
+          <p>Você também pode apresentar reclamação à <strong>Autoridade Nacional de Proteção de Dados (ANPD)</strong>.</p>
 
           <h2>9. Segurança</h2>
           <p>Adotamos medidas técnicas e administrativas razoáveis para proteger os dados pessoais contra acessos não autorizados e situações de destruição, perda ou alteração. O site é servido por conexão segura (HTTPS).</p>
@@ -154,6 +161,7 @@
         <span>Ed. Eldorado Business Tower — Av. C-255, 400, Sala 1317<br />Nova Suíça, Goiânia — GO, 74280-010</span>
         <span>Atendimento: 08:30 — 19:30 · <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a></span>
         <span><a href="/avaliar" target="_blank" rel="noopener" data-umami-event="avaliar-google">★ Já é nosso cliente? Avalie nosso atendimento no Google</a></span>
+        <span>Matheus Ribeiro Sociedade Individual de Advocacia<br />Registro OAB/GO 6.080 · CNPJ 52.781.702/0001-53</span>
         <span>© <span id="year"></span> Matheus Ribeiro Advogados. Todos os direitos reservados.</span>
       </div>
     </div>

@@ -112,17 +112,50 @@ syncHeader();
   });
 })();
 
-// ===== Menu mobile (hambúrguer animado via checkbox) =====
-const checkbox = document.getElementById('checkbox');
+// ===== Menu mobile/tablet (botão hambúrguer ↔ X) =====
+const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
-function setMenuOpen(open) {
+const navOverlay = document.getElementById('navOverlay');
+function setMenuOpen(open, returnFocus) {
   navLinks.classList.toggle('open', open);
-  if (checkbox) checkbox.checked = open; // mantém o toggle (hambúrguer/seta) sincronizado
+  if (navOverlay) navOverlay.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);       // trava a rolagem da página atrás
+  if (menuToggle) {
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  }
+  if (open) {
+    const first = navLinks.querySelector('a');
+    if (first) first.focus({ preventScroll: true });       // teclado já entra no menu
+  } else if (returnFocus && menuToggle) {
+    menuToggle.focus();
+  }
 }
-if (checkbox) checkbox.addEventListener('change', () => setMenuOpen(checkbox.checked));
+if (menuToggle) menuToggle.addEventListener('click', () => setMenuOpen(!navLinks.classList.contains('open')));
+if (navOverlay) navOverlay.addEventListener('click', () => setMenuOpen(false));   // tocar fora fecha
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && navLinks.classList.contains('open')) setMenuOpen(false, true);
+});
 navLinks.querySelectorAll('a').forEach(a =>
   a.addEventListener('click', () => setMenuOpen(false))
 );
+// se a janela crescer para o layout de desktop com o menu aberto, fecha (evita página travada)
+window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!e.matches) setMenuOpen(false); });
+
+// ===== Destaca no menu a seção que está na tela =====
+(function () {
+  const map = new Map();
+  navLinks.querySelectorAll('a[href^="#"]:not(.nav-cta)').forEach(a => {
+    const s = document.querySelector(a.getAttribute('href'));
+    if (s) map.set(s, a);
+  });
+  if (!map.size || !('IntersectionObserver' in window)) return;
+  // "linha de leitura" fina no meio da tela: a seção que cruza essa linha fica ativa
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { const a = map.get(e.target); if (a) a.classList.toggle('is-active', e.isIntersecting); });
+  }, { rootMargin: '-45% 0px -54% 0px' });
+  map.forEach((a, s) => io.observe(s));
+})();
 
 // ===== Formulário de captação → e-mail (Web3Forms) =====
 (function () {
@@ -252,9 +285,12 @@ navLinks.querySelectorAll('a').forEach(a =>
     };
 
     // envia o e-mail direto para a caixa do escritório (sem abrir Gmail/Outlook)
+    // o próprio botão mostra "Enviando…" com indicador girando; o aviso de status
+    // continua anunciando o envio para leitores de tela (visualmente oculto)
     status.textContent = 'Enviando…';
-    status.className = 'lead-status';
-    if (btn) btn.disabled = true;
+    status.className = 'lead-status is-sending';
+    const btnLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.classList.add('is-loading'); btn.textContent = 'Enviando…'; }
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -287,7 +323,7 @@ navLinks.querySelectorAll('a').forEach(a =>
       status.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
       status.className = 'lead-status error';
     } finally {
-      if (btn) btn.disabled = false;
+      if (btn) { btn.disabled = false; btn.classList.remove('is-loading'); btn.textContent = btnLabel; }
     }
   });
 })();
@@ -344,31 +380,76 @@ navLinks.querySelectorAll('a').forEach(a =>
   // Desktop: acordeão expansível. Mobile (≤600px): slider de 1 card por vez —
   // o CSS por breakpoint cuida da aparência; aqui só alternamos o data-active.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nav = document.querySelector('.team-nav');
+  const prevBtn = document.querySelector('.tc-prev');
+  const nextBtn = document.querySelector('.tc-next');
+  const pauseBtn = document.querySelector('.tc-pause');
+  const countEl = document.querySelector('.tc-count');
+  const liveEl = document.getElementById('tcLive');
+
+  // nome na vertical nos cards fechados (decorativo; o nome real está no h3)
+  items.forEach(el => {
+    const name = el.querySelector('.tc-name');
+    if (!name) return;
+    const v = document.createElement('span');
+    v.className = 'tc-vname';
+    v.setAttribute('aria-hidden', 'true');
+    v.textContent = name.textContent;
+    el.appendChild(v);
+  });
 
   let active = Math.max(0, items.findIndex(el => el.hasAttribute('data-active')));
   let timer = null;
 
-  function setActive(i) {
+  function setActive(i, announce) {
     active = (i % items.length + items.length) % items.length;
     items.forEach((el, idx) => el.toggleAttribute('data-active', idx === active));
+    if (countEl) countEl.textContent = (active + 1) + ' / ' + items.length;
+    if (announce && liveEl) {   // só quando a PESSOA troca (a troca automática não "fala")
+      const el = items[active];
+      const nome = el.querySelector('.tc-name'), cargo = el.querySelector('.tc-title');
+      liveEl.textContent = (nome ? nome.textContent : '') + (cargo ? ', ' + cargo.textContent : '') +
+        ' — ' + (active + 1) + ' de ' + items.length;
+    }
   }
-  const next = () => setActive(active + 1);
-  const prev = () => setActive(active - 1);
-  const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
-  const start = () => { if (reduce) return; stop(); timer = setInterval(next, 3500); };
-  const restart = () => { stop(); start(); };
+  const next = announce => setActive(active + 1, announce);
+  const prev = announce => setActive(active - 1, announce);
+
+  // Troca automática "educada":
+  // - liga só se a pessoa não pediu "reduzir movimento";
+  // - pausa enquanto o mouse está em cima, o foco do teclado está na seção ou ela está fora da tela;
+  // - DESLIGA de vez quando a pessoa interage (setas, clique, toque) — e o botão permite retomar.
+  let auto = !reduce, visible = false, hovering = false, focusInside = false;
+  function sync() {
+    const run = auto && visible && !hovering && !focusInside;
+    if (run && !timer) timer = setInterval(() => next(false), 4500);
+    if (!run && timer) { clearInterval(timer); timer = null; }
+    if (pauseBtn) {
+      pauseBtn.classList.toggle('is-paused', !auto);
+      pauseBtn.setAttribute('aria-pressed', String(!auto));
+      pauseBtn.setAttribute('aria-label', auto ? 'Pausar troca automática' : 'Retomar troca automática');
+    }
+  }
+  const userInteracted = () => { auto = false; sync(); };
 
   items.forEach((el, idx) => {
-    el.addEventListener('click', () => { setActive(idx); restart(); });
-    el.addEventListener('focus', () => { setActive(idx); restart(); });
+    el.addEventListener('click', () => { setActive(idx, true); userInteracted(); });
+    el.addEventListener('focus', () => setActive(idx));   // o leitor já lê o card focado; foco pausa via focusInside
   });
-  carousel.addEventListener('mouseenter', stop);
-  carousel.addEventListener('mouseleave', start);
+  carousel.addEventListener('mouseenter', () => { hovering = true; sync(); });
+  carousel.addEventListener('mouseleave', () => { hovering = false; sync(); });
 
-  const prevBtn = document.querySelector('.tc-prev');
-  const nextBtn = document.querySelector('.tc-next');
-  if (prevBtn) prevBtn.addEventListener('click', () => { prev(); restart(); });
-  if (nextBtn) nextBtn.addEventListener('click', () => { next(); restart(); });
+  // foco do teclado dentro do carrossel ou dos botões: pausa enquanto estiver lá
+  const inside = n => n && (carousel.contains(n) || (nav && nav.contains(n)));
+  [carousel, nav].forEach(box => {
+    if (!box) return;
+    box.addEventListener('focusin', () => { focusInside = true; sync(); });
+    box.addEventListener('focusout', e => { if (!inside(e.relatedTarget)) { focusInside = false; sync(); } });
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', () => { prev(true); userInteracted(); });
+  if (nextBtn) nextBtn.addEventListener('click', () => { next(true); userInteracted(); });
+  if (pauseBtn) pauseBtn.addEventListener('click', () => { auto = !auto; sync(); });
 
   // gesto de arrastar (swipe) — troca o card no toque, mais natural no mobile
   let touchX = null;
@@ -376,17 +457,18 @@ navLinks.querySelectorAll('a').forEach(a =>
   carousel.addEventListener('touchend', e => {
     if (touchX === null) return;
     const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); restart(); }
+    if (Math.abs(dx) > 40) { dx < 0 ? next(true) : prev(true); userInteracted(); }
     touchX = null;
   }, { passive: true });
 
-  // só roda o auto-avanço quando o carrossel está visível
+  // só roda a troca automática quando o carrossel está visível
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { e.isIntersecting ? start() : stop(); });
+    entries.forEach(e => { visible = e.isIntersecting; sync(); });
   }, { threshold: 0.2 });
   io.observe(carousel);
 
   setActive(active);
+  sync();
 })();
 
 // ===== "Como Atuamos" — trilha que se desenha conforme o scroll =====
