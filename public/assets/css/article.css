@@ -1,6 +1,7 @@
 /* ===================================================================
-   Blog — estilos próprios (depende de styles.css carregado antes,
-   reaproveita tokens :root, header, footer, botões e tipografia)
+   Páginas de leitura — blog, artigos e Política de Privacidade; também os
+   cartões do blog na home. Depende de main.css carregado antes
+   (reaproveita tokens :root, header, footer, botões e tipografia)
    =================================================================== */
 
 /* fundo sóbrio para as páginas internas do blog */

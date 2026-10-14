@@ -1,12 +1,23 @@
-# Configuração da Netlify — site estático (pasta publicada = raiz deste deploy)
+# Configuração da Netlify — site estático, sem etapa de build.
+# Só a pasta public/ vai para o ar; o resto do repositório (README, ferramentas,
+# package.json) fica fora do site.
 [build]
-  publish = "."
+  publish = "public"
 
-# Cache longo para assets versionáveis (imagens, libs) — melhora velocidade/SEO
+# Cache das imagens e da biblioteca de animação: 30 dias.
+# Os nomes dos arquivos NÃO têm versão — ao trocar uma imagem, use um NOME NOVO
+# (ex.: og-image-2027.jpg), senão quem já visitou pode ver a antiga por até 30 dias.
+# CSS, JS e HTML ficam no padrão da Netlify (o navegador confere a cada visita),
+# então mudanças de layout aparecem logo após o deploy.
 [[headers]]
-  for = "/assets/*"
+  for = "/assets/img/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/assets/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
 
 # Cabeçalhos de segurança básicos para todo o site
 [[headers]]

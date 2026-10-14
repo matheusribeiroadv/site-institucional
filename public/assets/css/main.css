@@ -99,7 +99,7 @@ button,input,select,textarea{font-family:inherit}
 .nav-links a:not(.nav-cta):hover,
 .nav-links a.is-active{color:#fff}
 .nav-links a:not(.nav-cta):hover::after,
-.nav-links a.is-active::after{width:100%}   /* .is-active = seção visível na tela (script.js) */
+.nav-links a.is-active::after{width:100%}   /* .is-active = seção visível na tela (main.js) */
 .nav-links a:not(.nav-cta):focus-visible{outline:2px solid var(--gold-light);outline-offset:4px;border-radius:2px}
 .nav-cta{
   border:1px solid var(--gold);color:var(--gold-light);
@@ -213,7 +213,7 @@ button,input,select,textarea{font-family:inherit}
 }
 
 /* Indicador de rolagem: fio dourado vertical com uma gota de luz descendo.
-   Some sozinho quando o visitante começa a rolar (classe .is-hidden via script.js). */
+   Some sozinho quando o visitante começa a rolar (classe .is-hidden via main.js). */
 .scroll-hint{
   position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;
   display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--gold-light);
@@ -493,7 +493,7 @@ button,input,select,textarea{font-family:inherit}
 .tc-count{display:none;text-align:center;margin-top:12px;font-size:.78rem;letter-spacing:.14em;color:var(--muted)}
 
 /* nome na vertical nos cards fechados (desktop/tablet): dá para ver quem é quem sem passar o mouse.
-   Elemento criado pelo script.js com aria-hidden (o nome real continua no h3 do card) */
+   Elemento criado pelo main.js com aria-hidden (o nome real continua no h3 do card) */
 .team-carousel .tc-vname{
   position:absolute;left:50%;bottom:24px;z-index:2;pointer-events:none;
   writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);

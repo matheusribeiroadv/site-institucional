@@ -1,7 +1,7 @@
 // ===== Ano dinâmico no rodapé =====
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// A entrada do hero é feita em CSS (ver "Entrada do hero" no styles.css + script no <head>).
+// A entrada do hero é feita em CSS (ver "Entrada do hero" no main.css + script no <head>).
 
 // ===== Header glass + parallax da imagem do hero =====
 const header = document.getElementById('siteHeader');

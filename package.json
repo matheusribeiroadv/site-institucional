@@ -1,5 +1,11 @@
 {
-  "dependencies": {
+  "name": "site-matheus-ribeiro-advogados",
+  "private": true,
+  "description": "Site institucional da Matheus Ribeiro Advogados (estático, publicado pela Netlify a partir da pasta public/).",
+  "scripts": {
+    "preview": "node tools/preview.js"
+  },
+  "devDependencies": {
     "animejs": "^4.4.1"
   }
 }

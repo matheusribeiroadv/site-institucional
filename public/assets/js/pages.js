@@ -1,4 +1,5 @@
-/* Interações leves das páginas do blog (independente do script.js da home) */
+/* Interações leves das páginas internas — blog, artigos e Política de Privacidade
+   (menu, ano no rodapé…). Independente do main.js, que é só da home. */
 (function () {
   'use strict';
 

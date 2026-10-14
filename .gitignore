@@ -6,21 +6,14 @@ skills-lock.json
 package-lock.json
 
 # === Arquivos originais / fontes pesadas (mantidos só localmente) ===
+# fotos originais, logos em alta, imagens antigas que não estão no site
 imagens/
 
-# === Pasta de deploy manual (desnecessária com o deploy automático) ===
-deploy/
-
-# === Rascunhos (não vão para o site) ===
+# === Rascunhos de artigos (não vão para o site) ===
 drafts/
 
-# === Imagens não utilizadas pelo site (backup local, fora do repositório) ===
-assets/bg-agro.jpeg
-assets/hero-rural.jpg
-assets/logo-full.png
-assets/matheus.png
-assets/produtor.jpg
-assets/produtor.png
+# === Pasta de deploy manual antiga (desnecessária com o deploy automático) ===
+deploy/
 
 # === Sistema ===
 .DS_Store

@@ -8,7 +8,7 @@
   <link rel="canonical" href="https://matheusribeiroadv.com.br/" />
 
   <!-- Preload da imagem do hero (melhora o LCP / carregamento percebido) -->
-  <link rel="preload" as="image" href="assets/bg-producao-rural.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="/assets/img/site/bg-producao-rural.webp" fetchpriority="high" />
 
   <!-- Open Graph / compartilhamento (WhatsApp, LinkedIn, Facebook) -->
   <meta property="og:type" content="website" />
@@ -16,7 +16,7 @@
   <meta property="og:title" content="Matheus Ribeiro Advogados — Direito Bancário do Agronegócio" />
   <meta property="og:description" content="Defesa especializada do produtor rural diante dos bancos: revisão de contratos, combate a abusividades e reequilíbrio de dívidas." />
   <meta property="og:url" content="https://matheusribeiroadv.com.br/" />
-  <meta property="og:image" content="https://matheusribeiroadv.com.br/assets/og-image.jpg" />
+  <meta property="og:image" content="https://matheusribeiroadv.com.br/assets/img/marca/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Matheus Ribeiro Advogados — Direito Bancário do Agronegócio" />
@@ -27,13 +27,13 @@
   <meta name="facebook-domain-verification" content="8pahs7ont0zwxhgwuie72me29pblnh" />
 
   <link rel="icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="apple-touch-icon" href="/assets/favicon.png" />
+  <link rel="icon" type="image/png" href="/assets/img/marca/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/img/marca/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="blog.css" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/article.css" />
 
   <!-- Entrada do hero: espera as fontes (no máx. 1s) para animar sem trocar a tipografia
        no meio do movimento. Sem JS, o hero aparece pronto, sem animação. -->
@@ -59,8 +59,8 @@
     "taxID": "52.781.702/0001-53",
     "description": "Escritório especializado em Direito Bancário do Agronegócio: revisão de contratos rurais, defesa do produtor e reequilíbrio de dívidas com bancos.",
     "url": "https://matheusribeiroadv.com.br/",
-    "logo": "https://matheusribeiroadv.com.br/assets/shield.png",
-    "image": "https://matheusribeiroadv.com.br/assets/og-image.jpg",
+    "logo": "https://matheusribeiroadv.com.br/assets/img/marca/shield.png",
+    "image": "https://matheusribeiroadv.com.br/assets/img/marca/og-image.jpg",
     "telephone": "+55-62-8225-4519",
     "email": "contato@matheusribeiroadv.com.br",
     "areaServed": "BR",
@@ -162,7 +162,7 @@
   <header class="site-header" id="siteHeader">
     <div class="container header-inner">
       <a href="#hero" class="brand">
-        <img src="assets/shield.png" alt="Matheus Ribeiro Advogados" class="brand-mark" />
+        <img src="/assets/img/marca/shield.png" alt="Matheus Ribeiro Advogados" class="brand-mark" />
         <span class="brand-name">Matheus Ribeiro<small>ADVOGADOS</small></span>
       </a>
       <!-- fundo escurecido atrás do menu mobile (tocar fecha o menu) -->
@@ -173,7 +173,7 @@
         <a href="#processo">Como Atuamos</a>
         <a href="#sobre">O Escritório</a>
         <a href="#equipe">Quem Somos</a>
-        <a href="blog/index.html">Blog</a>
+        <a href="/blog/">Blog</a>
         <a href="#contato" class="nav-cta">Fale Conosco</a>
       </nav>
       <button class="toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
@@ -186,7 +186,7 @@
 
   <!-- Hero -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="heroBg" style="background-image:url('assets/bg-producao-rural.webp')"></div>
+    <div class="hero-bg" id="heroBg" style="background-image:url('/assets/img/site/bg-producao-rural.webp')"></div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
       <span class="eyebrow hero-in">Seja Bem-vindo ao Escritório</span>
@@ -379,9 +379,9 @@
     <div class="container sobre-grid">
       <div class="sobre-photo reveal">
         <div class="photo-frame glass">
-          <img src="assets/essencia-escritorio.webp" alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
+          <img src="/assets/img/site/essencia-escritorio.webp" alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
         </div>
-        <img src="assets/shield.png" alt="" class="sobre-shield" aria-hidden="true" />
+        <img src="/assets/img/marca/shield.png" alt="" class="sobre-shield" aria-hidden="true" />
       </div>
       <div class="sobre-text reveal" data-delay="2">
         <span class="eyebrow">Nossa essência</span>
@@ -439,7 +439,7 @@
       <!-- Carrossel expansível (adaptado de Simey / CodePen) -->
       <ul class="team-carousel" id="teamCarousel" aria-label="Equipe do escritório">
         <li class="tc-item" tabindex="0" data-active>
-          <div class="tc-photo"><img src="assets/team-matheus.webp" alt="Matheus Vieira Ribeiro" loading="lazy" style="object-position:center 24%" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/matheus.webp" alt="Matheus Vieira Ribeiro" loading="lazy" style="object-position:center 24%" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Matheus Vieira Ribeiro</h3>
             <p class="tc-title">Advogado · CEO</p>
@@ -448,7 +448,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-mike.webp" alt="Nayon Mike" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/mike.webp" alt="Nayon Mike" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Nayon Mike</h3>
             <p class="tc-title">Advogado</p>
@@ -457,7 +457,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-vitor.webp" alt="Vitor Hugo" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/vitor.webp" alt="Vitor Hugo" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Vitor Hugo</h3>
             <p class="tc-title">Advogado</p>
@@ -466,7 +466,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-guilherme.webp" alt="Guilherme Augusto" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/guilherme.webp" alt="Guilherme Augusto" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Guilherme Augusto</h3>
             <p class="tc-title">Advogado</p>
@@ -476,9 +476,9 @@
         </li>
         <!-- ===== CARD OCULTO TEMPORARIAMENTE: Igor Takel =====
              Para ele voltar ao site, apague ESTA linha e a linha "FIM DO CARD OCULTO" abaixo.
-             (A foto assets/team-igor.webp continua no projeto.)
+             (A foto /assets/img/equipe/igor.webp continua no projeto.)
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-igor.webp" alt="Igor Takel" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/igor.webp" alt="Igor Takel" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Igor Takel</h3>
             <p class="tc-title">Advogado</p>
@@ -488,7 +488,7 @@
         </li>
         ===== FIM DO CARD OCULTO (Igor Takel) ===== -->
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-mayson.webp" alt="Mayson Cardoso" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/mayson.webp" alt="Mayson Cardoso" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Mayson Cardoso</h3>
             <p class="tc-title">Advogado</p>
@@ -497,7 +497,7 @@
           </div>
         </li>
         <li class="tc-item" tabindex="0">
-          <div class="tc-photo"><img src="assets/team-ian.webp" alt="Ian dos Reis" loading="lazy" /></div>
+          <div class="tc-photo"><img src="/assets/img/equipe/ian.webp" alt="Ian dos Reis" loading="lazy" /></div>
           <div class="tc-contents">
             <h3 class="tc-name">Ian dos Reis</h3>
             <p class="tc-title">Assistente Jurídico</p>
@@ -532,9 +532,9 @@
       <!-- Card em destaque (artigo mais recente). Ao ter +artigos, troco por 3 cards. -->
       <div class="blog-teaser-grid reveal">
         <article class="post-card post-card--featured">
-          <a href="blog/revisao-contrato-bancario-rural.html">
+          <a href="/blog/revisao-contrato-bancario-rural.html">
             <div class="post-thumb-wrap">
-              <img class="post-thumb" src="assets/blog-revisao-contrato.webp" alt="Mãos de produtor rural segurando um relatório financeiro com gráficos" loading="lazy" />
+              <img class="post-thumb" src="/assets/img/blog/revisao-contrato.webp" alt="Mãos de produtor rural segurando um relatório financeiro com gráficos" loading="lazy" />
             </div>
             <div class="post-body">
               <span class="post-tag">Revisão de Contratos</span>
@@ -549,7 +549,7 @@
       </div>
 
       <div class="blog-teaser-actions reveal">
-        <a href="blog/index.html" class="btn btn-ghost">Ver todos os artigos</a>
+        <a href="/blog/" class="btn btn-ghost">Ver todos os artigos</a>
       </div>
     </div>
   </section>
@@ -640,7 +640,7 @@
           </div>
           <button type="submit" class="btn btn-primary lead-submit">Solicitar análise</button>
           <p class="lead-status" id="leadStatus" role="status" aria-live="polite"></p>
-          <p class="lead-consent">Usamos seus dados apenas para responder ao seu contato. Saiba mais na <a href="privacidade.html">Política de Privacidade</a>.</p>
+          <p class="lead-consent">Usamos seus dados apenas para responder ao seu contato. Saiba mais na <a href="/privacidade.html">Política de Privacidade</a>.</p>
         </form>
 
         <div class="contato-how">
@@ -659,7 +659,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <img src="assets/shield.png" alt="" class="footer-mark" />
+        <img src="/assets/img/marca/shield.png" alt="" class="footer-mark" />
         <div>
           <strong>Matheus Ribeiro Advogados</strong>
           <span>Direito Bancário do Agronegócio</span>
@@ -671,9 +671,9 @@
         <a href="#processo">Como Atuamos</a>
         <a href="#sobre">O Escritório</a>
         <a href="#equipe">Quem Somos</a>
-        <a href="blog/index.html">Blog</a>
+        <a href="/blog/">Blog</a>
         <a href="#contato">Contato</a>
-        <a href="privacidade.html">Privacidade</a>
+        <a href="/privacidade.html">Privacidade</a>
       </nav>
       <div class="footer-meta">
         <span>Ed. Eldorado Business Tower — Av. C-255, 400, Sala 1317<br />Nova Suíça, Goiânia — GO, 74280-010</span>
@@ -719,7 +719,7 @@
     </svg>
   </a>
 
-  <script src="assets/vendor/anime.umd.min.js"></script>
-  <script src="script.js"></script>
+  <script src="/assets/vendor/anime.umd.min.js"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>
