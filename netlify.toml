@@ -19,6 +19,12 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000"
 
+# /favicon.ico é servido a partir de /assets/img/marca (ver _redirects): mesmo cache das imagens
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
 # Cabeçalhos de segurança básicos para todo o site
 [[headers]]
   for = "/*"

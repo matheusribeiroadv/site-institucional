@@ -7,8 +7,10 @@
   <meta name="description" content="Matheus Ribeiro Advogados — especialistas em Direito Bancário do Agronegócio. Revisão de contratos rurais, defesa do produtor e reequilíbrio de dívidas com bancos." />
   <link rel="canonical" href="https://matheusribeiroadv.com.br/" />
 
-  <!-- Preload da imagem do hero (melhora o LCP / carregamento percebido) -->
-  <link rel="preload" as="image" href="/assets/img/site/bg-producao-rural.webp" fetchpriority="high" />
+  <!-- Preload da imagem do hero (melhora o LCP): no celular, só a faixa central (110 KB em vez de 450 KB).
+       O mesmo ponto de corte (600px) está no CSS do .hero-bg. -->
+  <link rel="preload" as="image" href="/assets/img/site/bg-producao-rural-mobile.webp" media="(max-width: 600px)" fetchpriority="high" />
+  <link rel="preload" as="image" href="/assets/img/site/bg-producao-rural.webp" media="(min-width: 601px)" fetchpriority="high" />
 
   <!-- Open Graph / compartilhamento (WhatsApp, LinkedIn, Facebook) -->
   <meta property="og:type" content="website" />
@@ -26,9 +28,8 @@
   <!-- Verificação de domínio da Meta (Facebook/Instagram Business) -->
   <meta name="facebook-domain-verification" content="8pahs7ont0zwxhgwuie72me29pblnh" />
 
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" href="/assets/img/marca/favicon.png" />
-  <link rel="apple-touch-icon" href="/assets/img/marca/favicon.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/marca/favicon-96.png" />
+  <link rel="apple-touch-icon" href="/assets/img/marca/favicon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -66,10 +67,10 @@
     "areaServed": "BR",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Av. C-255, 400, Sala 1317, Ed. Eldorado Business Tower, Nova Suíça",
+      "streetAddress": "Alameda das Rosas, 1461, Setor Oeste",
       "addressLocality": "Goiânia",
       "addressRegion": "GO",
-      "postalCode": "74280-010",
+      "postalCode": "74125-010",
       "addressCountry": "BR"
     },
     "openingHoursSpecification": [{
@@ -96,6 +97,8 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="15bda1c5-726a-4f71-923d-2145b2f368bb"></script>
 </head>
 <body>
+  <!-- atalho de teclado/leitor de tela: aparece só ao receber foco -->
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <!-- Barra de progressão discreta -->
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -162,7 +165,7 @@
   <header class="site-header" id="siteHeader">
     <div class="container header-inner">
       <a href="#hero" class="brand">
-        <img src="/assets/img/marca/shield.png" alt="Matheus Ribeiro Advogados" class="brand-mark" />
+        <img src="/assets/img/marca/shield-320.webp" width="320" height="407" alt="Matheus Ribeiro Advogados" class="brand-mark" />
         <span class="brand-name">Matheus Ribeiro<small>ADVOGADOS</small></span>
       </a>
       <!-- fundo escurecido atrás do menu mobile (tocar fecha o menu) -->
@@ -184,9 +187,11 @@
     </div>
   </header>
 
+  <main id="conteudo" tabindex="-1">
   <!-- Hero -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="heroBg" style="background-image:url('/assets/img/site/bg-producao-rural.webp')"></div>
+    <!-- a imagem de fundo vem do CSS (.hero-bg): versão leve no celular -->
+    <div class="hero-bg" id="heroBg"></div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
       <span class="eyebrow hero-in">Seja Bem-vindo ao Escritório</span>
@@ -203,7 +208,7 @@
         <a href="#atuacao" class="btn btn-ghost">Conhecer a atuação</a>
       </div>
     </div>
-    <a href="#problema" class="scroll-hint hero-in" id="scrollHint" aria-label="Rolar para baixo">
+    <a href="#problema" class="scroll-hint hero-in" id="scrollHint" aria-label="Role para baixo">
       <span class="scroll-hint-label">Role</span>
       <span class="scroll-hint-line"></span>
     </a>
@@ -379,9 +384,13 @@
     <div class="container sobre-grid">
       <div class="sobre-photo reveal">
         <div class="photo-frame glass">
-          <img src="/assets/img/site/essencia-escritorio.webp" alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
+          <!-- sizes: no computador a foto é recortada (quadrado de uma imagem 16:9) e precisa de ~900px de largura -->
+          <img src="/assets/img/site/essencia-escritorio.webp"
+               srcset="/assets/img/site/essencia-escritorio-1100.webp 1100w, /assets/img/site/essencia-escritorio.webp 1600w"
+               sizes="(min-width: 901px) 900px, calc(100vw - 76px)"
+               alt="Sala de reunião do escritório Matheus Ribeiro Advogados" loading="lazy" />
         </div>
-        <img src="/assets/img/marca/shield.png" alt="" class="sobre-shield" aria-hidden="true" />
+        <img src="/assets/img/marca/shield-320.webp" width="320" height="407" alt="" class="sobre-shield" aria-hidden="true" />
       </div>
       <div class="sobre-text reveal" data-delay="2">
         <span class="eyebrow">Nossa essência</span>
@@ -538,7 +547,7 @@
             </div>
             <div class="post-body">
               <span class="post-tag">Revisão de Contratos</span>
-              <h2>Quando vale a pena revisar um contrato de crédito rural?</h2>
+              <h3>Quando vale a pena revisar um contrato de crédito rural?</h3>
               <p class="post-excerpt">Juros abusivos, capitalização indevida e tarifas embutidas: como identificar cobranças que podem ser questionadas no contrato com o banco.</p>
               <div class="post-meta">
                 <time datetime="2026-06-26">26 jun 2026</time><span>·</span>5 min de leitura
@@ -596,7 +605,7 @@
             </div>
             <div class="field">
               <label for="lfPhone">WhatsApp</label>
-              <input id="lfPhone" name="phone" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" required placeholder="(62) 90000-0000" />
+              <input id="lfPhone" name="phone" type="tel" inputmode="tel" maxlength="20" autocomplete="tel-national" required placeholder="(62) 90000-0000" />
             </div>
             <div class="field">
               <label for="lfCity">Cidade / Estado</label>
@@ -654,12 +663,13 @@
       </div>
     </div>
   </section>
+  </main>
 
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <img src="/assets/img/marca/shield.png" alt="" class="footer-mark" />
+        <img src="/assets/img/marca/shield-320.webp" width="320" height="407" alt="" class="footer-mark" />
         <div>
           <strong>Matheus Ribeiro Advogados</strong>
           <span>Direito Bancário do Agronegócio</span>
@@ -676,11 +686,10 @@
         <a href="/privacidade.html">Privacidade</a>
       </nav>
       <div class="footer-meta">
-        <span>Ed. Eldorado Business Tower — Av. C-255, 400, Sala 1317<br />Nova Suíça, Goiânia — GO, 74280-010</span>
-        <span>Atendimento: 08:30 — 19:30 · <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a></span>
+        <span>Alameda das Rosas, 1461&nbsp;— Setor Oeste<br />Goiânia — GO, 74125-010</span>
+        <span>Atendimento: 08:30&nbsp;—&nbsp;19:30&nbsp;· <a href="mailto:contato@matheusribeiroadv.com.br">contato@matheusribeiroadv.com.br</a></span>
         <span><a href="/avaliar" target="_blank" rel="noopener" data-umami-event="avaliar-google">★ Já é nosso cliente? Avalie nosso atendimento no Google</a></span>
         <span>Matheus Ribeiro Sociedade Individual de Advocacia<br />Registro OAB/GO 6.080 · CNPJ 52.781.702/0001-53</span>
-        <span>© <span id="year"></span> Matheus Ribeiro Advogados. Todos os direitos reservados.</span>
       </div>
     </div>
 
@@ -708,6 +717,7 @@
         <div class="tooltip">E-mail</div>
       </li>
     </ul>
+    <p class="footer-copy">© <span id="year"></span> Matheus Ribeiro Advogados. Todos os direitos reservados.</p>
   </footer>
 
   <!-- Botão flutuante do WhatsApp -->

@@ -26,6 +26,8 @@
       navLinks.classList.toggle('open', open);
       if (navOverlay) navOverlay.classList.toggle('open', open);
       document.body.classList.toggle('menu-open', open);   // trava a rolagem da página atrás
+      // com o menu aberto, o resto da página fica inerte: o Tab não "vaza" para trás do menu
+      document.querySelectorAll('body > :not(.site-header):not(script)').forEach(function (el) { el.inert = open; });
       menuToggle.setAttribute('aria-expanded', String(open));
       menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
       if (open) {

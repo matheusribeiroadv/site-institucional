@@ -85,6 +85,15 @@ Use sempre um **nome de arquivo novo** (ex.: `og-image-2027.jpg`) e atualize as 
 As imagens ficam guardadas no navegador dos visitantes por 30 dias. Com o mesmo nome,
 quem já visitou o site pode continuar vendo a antiga.
 
+Algumas imagens têm **versões por tamanho de tela** (para o site abrir rápido no celular).
+Ao trocar, gere todas:
+| Imagem | Arquivos | Onde é referenciada |
+|---|---|---|
+| Foto do topo | `site/bg-producao-rural.webp` (2400px) e `-mobile.webp` (faixa central 640×1350) | `main.css` (`.hero-bg`) e os 2 `preload` no `<head>` do `index.html` |
+| Foto de Nossa Essência | `site/essencia-escritorio.webp` (1600px) e `-1100.webp` | `srcset` no `index.html` |
+| Escudo | `marca/shield-320.webp` nas páginas; `marca/shield.png` (grande) só nos dados estruturados | tags `<img>` e JSON-LD |
+| Ícones | `marca/favicon-96.png` (navegador/Google) e `favicon-180.png` (iPhone) | `<head>` de cada página e `_redirects` |
+
 ### Equipe
 - Fotos em `public/assets/img/equipe/<nome>.webp`, com cartões em `public/index.html` (seção "Quem Somos").
 - **Ocultar alguém temporariamente:** envolva o `<li>` da pessoa em um comentário HTML, com
@@ -99,6 +108,7 @@ quem já visitou o site pode continuar vendo a antiga.
 | Chave do formulário (Web3Forms) | `public/assets/js/main.js` (`apiKey`, em base64) |
 | Analytics (Umami) | `<script … data-website-id>` no `<head>` de cada página |
 | Razão social, CNPJ, registro na OAB | rodapé de cada página, `privacidade.html` e JSON-LD do `index.html` |
+| Endereço do escritório | rodapé das 4 páginas, `privacidade.html` (seção 1) e JSON-LD (`address`) em `index.html` e `blog/index.html`. Ao mudar, atualize também a data da Política de Privacidade e o Perfil da Empresa no Google, com o endereço escrito igual |
 
 ---
 

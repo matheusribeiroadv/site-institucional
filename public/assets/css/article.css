@@ -25,10 +25,10 @@ body.blog-page{ background:var(--navy-deep); }
   color:rgba(244,241,234,.78); font-size:1.05rem;
 }
 .breadcrumb{
-  font-size:.82rem; letter-spacing:.04em; color:var(--muted);
-  margin-bottom:20px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  font-size:.875rem; letter-spacing:.04em; color:var(--muted);
+  margin-bottom:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
 }
-.breadcrumb a{ color:var(--gold-light); }
+.breadcrumb a{ color:var(--gold-light); padding:10px 0; }   /* área de toque */
 .breadcrumb a:hover{ color:var(--gold); }
 .breadcrumb span{ opacity:.5; }
 
@@ -50,6 +50,10 @@ body.blog-page{ background:var(--navy-deep); }
   box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 30px 60px -24px rgba(0,20,24,.7);
 }
 .post-card a{ display:flex; flex-direction:column; height:100%; }
+/* foco pelo teclado: o anel vai no card inteiro (o overflow:hidden cortava o contorno do link) */
+.post-card a:focus-visible{ outline:none; }
+.post-card:has(a:focus-visible){ outline:2px solid var(--gold-light); outline-offset:4px; }
+.section--light .post-card:has(a:focus-visible){ outline-color:var(--gold-text); }
 .post-thumb{
   aspect-ratio:16/10; width:100%; object-fit:cover;
   background:var(--navy-soft);
@@ -58,20 +62,22 @@ body.blog-page{ background:var(--navy-deep); }
 .post-card:hover .post-thumb{ transform:scale(1.05); }
 .post-thumb-wrap{ overflow:hidden; }
 .post-body{ padding:24px 24px 26px; display:flex; flex-direction:column; gap:12px; flex:1; }
+/* degradê só até o dourado médio: o texto escuro mantém contraste em toda a etiqueta */
 .post-tag{
-  align-self:flex-start; font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  align-self:flex-start; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
   color:var(--navy-deep); font-weight:600;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
   padding:5px 12px; border-radius:30px;
 }
-.post-card h2{
+/* título do card: h2 na página do blog, h3 na home (dentro da seção "Do nosso Blog") */
+.post-card :is(h2,h3){
   font-size:1.45rem; line-height:1.18; color:var(--cream);
   transition:color .25s;
 }
-.post-card:hover h2{ color:var(--gold-light); }
+.post-card:hover :is(h2,h3){ color:var(--gold-light); }
 .post-excerpt{ color:rgba(244,241,234,.66); font-size:.94rem; flex:1; }
 .post-meta{
-  font-size:.78rem; letter-spacing:.03em; color:var(--muted);
+  font-size:.875rem; letter-spacing:.03em; color:var(--muted);
   display:flex; gap:8px; align-items:center; margin-top:4px;
 }
 .post-meta span{ opacity:.5; }
@@ -82,7 +88,8 @@ body.blog-page{ background:var(--navy-deep); }
 }
 
 /* ---------- Artigo ---------- */
-.article-wrap{ max-width:760px; margin:0 auto; padding:0 24px; }
+/* 660px: linhas de ~79 caracteres no texto corrido (antes ~92; o confortável é 60–80) */
+.article-wrap{ max-width:660px; margin:0 auto; padding:0 24px; }
 .article-head{ padding:48px 0 8px; }
 .article-head .post-tag{ margin-bottom:18px; }
 .article-title{ font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.08; letter-spacing:-.01em; }
@@ -121,9 +128,12 @@ body.blog-page{ background:var(--navy-deep); }
 .article-body figcaption{ font-size:.82rem; color:var(--muted); text-align:center; margin-top:10px; }
 .article-body hr{ border:none; border-top:1px solid var(--glass-border); margin:2.4em 0; }
 
+/* aviso OAB, CTA e "← Voltar": mesma coluna do texto (612px = 660 − 2×24 de respiro lateral) */
+.article-disclaimer,.article-cta,.article-nav{ width:calc(100% - 48px); max-width:612px; }
+
 /* nota de rodapé / aviso OAB */
 .article-disclaimer{
-  margin:40px auto 0; max-width:760px; padding:18px 22px;
+  margin:40px auto 0; padding:18px 22px;
   border:1px solid var(--glass-border); border-radius:14px;
   font-size:.82rem; color:var(--muted); line-height:1.6;
   background:rgba(255,255,255,.03);
@@ -131,7 +141,7 @@ body.blog-page{ background:var(--navy-deep); }
 
 /* CTA ao final do artigo */
 .article-cta{
-  max-width:760px; margin:44px auto 0; padding:38px 36px; text-align:center;
+  margin:44px auto 0; padding:38px 36px; text-align:center;
   border-radius:20px; border:1px solid var(--glass-border);
   background:
     radial-gradient(120% 140% at 50% -20%, rgba(184,146,83,.16), transparent 60%),
@@ -141,11 +151,12 @@ body.blog-page{ background:var(--navy-deep); }
 .article-cta p{ margin:12px auto 24px; max-width:480px; color:rgba(244,241,234,.74); }
 
 /* navegação entre posts */
+/* respiro antes do rodapé (antes o "← Voltar" ficava a ~14px do fio do rodapé) */
 .article-nav{
-  max-width:760px; margin:44px auto 0; display:flex; justify-content:space-between; gap:16px;
-  padding-bottom:8px;
+  margin:36px auto 0; display:flex; justify-content:space-between; gap:16px;
+  padding-bottom:64px;
 }
-.article-nav a{ color:var(--gold-light); font-size:.92rem; letter-spacing:.02em; }
+.article-nav a{ color:var(--gold-light); font-size:.92rem; letter-spacing:.02em; padding:12px 0; }
 .article-nav a:hover{ color:var(--gold); }
 
 /* ===================================================================
@@ -162,7 +173,7 @@ body.blog-page{ background:var(--navy-deep); }
 .post-card--featured .post-thumb-wrap{ flex:0 0 46%; }
 .post-card--featured .post-thumb{ height:100%; aspect-ratio:auto; min-height:320px; }
 .post-card--featured .post-body{ justify-content:center; padding:38px 44px; gap:14px; }
-.post-card--featured h2{ font-size:2rem; }
+.post-card--featured :is(h2,h3){ font-size:2rem; }
 .post-card--featured .post-excerpt{ font-size:1rem; flex:initial; }
 
 @media (max-width:760px){
@@ -170,7 +181,7 @@ body.blog-page{ background:var(--navy-deep); }
   .post-card--featured .post-thumb-wrap{ flex:none; }
   .post-card--featured .post-thumb{ min-height:0; aspect-ratio:16/10; }
   .post-card--featured .post-body{ padding:26px 24px; }
-  .post-card--featured h2{ font-size:1.5rem; }
+  .post-card--featured :is(h2,h3){ font-size:1.5rem; }
 }
 
 /* ---------- Responsivo ---------- */

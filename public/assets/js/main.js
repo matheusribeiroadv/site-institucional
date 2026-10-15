@@ -42,7 +42,7 @@ syncHeader();
     return;
   }
 
-  const { animate, onScroll, createMotionPath } = anime;
+  const { animate, onScroll } = anime;
 
   // 1) Barra de progressão — sincronizada ao scroll da página inteira
   animate('#scrollProgress', {
@@ -70,39 +70,48 @@ syncHeader();
   }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
   reveals.forEach(el => io.observe(el));
 
-  // 3) Trator e balança — seguem trajetórias (Motion Path)
-  if (createMotionPath) {
-    try {
-      const tractor = createMotionPath('#mp-tractor');
-      animate('.obj-tractor', {
-        translateX: tractor.translateX,
-        translateY: tractor.translateY,
-        rotate: tractor.rotate,
-        duration: 12000, ease: 'inOutSine', loop: true, alternate: true
-      });
-      const scale = createMotionPath('#mp-scale');
-      animate('.obj-scale', {
-        translateX: scale.translateX,
-        translateY: scale.translateY,
-        duration: 9000, ease: 'inOutQuad', loop: true
-      });
-    } catch (e) { }
-  }
-
-  // 4) Demais objetos jurídicos — flutuação suave em loop
+  // 3) e 4) Objetos jurídicos de fundo — com Web Animations (rodam no compositor do navegador).
+  // Antes, o anime.js recalculava as trajetórias a cada quadro (getPointAtLength), ocupando
+  // a CPU sem parar mesmo com a página parada; agora os pontos são calculados UMA vez.
+  const inOutSine = 'cubic-bezier(.37,0,.63,1)';
+  const inOutQuad = 'cubic-bezier(.45,0,.55,1)';
+  // amostra a trajetória SVG em quadros-chave (posição + inclinação opcional)
+  const pathFrames = (pathId, withRotate) => {
+    const path = document.getElementById(pathId);
+    if (!path || !path.getTotalLength) return null;
+    const len = path.getTotalLength();
+    const at = l => path.getPointAtLength(Math.max(0, Math.min(len, l)));
+    const frames = [];
+    for (let i = 0, n = 48; i <= n; i++) {
+      const l = len * i / n, p = at(l);
+      let t = `translate(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px)`;
+      if (withRotate) {
+        const a = at(l - 0.5), b = at(l + 0.5);
+        t += ` rotate(${(Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI).toFixed(1)}deg)`;
+      }
+      frames.push({ transform: t });
+    }
+    return frames;
+  };
+  const bgAnims = [];
+  const run = (sel, frames, opts) => {
+    const el = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    if (el && frames && el.animate) bgAnims.push(el.animate(frames, Object.assign({ iterations: Infinity }, opts)));
+  };
+  // trator e balança seguem trajetórias (Motion Path)
+  run('.obj-tractor', pathFrames('mp-tractor', true), { duration: 12000, easing: inOutSine, direction: 'alternate' });
+  run('.obj-scale', pathFrames('mp-scale', false), { duration: 9000, easing: inOutQuad });
+  // demais objetos — flutuação suave em loop
   floatObjs
     .filter(o => !o.matches('.obj-tractor, .obj-scale'))
-    .forEach((obj, i) => {
-      animate(obj, {
-        translateY: [0, -24],
-        rotate: [0, 3],
-        duration: 4200 + i * 500,
-        ease: 'inOutSine',
-        loop: true,
-        alternate: true,
-        delay: i * 280
-      });
-    });
+    .forEach((obj, i) => run(obj,
+      [{ transform: 'translateY(0) rotate(0deg)' }, { transform: 'translateY(-24px) rotate(3deg)' }],
+      { duration: 4200 + i * 500, delay: i * 280, easing: inOutSine, direction: 'alternate' }));
+  // no celular os objetos ficam ocultos (CSS): animações pausadas, sem custo
+  const smallScreen = window.matchMedia('(max-width: 560px)');
+  const syncBg = () => bgAnims.forEach(a => (smallScreen.matches ? a.pause() : a.play()));
+  syncBg();
+  smallScreen.addEventListener('change', syncBg);
 
   // 5) Parallax do conjunto conforme a página rola
   animate('.floating-objects', {
@@ -120,6 +129,8 @@ function setMenuOpen(open, returnFocus) {
   navLinks.classList.toggle('open', open);
   if (navOverlay) navOverlay.classList.toggle('open', open);
   document.body.classList.toggle('menu-open', open);       // trava a rolagem da página atrás
+  // com o menu aberto, o resto da página fica inerte: o Tab não "vaza" para trás do menu
+  document.querySelectorAll('body > :not(.site-header):not(script)').forEach(el => { el.inert = open; });
   if (menuToggle) {
     menuToggle.setAttribute('aria-expanded', String(open));
     menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
@@ -181,18 +192,21 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
     const { box } = fieldOf(name);
     if (!box) return null;
     let p = box.querySelector('.field-error');
-    if (!p) { p = document.createElement('p'); p.className = 'field-error'; box.appendChild(p); }
+    if (!p) { p = document.createElement('p'); p.className = 'field-error'; p.id = 'erro-' + name; box.appendChild(p); }
     return p;
   };
+  // o campo aponta para a sua mensagem de erro: o leitor de tela lê "Nome completo, inválido, Informe seu nome."
   const setInvalid = (name, msg) => {
-    const { box } = fieldOf(name);
+    const { el, box } = fieldOf(name);
     if (box) { box.classList.add('invalid'); box.classList.remove('valid'); }
     const p = errEl(name); if (p) p.textContent = msg;
+    if (el && p) { el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', p.id); }
   };
   const setValid = name => {
     const { el, box } = fieldOf(name);
     if (box) { box.classList.remove('invalid'); box.classList.add('valid'); }
     if (el && !el.value.trim()) box && box.classList.remove('valid'); // opcional vazio: neutro
+    if (el) { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); }
   };
   const clearStatus = () => {
     if (status.classList.contains('error')) { status.textContent = ''; status.className = 'lead-status'; }
@@ -200,6 +214,14 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
 
   // regras: retornam null se ok, ou a mensagem de erro
   const onlyDigits = s => (s || '').replace(/\D/g, '');
+  // telefone no formato nacional: tira o +55 (o WhatsApp mostra "+55 62 9xxxx-xxxx") e o 0 de
+  // longa distância. Só com 12+ dígitos, para não confundir com o DDD 55 (RS).
+  const nationalDigits = v => {
+    let d = onlyDigits(v);
+    if (d.length >= 12 && d.startsWith('55')) d = d.slice(2);
+    else if (d.length >= 11 && d.startsWith('0')) d = d.slice(1);
+    return d;
+  };
   const rules = {
     name: v => {
       if (!v) return 'Informe seu nome.';
@@ -208,7 +230,7 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
       return null;
     },
     phone: v => {
-      const d = onlyDigits(v);
+      const d = nationalDigits(v);
       if (!d) return 'Informe seu WhatsApp.';
       if (d.length < 10 || d.length > 11) return 'WhatsApp inválido — use DDD + número, ex.: (62) 90000-0000.';
       if (/^(\d)\1+$/.test(d)) return 'Número de WhatsApp inválido.';
@@ -239,7 +261,7 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
   const phoneEl = form.elements.namedItem('phone');
   if (phoneEl) {
     const mask = v => {
-      const d = onlyDigits(v).slice(0, 11);
+      const d = nationalDigits(v).slice(0, 11);
       if (d.length <= 2) return d ? '(' + d : '';
       if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
       if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
@@ -316,8 +338,9 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
       form.reset();
       // limpa marcações de validação após enviar
       Object.keys(rules).forEach(name => {
-        const { box } = fieldOf(name);
+        const { el, box } = fieldOf(name);
         if (box) box.classList.remove('invalid', 'valid');
+        if (el) { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); }
       });
     } catch (err) {
       status.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
@@ -367,6 +390,10 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
       const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerH + 2);
       if (reduce) window.scrollTo(0, y);
       else smoothTo(y);
+      // leva o foco junto: teclado e leitor de tela continuam a partir da seção, não do topo.
+      // (o endereço não ganha #: o Umami contaria cada atalho como uma nova visita)
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
     });
   });
 })();
