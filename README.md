@@ -71,14 +71,22 @@ Netlify → equipe → *Usage & billing*.
 
 ### Publicar um novo artigo
 1. Duplique um artigo existente em `public/blog/` e dê um nome descritivo ao arquivo
-   (ex.: `banco-penhora-terra-produtor-rural.html`). Esse nome vira o endereço da página.
+   (ex.: `banco-penhora-terra-produtor-rural.html`). O endereço da página é esse nome
+   **sem o `.html`** (ex.: `/blog/banco-penhora-terra-produtor-rural`).
 2. No novo arquivo, atualize: `<title>`, `meta description`, `canonical`, as tags `og:*`,
    o JSON-LD (`headline`, `description`, `datePublished`, `@id`), a data visível e o texto.
 3. Capa: coloque a imagem em `public/assets/img/blog/` (WebP, ~1200px de largura).
 4. Adicione o cartão do artigo em `public/blog/index.html`.
 5. Atualize o bloco "Do nosso Blog" em `public/index.html`.
-6. Inclua o endereço em `public/sitemap.xml`, com `<lastmod>`.
+6. Inclua o endereço em `public/sitemap.xml`, com `<lastmod>` (data de publicação), e
+   atualize o `<lastmod>` da linha do `/blog/` para a mesma data.
 7. Revise o texto com as **regras de conteúdo** abaixo antes de publicar.
+8. Depois do deploy, no Search Console: cole o endereço do artigo em **Inspeção de URL** e
+   clique em **Solicitar indexação**. Faça o mesmo com `/blog/`.
+
+**Um endereço só por página:** use o endereço **sem `.html`** em todo lugar (canonical,
+`og:url`, JSON-LD, sitemap e links internos), em minúsculas e com hífens. O arquivo
+continua sendo `.html`; só o endereço é que não leva a extensão.
 
 ### Trocar uma imagem
 Use sempre um **nome de arquivo novo** (ex.: `og-image-2027.jpg`) e atualize as referências.
@@ -103,7 +111,7 @@ Ao trocar, gere todas:
 ### Onde ficam os dados que mudam
 | O quê | Onde |
 |---|---|
-| WhatsApp (55 62 8225-4519) | links `wa.me/556282254519` em `public/index.html` (4×), `public/blog/index.html` e em cada artigo; telefone no JSON-LD do `index.html` |
+| WhatsApp / telefone ((62) 98225-4519) | links `wa.me/556282254519` (sem o 9, como o WhatsApp registrou o número) em `public/index.html` (4×), `public/blog/index.html`, em cada artigo e página de área; telefone **com o 9** no JSON-LD do `index.html`, igual ao Perfil da Empresa no Google |
 | Link de avaliação do Google | `public/_redirects` (linha `/avaliar`) |
 | Chave do formulário (Web3Forms) | `public/assets/js/main.js` (`apiKey`, em base64) |
 | Analytics (Umami) | `<script … data-website-id>` no `<head>` de cada página |
@@ -130,7 +138,9 @@ Base: Provimento 205/2021 e Código de Ética e Disciplina da OAB, mais a LGPD.
 
 - **`netlify.toml`:** pasta publicada (`public`), cache de 30 dias para imagens e bibliotecas,
   cabeçalhos de segurança. CSS, JS e HTML sempre atualizados a cada visita.
-- **`public/_redirects`:** www → sem www; `/avaliar`; `/favicon.ico`; endereços antigos de
+- **Endereços sem `.html`:** o "Pretty URLs" da Netlify (ligado por padrão, não desligar)
+  serve `blog/artigo.html` em `/blog/artigo`. A prévia local (`tools/preview.js`) faz o mesmo.
+- **`public/_redirects`:** www → sem www; `/avaliar` (301, para não ser indexado); `/favicon.ico`; endereços antigos de
   imagens (antes da reorganização de 14/10/2026) → novos.
 - **Domínio:** registrado no Registro.br. Os registros de e-mail (Microsoft 365) na zona DNS
   não devem ser alterados.

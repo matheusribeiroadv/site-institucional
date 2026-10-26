@@ -6,7 +6,8 @@ https://www.matheusribeiroadv.com.br/*  https://matheusribeiroadv.com.br/:splat 
 
 # Link curto para avaliações no Google (WhatsApp, QR code, rodapé).
 # Se o Google trocar o link, basta atualizar aqui.
-/avaliar  https://g.page/r/CQGwdV0y88xQEBM/review  302
+# 301 (permanente) para o Google não indexar /avaliar como página do site.
+/avaliar  https://g.page/r/CQGwdV0y88xQEBM/review  301
 
 # Endereços antigos de imagens que Google, WhatsApp e redes sociais já conhecem
 # (antes da reorganização de pastas de 14/10/2026). Mantém prévias e logo funcionando.

@@ -160,6 +160,62 @@ body.blog-page{ background:var(--navy-deep); }
 .article-nav a:hover{ color:var(--gold); }
 
 /* ===================================================================
+   Páginas de área de atuação (usam o layout do artigo + estes blocos)
+   =================================================================== */
+/* rótulo pequeno em caixa alta: "Em resumo", "Dica", "Atenção" */
+.area-label{
+  display:block; margin-bottom:8px;
+  font-size:.74rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-light);
+}
+
+/* "Em resumo": quem só passa os olhos já entende o essencial */
+.area-summary{
+  padding:22px 26px; border-radius:16px;
+  border:1px solid var(--glass-border); background:rgba(255,255,255,.035);
+}
+.article-body .area-summary ul{ padding-left:1.2em; }
+.article-body .area-summary li:first-child{ margin-top:0; }
+
+/* dica / atenção: destaque dentro do texto */
+.area-callout{
+  padding:18px 22px; border-left:3px solid var(--gold); border-radius:0 14px 14px 0;
+  background:rgba(184,146,83,.08);
+}
+
+/* contato no meio da página (o CTA do fim nem todos alcançam) */
+.area-cta-inline{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px 24px;
+  padding:22px 24px; border-radius:16px; border:1px solid var(--glass-border);
+  background:
+    radial-gradient(120% 160% at 0% 0%, rgba(184,146,83,.14), transparent 60%),
+    var(--navy);
+}
+.area-cta-inline p{ color:rgba(244,241,234,.78); line-height:1.5; }
+.area-cta-inline p strong{ display:block; font-size:1.08rem; }
+.article-body .btn{ text-decoration:none; }
+.article-body .btn-primary{ color:var(--navy-deep); }
+.area-cta-inline .btn{ display:inline-flex; align-items:center; gap:9px; flex:none; padding:12px 24px; }
+.area-cta-inline .btn svg{ width:18px; height:18px; }
+
+/* passos "Como podemos ajudar": mesma linha do tempo de "Como Atuamos" no celular
+   (medalhão à esquerda, trilha dourada descendo pela coluna dele) */
+.article-body .area-steps{ list-style:none; padding:0; display:grid; gap:26px; }
+.article-body .area-steps li{
+  margin-top:0; position:relative;
+  display:grid; grid-template-columns:58px 1fr; column-gap:18px; align-items:start;
+}
+.area-steps .step-num{ grid-column:1; grid-row:1; margin-bottom:0; }
+.article-body .area-steps h3{
+  grid-column:2; grid-row:1; align-self:center; margin:0;
+  font-size:1.3rem; color:var(--cream);
+}
+.area-steps p{ grid-column:2; grid-row:2; margin-top:6px; color:rgba(244,241,234,.78); }
+.area-steps li:not(:last-child)::after{
+  content:''; position:absolute; left:29px; top:66px; bottom:-22px; width:1px;
+  background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
+}
+
+/* ===================================================================
    Destaque do Blog na página inicial (usa .post-card já definido acima)
    =================================================================== */
 .blog-teaser-grid{

@@ -179,7 +179,8 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
   // Access Key ofuscada (base64, remontada em runtime) p/ não ficar em texto puro
   // no código. Obs.: ofuscação não é segurança real em site estático — a proteção
   // efetiva é restringir a chave ao domínio no painel do Web3Forms.
-  const _p = ['OTk4ODkxNGUt', 'YWI3Ny00MmU3', 'LWIzYmYtYTk2', 'NzExZmI4MDg0'];
+  // chave do formulário "Site — Formulário de contato" na conta contato@matheusribeiroadv.com.br (out/2026)
+  const _p = ['OWE2ZjBiODYt', 'ZjMwNC00Yjg1', 'LWE5ZWQtZmEw', 'NzJjMjQ2OTBk'];
   const apiKey = () => { try { return atob(_p.join('')); } catch (e) { return ''; } };
 
   // ---- infra de validação por campo ----

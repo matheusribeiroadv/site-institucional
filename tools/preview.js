@@ -16,7 +16,7 @@ const TYPES = {
   '.txt': 'text/plain; charset=utf-8'
 };
 
-// Regras do public/_redirects (só as de caminho, ex.: "/avaliar  https://...  302").
+// Regras do public/_redirects (só as de caminho, ex.: "/avaliar  https://...  301").
 // A regra de domínio (www -> sem www) não se aplica à prévia local.
 function loadRedirects() {
   try {
@@ -35,6 +35,7 @@ http.createServer((req, res) => {
   let file = path.join(ROOT, p);
   if (!file.startsWith(ROOT)) { res.writeHead(403); return res.end(); }
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
+  else if (!fs.existsSync(file) && !path.extname(file)) file += '.html';  // igual à Netlify: /privacidade -> privacidade.html
   fs.readFile(file, (err, data) => {
     if (err) {                                                         // igual à Netlify: página 404 própria
       res.writeHead(404, { 'Content-Type': TYPES['.html'] });

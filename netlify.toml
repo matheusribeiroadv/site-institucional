@@ -4,6 +4,10 @@
 [build]
   publish = "public"
 
+# Endereços sem .html: o arquivo blog/artigo.html é servido em /blog/artigo.
+# Quem faz isso é o "Pretty URLs" da Netlify (ligado por padrão — não desligar).
+# Nos links, canonical e sitemap, escreva sempre o endereço sem .html.
+
 # Cache das imagens e da biblioteca de animação: 30 dias.
 # Os nomes dos arquivos NÃO têm versão — ao trocar uma imagem, use um NOME NOVO
 # (ex.: og-image-2027.jpg), senão quem já visitou pode ver a antiga por até 30 dias.
