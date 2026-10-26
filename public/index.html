@@ -32,7 +32,7 @@
   <link rel="apple-touch-icon" href="/assets/img/marca/favicon-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/css/article.css" />
 
@@ -44,7 +44,7 @@
       var go = function () { if (!done) { done = true; h.classList.add('hero-go'); } };
       h.classList.add('hero-anim');
       try {
-        Promise.all([d.fonts.load('600 1em "Cormorant Garamond"'), d.fonts.load('400 1em Jost')]).then(go, go);
+        Promise.all([d.fonts.load('600 1em "Cormorant Garamond"'), d.fonts.load('italic 500 1em "Cormorant Garamond"'), d.fonts.load('400 1em Jost')]).then(go, go);
       } catch (e) { go(); }
       setTimeout(go, 1000);
     })(document);
@@ -353,24 +353,25 @@
         <p>Um caminho claro, do diagnóstico ao acompanhamento do caso.</p>
       </div>
       <div class="steps">
-        <!-- trilha que liga os passos 01 → 04, desenhada conforme o scroll -->
+        <!-- trilha que liga os passos 01 → 04: acompanha a rolagem (nos dois sentidos) e acende
+             cada passo ao alcançá-lo (main.js, bloco "Como Atuamos"). Sem JS, tudo aparece pronto. -->
         <span class="steps-line" aria-hidden="true"><i></i></span>
-        <div class="step reveal" data-delay="1">
+        <div class="step">
           <span class="step-num">01</span>
           <h3>Diagnóstico</h3>
           <p>Reunimos contratos e extratos para fazer a análise de viabilidade processual do seu caso.</p>
         </div>
-        <div class="step reveal" data-delay="2">
+        <div class="step">
           <span class="step-num">02</span>
           <h3>Cálculo & Estratégia</h3>
           <p>Projetamos o endividamento real e definimos a tese — judicial ou negocial — mais adequada.</p>
         </div>
-        <div class="step reveal" data-delay="3">
+        <div class="step">
           <span class="step-num">03</span>
           <h3>Ação</h3>
           <p>Ingressamos com a medida cabível ou conduzimos a renegociação com a instituição financeira.</p>
         </div>
-        <div class="step reveal" data-delay="4">
+        <div class="step">
           <span class="step-num">04</span>
           <h3>Acompanhamento</h3>
           <p>Acompanhamos cada etapa até a conclusão do caso, com informações claras sobre o andamento.</p>

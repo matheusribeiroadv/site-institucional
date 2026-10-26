@@ -50,6 +50,57 @@
     });
   }
 
+  // índice lateral "Nesta página" (páginas longas marcadas com <article data-toc>).
+  // Gerado a partir dos títulos de seção (h2); aparece só em telas largas (CSS, a partir de 1200px).
+  var tocArticle = document.querySelector('article[data-toc]');
+  var tocHeads = tocArticle ? tocArticle.querySelectorAll('.article-body h2') : [];
+  if (tocHeads.length >= 3) {
+    var slug = function (t) {
+      return t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    };
+    var aside = document.createElement('aside');
+    aside.className = 'page-toc';
+    aside.setAttribute('aria-label', 'Nesta página');
+    var html = '<nav><p class="page-toc-title">Nesta página</p><ol>';
+    Array.prototype.forEach.call(tocHeads, function (h) {
+      if (!h.id) h.id = slug(h.textContent);
+      html += '<li><a href="#' + h.id + '">' + h.textContent + '</a></li>';
+    });
+    aside.innerHTML = html + '</ol></nav>';
+    tocArticle.insertBefore(aside, tocArticle.firstChild);
+    var tocLinks = aside.querySelectorAll('a');
+    var reduceToc = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // clique: rola até a seção e leva o foco junto (sem # no endereço: o Umami contaria como nova visita)
+    Array.prototype.forEach.call(tocLinks, function (a) {
+      a.addEventListener('click', function (e) {
+        var h = document.getElementById(a.getAttribute('href').slice(1));
+        if (!h) return;
+        e.preventDefault();
+        h.scrollIntoView({ behavior: reduceToc ? 'auto' : 'smooth', block: 'start' });
+        h.setAttribute('tabindex', '-1');
+        h.focus({ preventScroll: true });
+      });
+    });
+
+    // destaca a seção que está sendo lida: a última cujo título já passou de ~35% da tela
+    var tocTicking = false;
+    var markActive = function () {
+      tocTicking = false;
+      var line = window.innerHeight * 0.35, current = 0;
+      Array.prototype.forEach.call(tocHeads, function (h, i) { if (h.getBoundingClientRect().top <= line) current = i; });
+      Array.prototype.forEach.call(tocLinks, function (a, i) {
+        a.classList.toggle('is-active', i === current);
+        if (i === current) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      });
+    };
+    window.addEventListener('scroll', function () {
+      if (!tocTicking) { tocTicking = true; window.requestAnimationFrame(markActive); }
+    }, { passive: true });
+    markActive();
+  }
+
   // revela elementos .reveal ao entrar na viewport
   var reveals = document.querySelectorAll('.reveal');
   if (reveals.length) {

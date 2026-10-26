@@ -120,7 +120,7 @@ body.blog-page{ background:var(--navy-deep); }
 .article-body li::marker{ color:var(--gold); }
 .article-body blockquote{
   border-left:3px solid var(--gold); padding:6px 0 6px 22px; margin-left:0;
-  font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.35rem;
+  font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:1.35rem;
   color:var(--gold-light); line-height:1.4;
 }
 .article-body figure{ margin:1.6em 0; }
@@ -213,6 +213,31 @@ body.blog-page{ background:var(--navy-deep); }
 .area-steps li:not(:last-child)::after{
   content:''; position:absolute; left:29px; top:66px; bottom:-22px; width:1px;
   background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
+}
+
+/* Índice lateral "Nesta página" — gerado pelo pages.js nas páginas com <article data-toc>.
+   Só em telas largas: fica na margem esquerda, alinhado ao logo, e acompanha a leitura
+   (sticky dentro do <article>, para não invadir o rodapé). */
+.page-toc{ display:none; }
+@media (min-width:1200px){
+  article[data-toc]{ position:relative; }
+  .page-toc{
+    display:block; position:absolute; top:0; bottom:56px; width:200px;   /* para 56px antes do rodapé */
+    left:max(24px, calc((100% - var(--maxw)) / 2 + 24px));
+  }
+  .page-toc nav{ position:sticky; top:120px; padding-top:68px; }
+  .page-toc-title{
+    font-size:.72rem; font-weight:600; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--gold-light); margin-bottom:14px;
+  }
+  .page-toc ol{ list-style:none; border-left:1px solid rgba(214,183,128,.18); }
+  .page-toc a{
+    display:block; margin-left:-1px; padding:7px 0 7px 16px; border-left:2px solid transparent;
+    font-size:.86rem; line-height:1.4; color:rgba(244,241,234,.6);
+    transition:color .2s var(--ease), border-color .2s var(--ease);
+  }
+  .page-toc a:hover{ color:var(--cream); }
+  .page-toc a.is-active{ color:var(--gold-light); border-left-color:var(--gold); }
 }
 
 /* ===================================================================

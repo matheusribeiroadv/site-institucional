@@ -223,8 +223,9 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .hero-title .ln > span{display:block}
 .hero-end{display:inline-block}
 /* "produz": dourado com brilho; padding evita cortar a inclinação do itálico */
+/* itálico verdadeiro da Cormorant: só o peso 500 é carregado (1 arquivo, 38 KB) — todo itálico do site usa 500 */
 .hero-produz{
-  display:inline-block;padding:0 .08em;margin:0 -.08em;color:transparent;
+  display:inline-block;padding:0 .08em;margin:0 -.08em;color:transparent;font-weight:500;
   background:linear-gradient(110deg,var(--gold-light) 0%,var(--gold-light) 42%,#FFF1CF 50%,var(--gold-light) 58%,var(--gold-light) 100%);
   background-size:260% 100%;background-position:0 0;
   -webkit-background-clip:text;background-clip:text;
@@ -345,6 +346,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .area-card .area-num{
   grid-area:num;justify-self:end;align-self:center;position:static;
   font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--gold);opacity:.3;line-height:1;
+  font-variant-numeric:lining-nums;   /* "01", não "OI" (algarismos de estilo antigo da Cormorant) */
 }
 .area-card h3{grid-area:title;margin:20px 0 10px;font-size:1.45rem;color:#fff}
 .area-card p{grid-area:desc;color:rgba(244,241,234,.74);font-size:.96rem;line-height:1.55}
@@ -360,7 +362,8 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   font-family:'Cormorant Garamond',serif;font-size:1.6rem;line-height:1;color:var(--gold-light);
   width:58px;height:58px;display:grid;place-items:center;
   border:1px solid rgba(214,183,128,.45);border-radius:50%;background:var(--navy);
-  padding-bottom:4px; /* compensa o assentamento óptico das numerais serifadas */
+  font-variant-numeric:lining-nums;   /* "01", não "OI" — também nas páginas de área (ol.area-steps) */
+  padding-bottom:2px; /* ajuste óptico: os algarismos alinhados assentam um pouco abaixo do centro */
   margin-bottom:24px;position:relative;z-index:1;
   transition:transform .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
 }
@@ -379,6 +382,19 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 }
 .step h3{font-size:1.4rem;margin-bottom:10px;color:#fff}
 .step p{color:rgba(244,241,234,.72);font-size:.94rem}
+
+/* --- a trilha acende os passos (só com JS: .is-animated; sem JS ou com "reduzir movimento" tudo aparece).
+       Acompanha a rolagem nos dois sentidos: ao subir, o fio recua e os passos voltam a se apagar. --- */
+.steps.is-animated .steps-line i{transition:transform .45s var(--ease)}   /* suaviza o fio entre um quadro e outro */
+.steps.is-animated .step-num{
+  transition:transform .35s var(--ease),color .5s var(--ease),border-color .5s var(--ease),background-color .5s var(--ease);
+}
+.steps.is-animated .step h3,
+.steps.is-animated .step p{opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.steps.is-animated .step.is-on h3,
+.steps.is-animated .step.is-on p{opacity:1;transform:none}
+.steps.is-animated .step.is-on p{transition-delay:.08s}
+.steps.is-animated .step.is-on .step-num{border-color:var(--gold)}
 /* computador: medalhão, título e texto ocupam as mesmas linhas nos 4 passos (subgrid) —
    um título que quebra em 2 linhas não desalinha os textos vizinhos */
 @media (min-width:901px){
@@ -401,7 +417,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 /* Missão (destaque dentro da seção Sobre) */
 .sobre-missao{
   border-left:3px solid var(--gold);padding:8px 0 8px 18px;margin:20px 0 6px;
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.2rem;line-height:1.42;color:var(--gold-light);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:1.2rem;line-height:1.42;color:var(--gold-light);
 }
 .sobre-missao strong{color:var(--cream);font-style:normal;font-weight:600}
 /* Valores */
@@ -783,7 +799,10 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .section--light .step p{color:var(--ink-muted)}
 .section--light .step-num{background:var(--cream);color:var(--gold-text);border-color:rgba(122,92,42,.4)}
 .section--light .step:hover .step-num{color:var(--gold-text);border-color:var(--gold)}
-.section--light .steps-line{background:rgba(122,92,42,.16)}
+.section--light .steps-line{background:rgba(122,92,42,.14)}
+/* no creme: medalhão apagado mais suave; aceso ganha fundo branco (leve "luz") */
+.section--light .steps.is-animated .step:not(.is-on) .step-num{border-color:rgba(122,92,42,.2);color:rgba(122,92,42,.42)}
+.section--light .steps.is-animated .step.is-on .step-num{background:#fff;color:var(--gold-text)}
 /* Do nosso Blog — card branco com sombra suave */
 .section--light .post-card{
   background:#fff;border:1px solid rgba(122,92,42,.14);
@@ -910,6 +929,9 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
     content:'';position:absolute;left:29px;top:66px;bottom:-30px;width:1px;
     background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
   }
+  /* o fio vertical "escorre" até o próximo passo depois que este acende */
+  .steps.is-animated .step:not(:last-child)::after{transform:scaleY(0);transform-origin:top;transition:transform 1s var(--ease) .3s}
+  .steps.is-animated .step.is-on:not(:last-child)::after{transform:scaleY(1)}
   /* Valores: lista compacta (sem caixas) com fio dourado — mesmo estilo de "Sinais de alerta" */
   .valores{text-align:left}
   .valores .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:2px}

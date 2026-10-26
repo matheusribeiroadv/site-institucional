@@ -499,34 +499,36 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
   sync();
 })();
 
-// ===== "Como Atuamos" — trilha que se desenha conforme o scroll =====
+// ===== "Como Atuamos" — a trilha acompanha a rolagem e acende os passos de 01 a 04 =====
+// Nos dois sentidos: ao descer, o fio avança e acende cada medalhão que alcança; ao subir, recua e apaga.
+// Computador: fio horizontal guiado pela rolagem. Tablet/celular: cada passo acende ao cruzar 78% da tela.
 (function () {
   const steps = document.querySelector('.steps');
-  const line = document.querySelector('.steps-line i');
-  if (!steps || !line) return;
-
-  // movimento reduzido: mostra a trilha completa, sem animar
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    line.style.transform = 'scaleX(1)';
+  if (!steps) return;
+  const items = Array.from(steps.querySelectorAll('.step'));
+  const line = steps.querySelector('.steps-line i');
+  // movimento reduzido: tudo pronto, sem animar (sem a classe .is-animated nada fica apagado)
+  if (!items.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (line) line.style.transform = 'scaleX(1)';
     return;
   }
-
+  steps.classList.add('is-animated');
+  const desktop = window.matchMedia('(min-width: 901px)');
   let ticking = false;
   const update = () => {
-    const rect = steps.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    // começa a desenhar quando o topo dos passos chega a 85% da tela
-    // e completa quando chega a 40% — acompanha a leitura de 01 → 04
-    const start = vh * 0.85, end = vh * 0.40;
-    const p = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
-    line.style.transform = 'scaleX(' + p.toFixed(4) + ')';
     ticking = false;
+    const vh = window.innerHeight;
+    if (desktop.matches) {
+      // começa com os passos a 82% da tela e completa a 42%; o medalhão do passo i fica na fração i/3 do fio
+      const p = Math.min(1, Math.max(0, (vh * 0.82 - steps.getBoundingClientRect().top) / (vh * 0.40)));
+      if (line) line.style.transform = `scaleX(${p.toFixed(4)})`;
+      items.forEach((el, i) => el.classList.toggle('is-on', p > 0.002 && p >= i / (items.length - 1) - 0.02));
+    } else {
+      items.forEach(el => el.classList.toggle('is-on', el.getBoundingClientRect().top < vh * 0.78));
+    }
   };
-  const onScrollEvt = () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  };
-
-  window.addEventListener('scroll', onScrollEvt, { passive: true });
-  window.addEventListener('resize', onScrollEvt);
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
   update();
 })();
