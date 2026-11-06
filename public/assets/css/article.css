@@ -128,6 +128,16 @@ body.blog-page{ background:var(--navy-deep); }
 .article-body figcaption{ font-size:.82rem; color:var(--muted); text-align:center; margin-top:10px; }
 .article-body hr{ border:none; border-top:1px solid var(--glass-border); margin:2.4em 0; }
 
+/* tabelas no texto (ex.: condições de uma linha de crédito); rolam de lado em telas estreitas */
+.table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.article-body table{ width:100%; min-width:480px; border-collapse:collapse; font-size:.95rem; line-height:1.5; }
+.article-body caption{ caption-side:top; text-align:left; font-size:.82rem; color:var(--muted); padding-bottom:10px; }
+.article-body th,.article-body td{ padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--glass-border); }
+.article-body thead th{ font-size:.76rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-light); }
+.article-body tbody th{ color:var(--cream); font-weight:600; }
+.article-body td{ font-variant-numeric:lining-nums tabular-nums; }
+.article-body .table-group th{ padding-top:22px; color:var(--gold-light); font-weight:500; font-size:.9rem; }
+
 /* aviso OAB, CTA e "← Voltar": mesma coluna do texto (612px = 660 − 2×24 de respiro lateral) */
 .article-disclaimer,.article-cta,.article-nav{ width:calc(100% - 48px); max-width:612px; }
 

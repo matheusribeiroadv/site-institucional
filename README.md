@@ -75,6 +75,8 @@ Netlify → equipe → *Usage & billing*.
    **sem o `.html`** (ex.: `/blog/banco-penhora-terra-produtor-rural`).
 2. No novo arquivo, atualize: `<title>`, `meta description`, `canonical`, as tags `og:*`,
    o JSON-LD (`headline`, `description`, `datePublished`, `@id`), a data visível e o texto.
+   Mantenha o `<article data-toc>`: o índice lateral "Nesta página" é montado sozinho a partir
+   dos títulos `<h2>` do texto (aparece com 3 ou mais seções, em telas a partir de 1200px).
 3. Capa: coloque a imagem em `public/assets/img/blog/` (WebP, ~1200px de largura).
 4. Adicione o cartão do artigo em `public/blog/index.html`.
 5. Atualize o bloco "Do nosso Blog" em `public/index.html`.
