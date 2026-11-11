@@ -3,12 +3,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 // A entrada do hero é feita em CSS (ver "Entrada do hero" no main.css + script no <head>).
 
-// ===== Header glass + parallax da imagem do hero =====
+// ===== Header glass + parallax da imagem do hero + barra de progresso =====
 const header = document.getElementById('siteHeader');
 const heroBg = document.getElementById('heroBg');
 const scrollHint = document.getElementById('scrollHint');
+const progressBar = document.getElementById('scrollProgress');
+const floatingLayer = document.querySelector('.floating-objects');
+const smallScreenQ = window.matchMedia('(max-width: 560px)');   // no celular os objetos de fundo ficam ocultos (CSS)
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let headerTicking = false;
+// altura rolável medida só ao carregar e ao redimensionar (ler isso a cada quadro forçava recálculo de layout)
+let maxScroll = 1;
+const measureScroll = () => { maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight); };
 function syncHeader() {
   const y = window.scrollY || document.documentElement.scrollTop;
   header.classList.toggle('scrolled', y > 40);
@@ -18,6 +24,13 @@ function syncHeader() {
   if (heroBg && !reduceMotion && y < 1100) {
     heroBg.style.transform = 'translate3d(0,' + (y * 0.18).toFixed(1) + 'px,0)';
   }
+  // barra de progresso no topo e leve subida dos objetos jurídicos de fundo: só mudam o transform
+  // (camadas próprias, sem redesenho). Antes eram dois onScroll do Anime.js — o script mais pesado da página
+  // durante a rolagem (medido em 11/11/2026).
+  if (reduceMotion) return;
+  const prog = Math.min(1, y / maxScroll);
+  if (progressBar) progressBar.style.transform = 'scaleX(' + prog.toFixed(4) + ')';
+  if (floatingLayer && !smallScreenQ.matches) floatingLayer.style.transform = 'translate3d(0,' + (-120 * prog).toFixed(1) + 'px,0)';
 }
 window.addEventListener('scroll', () => {
   if (!headerTicking) {
@@ -25,6 +38,11 @@ window.addEventListener('scroll', () => {
     headerTicking = true;
   }
 }, { passive: true });
+let resizeTimer = 0;
+window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { measureScroll(); syncHeader(); }, 150); });
+window.addEventListener('load', () => { measureScroll(); syncHeader(); });   // imagens carregadas mudam a altura
+if (progressBar && reduceMotion) progressBar.style.transform = 'scaleX(1)';
+measureScroll();
 syncHeader();
 
 // ===== Animações de scroll com Anime.js =====
@@ -35,23 +53,15 @@ syncHeader();
   const floatObjs = Array.from(document.querySelectorAll('.float-obj'));
 
   // Fallback: sem Anime.js ou movimento reduzido -> revela tudo estaticamente
-  if (!anime || !anime.onScroll || reduce) {
+  if (!anime || !anime.animate || reduce) {
     reveals.forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
-    const bar = document.getElementById('scrollProgress');
-    if (bar) bar.style.transform = 'scaleX(1)';
     return;
   }
 
-  const { animate, onScroll } = anime;
+  const { animate } = anime;
+  // (a barra de progresso do topo é atualizada no syncHeader, lá em cima)
 
-  // 1) Barra de progressão — sincronizada ao scroll da página inteira
-  animate('#scrollProgress', {
-    scaleX: [0, 1],
-    ease: 'linear',
-    autoplay: onScroll({ target: document.body, enter: 'top top', leave: 'bottom bottom', sync: true })
-  });
-
-  // 2) Textos aparecendo ao descer — animação Anime.js disparada por
+  // Textos aparecendo ao descer — animação Anime.js disparada por
   //    IntersectionObserver (detecção de viewport robusta e confiável)
   const play = el => {
     const d = (parseInt(el.dataset.delay, 10) || 0) * 110;
@@ -113,12 +123,7 @@ syncHeader();
   syncBg();
   smallScreen.addEventListener('change', syncBg);
 
-  // 5) Parallax do conjunto conforme a página rola
-  animate('.floating-objects', {
-    translateY: [0, -120],
-    ease: 'linear',
-    autoplay: onScroll({ target: document.body, enter: 'top top', leave: 'bottom bottom', sync: true })
-  });
+  // 5) Parallax do conjunto conforme a página rola: feito no syncHeader (lá em cima), junto com a barra de progresso
 })();
 
 // ===== Menu mobile/tablet (botão hambúrguer ↔ X) =====
@@ -680,8 +685,10 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
   }
 
   // ---- rolagem ----
+  // só no computador: no celular a foto e a placa ficam paradas (CSS). Mudar as duas a cada quadro, somado à
+  // textura da placa, travava a rolagem no celular (medido em 11/11/2026)
   function essencia() {
-    if (reduz || !essFoto) return;
+    if (reduz || !essFoto || !desktop.matches) return;
     const r = essFoto.getBoundingClientRect(), vh = window.innerHeight;
     if (r.bottom < -200 || r.top > vh + 200) return;   // fora da tela: nada a fazer
     const q = clamp((vh - r.top) / (vh + r.height), 0, 1);

@@ -110,6 +110,7 @@ Ao trocar, gere todas:
 | Foto de Nossa Essência (escritório completo) | `site/escritorio/essencia-recepcao-1800.webp` e `-900.webp` | `srcset` no `index.html` (`.ess-foto`) |
 | Percurso "Nosso espaço" | `site/escritorio/percurso-<parada>-1600.webp` e `-900.webp` (fachada, recepcao, espera) | `index.html` (`.slide`, com `data-full` = foto de 1600 para a tela cheia) |
 | Fachada do Contato | `site/escritorio/fachada-frente.webp` (900px) | `index.html` (`.contato-local`) |
+| Textura das placas de bronze | `site/textura-grao.webp` (riscos de metal escovado) e `site/textura-patina.webp` (manchas) | variáveis `--plate-grain` e `--plate-patina` no `main.css` (cards, Nossa Essência, contato, blog, menu do celular, rodapé). São imagens prontas de propósito: a versão anterior, gerada pelo navegador (SVG com filtro de ruído), travava a rolagem no celular |
 
 **Incluir uma parada no percurso "Nosso espaço"** (ex.: uma foto nova do escritório):
 1. Gere a foto em 1600px e 900px de largura (`percurso-<nome>-1600.webp` / `-900.webp`) em `site/escritorio/`.
