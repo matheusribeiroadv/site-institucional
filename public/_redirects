@@ -1,8 +1,8 @@
 # Domínio principal: sem www. Redireciona www -> sem www (301 permanente).
 https://www.matheusribeiroadv.com.br/*  https://matheusribeiroadv.com.br/:splat  301!
 
-# Favicon padrão (/favicon.ico) serve o PNG do ícone — ajuda navegadores e buscadores.
-/favicon.ico  /assets/img/marca/favicon-96.png  200
+# Favicon padrão (/favicon.ico) serve o PNG do ícone — ajuda navegadores e buscadores (48px: o Google pede múltiplos de 48).
+/favicon.ico  /assets/img/marca/favicon-mra-48.png  200
 
 # Link curto para avaliações no Google (WhatsApp, QR code, rodapé).
 # Se o Google trocar o link, basta atualizar aqui.

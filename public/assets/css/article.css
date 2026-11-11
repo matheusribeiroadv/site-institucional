@@ -5,82 +5,138 @@
    =================================================================== */
 
 /* fundo sóbrio para as páginas internas do blog */
-body.blog-page{ background:var(--navy-deep); }
+body.blog-page{ background:var(--brown-deep); }
 
 /* afasta o conteúdo do header fixo */
 .blog-main{ padding-top:96px; position:relative; z-index:2; }
 
-/* ---------- Cabeçalho da seção (listagem e artigo) ---------- */
+/* ---------- Topo da listagem do blog (aprovado em 11/11/2026) ----------
+   Faixa de bronze com pátina; à direita, o índice: total de artigos e os temas com a quantidade de cada um
+   (ao publicar um artigo, atualize esses números no blog/index.html). */
 .blog-banner{
-  padding:64px 0 28px;
-  border-bottom:1px solid var(--glass-border);
   background:
-    radial-gradient(120% 140% at 80% -10%, rgba(184,146,83,.10), transparent 60%),
-    var(--navy);
+    var(--plate-patina),
+    radial-gradient(90% 140% at 85% -20%, rgba(185,124,78,.12), transparent 60%),
+    linear-gradient(180deg,#2E2117,#261B13);
+  box-shadow:inset 0 -1px 0 rgba(185,124,78,.35);
 }
-.blog-banner .eyebrow{ margin-bottom:16px; }
-.blog-title{ font-size:clamp(2.2rem,5vw,3.4rem); letter-spacing:-.01em; }
-.blog-lead{
-  margin-top:16px; max-width:620px;
-  color:rgba(244,241,234,.78); font-size:1.05rem;
+.blog-banner-grid{
+  display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:40px; align-items:end;
+  padding-top:56px; padding-bottom:50px;
 }
+.blog-banner .eyebrow{ margin-bottom:0; }
+.blog-title{ font-size:clamp(2.8rem,6vw,4.4rem); letter-spacing:-.01em; margin:18px 0 16px; }
+.blog-lead{ max-width:56ch; color:rgba(243,238,230,.8); font-size:1.05rem; }
+.blog-indice{ justify-self:end; width:100%; max-width:340px; padding-left:26px; border-left:1px solid rgba(220,193,162,.2); }
+.blog-total{
+  display:block; font-family:'Cormorant Garamond',serif; font-size:2.4rem; line-height:1;
+  color:var(--copper-hi); font-variant-numeric:lining-nums;
+}
+.blog-total small{ font-family:'Jost',sans-serif; font-size:.84rem; letter-spacing:.06em; color:var(--muted); margin-left:8px; }
+.blog-indice ul{ list-style:none; margin-top:18px; display:grid; gap:10px; }
+.blog-indice li{ display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.blog-indice li > span:last-child{ color:var(--muted); font-size:.92rem; font-variant-numeric:tabular-nums; }
 .breadcrumb{
   font-size:.875rem; letter-spacing:.04em; color:var(--muted);
   margin-bottom:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
 }
-.breadcrumb a{ color:var(--gold-light); padding:10px 0; }   /* área de toque */
-.breadcrumb a:hover{ color:var(--gold); }
+.breadcrumb a{ color:var(--copper-light); padding:10px 0; }   /* área de toque */
+.breadcrumb a:hover{ color:var(--copper); }
 .breadcrumb span{ opacity:.5; }
 
-/* ---------- Listagem de posts ---------- */
-.blog-grid{
-  display:grid; grid-template-columns:repeat(3,1fr); gap:30px;
-  padding:56px 0 40px;
-}
-.post-card{
-  display:flex; flex-direction:column; overflow:hidden;
-  background:var(--glass-bg); border:1px solid var(--glass-border);
-  border-radius:20px; backdrop-filter:blur(var(--glass-blur));
-  -webkit-backdrop-filter:blur(var(--glass-blur));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), var(--shadow);
-  transition:transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
-}
-.post-card:hover{
-  transform:translateY(-6px); border-color:var(--gold);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 30px 60px -24px rgba(0,20,24,.7);
-}
-.post-card a{ display:flex; flex-direction:column; height:100%; }
-/* foco pelo teclado: o anel vai no card inteiro (o overflow:hidden cortava o contorno do link) */
-.post-card a:focus-visible{ outline:none; }
-.post-card:has(a:focus-visible){ outline:2px solid var(--gold-light); outline-offset:4px; }
-.section--light .post-card:has(a:focus-visible){ outline-color:var(--gold-text); }
-.post-thumb{
-  aspect-ratio:16/10; width:100%; object-fit:cover;
-  background:var(--navy-soft);
-  transition:transform .6s var(--ease);
-}
-.post-card:hover .post-thumb{ transform:scale(1.05); }
-.post-thumb-wrap{ overflow:hidden; }
-.post-body{ padding:24px 24px 26px; display:flex; flex-direction:column; gap:12px; flex:1; }
-/* degradê só até o dourado médio: o texto escuro mantém contraste em toda a etiqueta */
+/* ---------- Categoria, data e "Ler artigo" (blog, home e topo dos artigos) ---------- */
+/* categoria gravada: maiúsculas espaçadas com o losango de cobre (antes: pílula em degradê) */
 .post-tag{
-  align-self:flex-start; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--navy-deep); font-weight:600;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  padding:5px 12px; border-radius:30px;
+  display:inline-flex; align-items:center; gap:10px; align-self:flex-start;
+  font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; font-weight:600; color:var(--copper-hi);
 }
-/* título do card: h2 na página do blog, h3 na home (dentro da seção "Do nosso Blog") */
-.post-card :is(h2,h3){
-  font-size:1.45rem; line-height:1.18; color:var(--cream);
-  transition:color .25s;
-}
-.post-card:hover :is(h2,h3){ color:var(--gold-light); }
-.post-excerpt{ color:rgba(244,241,234,.66); font-size:.94rem; flex:1; }
+.post-tag::before{ content:''; width:6px; height:6px; background:var(--copper); transform:rotate(45deg); flex:none; }
 .post-meta{
-  font-size:.875rem; letter-spacing:.03em; color:var(--muted);
-  display:flex; gap:8px; align-items:center; margin-top:4px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px;
+  font-size:.86rem; color:var(--muted); font-variant-numeric:lining-nums tabular-nums;
 }
-.post-meta span{ opacity:.5; }
+.post-meta > span{ display:inline-flex; align-items:center; gap:7px; }
+.post-meta svg{ width:15px; height:15px; opacity:.8; flex:none; }
+.post-ler{ display:inline-flex; align-items:center; gap:10px; font-size:.9rem; font-weight:500; letter-spacing:.03em; color:var(--copper-light); }
+.post-ler svg{ width:18px; height:18px; transition:transform .4s var(--ease); }
+
+/* ---------- Listagem: o mais recente numa placa de bronze; os anteriores como sumário ---------- */
+.blog-lista{ padding-top:56px; padding-bottom:80px; }
+
+/* placa grande (também usada na seção "Do nosso Blog" da página inicial) */
+.post-destaque{
+  position:relative; isolation:isolate; border-radius:24px;
+  background:var(--plate-grain),var(--plate-patina),var(--plate); box-shadow:var(--plate-shadow);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+}
+.post-destaque::before{   /* brilho suave no metal, no hover */
+  content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  background:radial-gradient(110% 90% at 100% 0%,rgba(220,193,162,.09),transparent 60%);
+  opacity:0; transition:opacity .45s var(--ease);
+}
+.post-destaque > a{
+  display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:8px; align-items:center;
+  padding:16px; border-radius:inherit;
+}
+/* capa emoldurada dentro da placa */
+.post-moldura{
+  border-radius:16px; overflow:hidden; background:var(--brown-soft);
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 14px 30px -18px rgba(0,0,0,.9);
+}
+.post-moldura img{ display:block; width:100%; height:auto; aspect-ratio:10/7; object-fit:cover; transition:transform .8s var(--ease); }
+.post-destaque-txt{ padding:26px 34px 26px 32px; display:flex; flex-direction:column; align-items:flex-start; gap:16px; }
+.post-rotulo{ font-size:.72rem; letter-spacing:.28em; text-transform:uppercase; color:var(--muted); }
+.post-destaque .post-titulo{ font-size:clamp(1.9rem,3vw,2.6rem); line-height:1.12; color:#fff; }
+.post-destaque .post-excerpt{ color:rgba(243,238,230,.78); max-width:52ch; }
+.post-rodape{
+  align-self:stretch; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px;
+  margin-top:6px; padding-top:18px; border-top:1px solid rgba(220,193,162,.16);
+}
+
+/* anteriores: linhas com foto pequena; no hover a linha vira placa */
+.post-anteriores{ margin-top:64px; }
+.post-anteriores-cab{ display:flex; align-items:center; gap:18px; margin-bottom:8px; }
+.post-anteriores-cab::after{ content:''; flex:1; height:1px; background:rgba(220,193,162,.18); }
+.post-anteriores-cab .eyebrow{ margin-bottom:0; }
+.post-linha{ position:relative; isolation:isolate; border-bottom:1px solid rgba(220,193,162,.12); }
+.post-linha::before{
+  content:''; position:absolute; inset:6px -20px; z-index:-1; border-radius:18px; pointer-events:none;
+  background:var(--plate-grain),var(--plate-patina),var(--plate); box-shadow:var(--plate-shadow);
+  opacity:0; transition:opacity .4s var(--ease);
+}
+.post-linha > a{ display:grid; grid-template-columns:220px minmax(0,1fr) auto; gap:30px; align-items:center; padding:26px 0; }
+.post-mini{ border-radius:12px; overflow:hidden; background:var(--brown-soft); }
+.post-mini img{ display:block; width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; transition:transform .7s var(--ease); }
+.post-linha-txt{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-width:0; }
+.post-linha .post-titulo{ font-size:1.65rem; line-height:1.15; color:#fff; transition:color .3s var(--ease); }
+.post-linha .post-excerpt{ color:rgba(243,238,230,.72); font-size:.95rem; max-width:62ch; }
+.post-linha-lado{ display:flex; flex-direction:column; align-items:flex-end; gap:14px; text-align:right; }
+.post-seta{
+  width:44px; height:44px; border-radius:50%; display:grid; place-items:center;
+  border:1px solid rgba(220,193,162,.25); color:var(--copper-light);
+  transition:background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), transform .35s var(--ease);
+}
+.post-seta svg{ width:18px; height:18px; }
+
+/* mouse (só em quem tem mouse: no toque o efeito ficaria preso) */
+@media (hover:hover){
+  .post-destaque:hover{ transform:translateY(-5px); box-shadow:var(--plate-shadow-hover); }
+  .post-destaque:hover::before{ opacity:1; }
+  .post-destaque:hover .post-moldura img{ transform:scale(1.04); }
+  .post-destaque:hover .post-ler svg{ transform:translateX(5px); }
+  .post-linha:hover::before{ opacity:1; }
+  .post-linha:hover .post-titulo{ color:var(--copper-hi); }
+  .post-linha:hover .post-mini img{ transform:scale(1.05); }
+  .post-linha:hover .post-seta{ background:var(--copper); border-color:var(--copper); color:var(--brown-deep); transform:translateX(3px); }
+}
+/* foco pelo teclado: o anel vai na placa / na linha inteira */
+.post-destaque > a:focus-visible,.post-linha > a:focus-visible{ outline:none; }
+.post-destaque:has(a:focus-visible){ outline:2px solid var(--copper-light); outline-offset:6px; }
+.post-linha:has(a:focus-visible){ outline:2px solid var(--copper-light); outline-offset:4px; border-radius:12px; }
+.section--light .post-destaque:has(a:focus-visible){ outline-color:var(--copper-text); }
+@media (prefers-reduced-motion:reduce){
+  .post-destaque,.post-destaque *,.post-linha,.post-linha *{ transition:none!important; }
+}
 
 /* aviso de "ainda não há posts" / placeholder */
 .blog-empty{
@@ -91,37 +147,43 @@ body.blog-page{ background:var(--navy-deep); }
 /* 660px: linhas de ~79 caracteres no texto corrido (antes ~92; o confortável é 60–80) */
 .article-wrap{ max-width:660px; margin:0 auto; padding:0 24px; }
 .article-head{ padding:48px 0 8px; }
-.article-head .post-tag{ margin-bottom:18px; }
+.article-head .post-tag{ margin-bottom:18px; }   /* a etiqueta é inline-flex: a margem de baixo vale e ela não encosta no título */
 .article-title{ font-size:clamp(2rem,4.6vw,3.1rem); line-height:1.08; letter-spacing:-.01em; }
 .article-meta{
   margin-top:18px; font-size:.86rem; color:var(--muted);
   display:flex; gap:10px; align-items:center; flex-wrap:wrap;
 }
 .article-meta span{ opacity:.5; }
+/* celular: "Por MRA..." vai para a linha de baixo — o último "·" vira uma quebra de linha
+   (item de largura total e altura zero), em vez de ficar solto no fim da linha */
+@media (max-width:560px){
+  .article-meta{ row-gap:6px; }
+  .article-meta span:last-of-type{ flex-basis:100%; height:0; overflow:hidden; }
+}
 .article-cover{
   width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:18px;
   margin:34px 0 8px; box-shadow:var(--shadow);
 }
 
 /* corpo do texto: leitura confortável */
-.article-body{ padding:24px 0 8px; font-size:1.08rem; line-height:1.78; color:rgba(244,241,234,.86); }
+.article-body{ padding:24px 0 8px; font-size:1.08rem; line-height:1.78; color:rgba(243,238,230,.86); }
 .article-body > * + *{ margin-top:1.25em; }
 .article-body h2{
   font-size:1.85rem; color:var(--cream); margin-top:1.8em; line-height:1.2;
   padding-top:.3em;
 }
-.article-body h3{ font-size:1.4rem; color:var(--gold-light); margin-top:1.6em; }
+.article-body h3{ font-size:1.4rem; color:var(--copper-light); margin-top:1.6em; }
 .article-body p{ }
-.article-body a{ color:var(--gold-light); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(214,183,128,.4); }
-.article-body a:hover{ text-decoration-color:var(--gold); }
+.article-body a{ color:var(--copper-light); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(220,193,162,.4); }
+.article-body a:hover{ text-decoration-color:var(--copper); }
 .article-body strong{ color:var(--cream); font-weight:600; }
 .article-body ul,.article-body ol{ padding-left:1.4em; }
 .article-body li{ margin-top:.5em; }
-.article-body li::marker{ color:var(--gold); }
+.article-body li::marker{ color:var(--copper); }
 .article-body blockquote{
-  border-left:3px solid var(--gold); padding:6px 0 6px 22px; margin-left:0;
+  border-left:3px solid var(--copper); padding:6px 0 6px 22px; margin-left:0;
   font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:1.35rem;
-  color:var(--gold-light); line-height:1.4;
+  color:var(--copper-light); line-height:1.4;
 }
 .article-body figure{ margin:1.6em 0; }
 .article-body figure img{ width:100%; border-radius:14px; box-shadow:var(--shadow); }
@@ -133,10 +195,33 @@ body.blog-page{ background:var(--navy-deep); }
 .article-body table{ width:100%; min-width:480px; border-collapse:collapse; font-size:.95rem; line-height:1.5; }
 .article-body caption{ caption-side:top; text-align:left; font-size:.82rem; color:var(--muted); padding-bottom:10px; }
 .article-body th,.article-body td{ padding:11px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--glass-border); }
-.article-body thead th{ font-size:.76rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-light); }
+.article-body thead th{ font-size:.76rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--copper-light); }
 .article-body tbody th{ color:var(--cream); font-weight:600; }
 .article-body td{ font-variant-numeric:lining-nums tabular-nums; }
-.article-body .table-group th{ padding-top:22px; color:var(--gold-light); font-weight:500; font-size:.9rem; }
+.article-body .table-group th{ padding-top:22px; color:var(--copper-light); font-weight:500; font-size:.9rem; }
+/* Celular: a tabela vira blocos — cada linha (ex.: "Juros ao ano") mostra os 3 valores lado a lado,
+   cada um com o nome da categoria em cima (vem do data-label do <td>). Sem rolagem lateral,
+   e a legenda e os títulos de grupo aparecem inteiros. O cabeçalho some só da vista (leitores de tela leem). */
+@media (max-width:560px){
+  .table-wrap{ overflow:visible; }
+  .article-body table,.article-body table caption,.article-body table tbody,.article-body table tr{ display:block; min-width:0; }
+  .article-body table caption{ padding-bottom:4px; }
+  .article-body table thead{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .article-body table tbody tr{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:10px;
+    padding:12px 0; border-bottom:1px solid var(--glass-border); }
+  .article-body table tbody th,.article-body table tbody td{ display:block; padding:0; border:0; }
+  .article-body table tbody th[scope="row"]{ grid-column:1 / -1; margin-bottom:6px; }
+  .article-body table td[colspan]{ grid-column:1 / -1; }
+  .article-body table td{ font-size:.92rem; }
+  .article-body table td::before{
+    content:attr(data-label); display:block; margin-bottom:2px;
+    font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); line-height:1.3;
+  }
+  /* rótulo com 2 linhas reservadas ("DEMAIS / PRODUTORES"): os 3 valores da linha começam na mesma altura */
+  .article-body table td:not([colspan])::before{ min-height:2.6em; }
+  .article-body table .table-group{ display:block; padding:20px 0 6px; }
+  .article-body table .table-group th{ padding:0; }
+}
 
 /* aviso OAB, CTA e "← Voltar": mesma coluna do texto (612px = 660 − 2×24 de respiro lateral) */
 .article-disclaimer,.article-cta,.article-nav{ width:calc(100% - 48px); max-width:612px; }
@@ -154,11 +239,11 @@ body.blog-page{ background:var(--navy-deep); }
   margin:44px auto 0; padding:38px 36px; text-align:center;
   border-radius:20px; border:1px solid var(--glass-border);
   background:
-    radial-gradient(120% 140% at 50% -20%, rgba(184,146,83,.16), transparent 60%),
-    var(--navy);
+    radial-gradient(120% 140% at 50% -20%, rgba(185,124,78,.16), transparent 60%),
+    var(--brown);
 }
 .article-cta h3{ font-size:1.7rem; color:var(--cream); }
-.article-cta p{ margin:12px auto 24px; max-width:480px; color:rgba(244,241,234,.74); }
+.article-cta p{ margin:12px auto 24px; max-width:480px; color:rgba(243,238,230,.74); }
 
 /* navegação entre posts */
 /* respiro antes do rodapé (antes o "← Voltar" ficava a ~14px do fio do rodapé) */
@@ -166,8 +251,8 @@ body.blog-page{ background:var(--navy-deep); }
   margin:36px auto 0; display:flex; justify-content:space-between; gap:16px;
   padding-bottom:64px;
 }
-.article-nav a{ color:var(--gold-light); font-size:.92rem; letter-spacing:.02em; padding:12px 0; }
-.article-nav a:hover{ color:var(--gold); }
+.article-nav a{ color:var(--copper-light); font-size:.92rem; letter-spacing:.02em; padding:12px 0; }
+.article-nav a:hover{ color:var(--copper); }
 
 /* ===================================================================
    Páginas de área de atuação (usam o layout do artigo + estes blocos)
@@ -175,7 +260,7 @@ body.blog-page{ background:var(--navy-deep); }
 /* rótulo pequeno em caixa alta: "Em resumo", "Dica", "Atenção" */
 .area-label{
   display:block; margin-bottom:8px;
-  font-size:.74rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-light);
+  font-size:.74rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--copper-light);
 }
 
 /* "Em resumo": quem só passa os olhos já entende o essencial */
@@ -188,8 +273,8 @@ body.blog-page{ background:var(--navy-deep); }
 
 /* dica / atenção: destaque dentro do texto */
 .area-callout{
-  padding:18px 22px; border-left:3px solid var(--gold); border-radius:0 14px 14px 0;
-  background:rgba(184,146,83,.08);
+  padding:18px 22px; border-left:3px solid var(--copper); border-radius:0 14px 14px 0;
+  background:rgba(185,124,78,.08);
 }
 
 /* contato no meio da página (o CTA do fim nem todos alcançam) */
@@ -197,18 +282,18 @@ body.blog-page{ background:var(--navy-deep); }
   display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px 24px;
   padding:22px 24px; border-radius:16px; border:1px solid var(--glass-border);
   background:
-    radial-gradient(120% 160% at 0% 0%, rgba(184,146,83,.14), transparent 60%),
-    var(--navy);
+    radial-gradient(120% 160% at 0% 0%, rgba(185,124,78,.14), transparent 60%),
+    var(--brown);
 }
-.area-cta-inline p{ color:rgba(244,241,234,.78); line-height:1.5; }
+.area-cta-inline p{ color:rgba(243,238,230,.78); line-height:1.5; }
 .area-cta-inline p strong{ display:block; font-size:1.08rem; }
 .article-body .btn{ text-decoration:none; }
-.article-body .btn-primary{ color:var(--navy-deep); }
+.article-body .btn-primary{ color:var(--brown-deep); }
 .area-cta-inline .btn{ display:inline-flex; align-items:center; gap:9px; flex:none; padding:12px 24px; }
 .area-cta-inline .btn svg{ width:18px; height:18px; }
 
 /* passos "Como podemos ajudar": mesma linha do tempo de "Como Atuamos" no celular
-   (medalhão à esquerda, trilha dourada descendo pela coluna dele) */
+   (medalhão à esquerda, trilha cor de cobre descendo pela coluna dele) */
 .article-body .area-steps{ list-style:none; padding:0; display:grid; gap:26px; }
 .article-body .area-steps li{
   margin-top:0; position:relative;
@@ -219,10 +304,10 @@ body.blog-page{ background:var(--navy-deep); }
   grid-column:2; grid-row:1; align-self:center; margin:0;
   font-size:1.3rem; color:var(--cream);
 }
-.area-steps p{ grid-column:2; grid-row:2; margin-top:6px; color:rgba(244,241,234,.78); }
+.area-steps p{ grid-column:2; grid-row:2; margin-top:6px; color:rgba(243,238,230,.78); }
 .area-steps li:not(:last-child)::after{
   content:''; position:absolute; left:29px; top:66px; bottom:-22px; width:1px;
-  background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
+  background:linear-gradient(180deg,var(--copper),rgba(220,193,162,.14));
 }
 
 /* Índice lateral "Nesta página" — gerado pelo pages.js nas páginas com <article data-toc>.
@@ -238,51 +323,51 @@ body.blog-page{ background:var(--navy-deep); }
   .page-toc nav{ position:sticky; top:120px; padding-top:68px; }
   .page-toc-title{
     font-size:.72rem; font-weight:600; letter-spacing:.24em; text-transform:uppercase;
-    color:var(--gold-light); margin-bottom:14px;
+    color:var(--copper-light); margin-bottom:14px;
   }
-  .page-toc ol{ list-style:none; border-left:1px solid rgba(214,183,128,.18); }
+  .page-toc ol{ list-style:none; border-left:1px solid rgba(220,193,162,.18); }
   .page-toc a{
     display:block; margin-left:-1px; padding:7px 0 7px 16px; border-left:2px solid transparent;
-    font-size:.86rem; line-height:1.4; color:rgba(244,241,234,.6);
+    font-size:.86rem; line-height:1.4; color:rgba(243,238,230,.6);
     transition:color .2s var(--ease), border-color .2s var(--ease);
   }
   .page-toc a:hover{ color:var(--cream); }
-  .page-toc a.is-active{ color:var(--gold-light); border-left-color:var(--gold); }
+  .page-toc a.is-active{ color:var(--copper-light); border-left-color:var(--copper); }
 }
 
 /* ===================================================================
-   Destaque do Blog na página inicial (usa .post-card já definido acima)
+   Destaque do Blog na página inicial (usa a .post-destaque definida acima)
    =================================================================== */
-.blog-teaser-grid{
-  display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:46px;
-}
+.blog-teaser .post-destaque{ margin-top:46px; }
 .blog-teaser-actions{ text-align:center; margin-top:42px; }
 
-/* card em destaque: ocupa a largura e fica na horizontal (1 artigo) */
-.post-card--featured{ grid-column:1 / -1; }
-.post-card--featured > a{ flex-direction:row; align-items:stretch; }
-.post-card--featured .post-thumb-wrap{ flex:0 0 46%; }
-.post-card--featured .post-thumb{ height:100%; aspect-ratio:auto; min-height:320px; }
-.post-card--featured .post-body{ justify-content:center; padding:38px 44px; gap:14px; }
-.post-card--featured :is(h2,h3){ font-size:2rem; }
-.post-card--featured .post-excerpt{ font-size:1rem; flex:initial; }
-
-@media (max-width:760px){
-  .post-card--featured > a{ flex-direction:column; }
-  .post-card--featured .post-thumb-wrap{ flex:none; }
-  .post-card--featured .post-thumb{ min-height:0; aspect-ratio:16/10; }
-  .post-card--featured .post-body{ padding:26px 24px; }
-  .post-card--featured :is(h2,h3){ font-size:1.5rem; }
-}
-
 /* ---------- Responsivo ---------- */
-@media (max-width:900px){
-  .blog-grid{ grid-template-columns:repeat(2,1fr); gap:24px; padding:44px 0 32px; }
+@media (max-width:980px){
+  /* topo: índice embaixo do texto, com os temas lado a lado */
+  .blog-banner-grid{ grid-template-columns:minmax(0,1fr); align-items:start; gap:30px; }
+  .blog-indice{ justify-self:start; max-width:none; padding:22px 0 0; border-left:0; border-top:1px solid rgba(220,193,162,.2); }
+  .blog-indice ul{ grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); column-gap:28px; }
+  /* destaque: capa em cima, texto embaixo */
+  .post-destaque > a{ grid-template-columns:minmax(0,1fr); gap:0; padding:12px; }
+  .post-destaque-txt{ padding:24px 12px 14px; }
+}
+@media (max-width:760px){
+  .blog-banner-grid{ padding-top:40px; padding-bottom:36px; }
+  .blog-lista{ padding-top:40px; padding-bottom:60px; }
+  .post-destaque{ border-radius:20px; }
+  .post-destaque-txt{ padding:22px 10px 12px; gap:14px; }
+  .post-destaque .post-titulo{ font-size:1.85rem; }
+  /* anteriores: lista compacta — foto quadrada, categoria, título e data */
+  .post-anteriores{ margin-top:48px; }
+  .post-linha > a{ grid-template-columns:96px minmax(0,1fr); gap:16px; align-items:start; padding:20px 0; }
+  .post-linha::before{ display:none; }
+  .post-mini img{ aspect-ratio:1/1; }
+  .post-linha .post-titulo{ font-size:1.3rem; }
+  .post-linha .post-excerpt,.post-seta{ display:none; }
+  .post-linha-lado{ grid-column:2; align-items:flex-start; text-align:left; gap:0; }
 }
 @media (max-width:600px){
   .blog-main{ padding-top:80px; }
-  .blog-banner{ padding:44px 0 22px; }
-  .blog-grid{ grid-template-columns:1fr; gap:22px; }
   .article-body{ font-size:1.02rem; }
   .article-cta{ padding:30px 22px; }
 }

@@ -213,6 +213,29 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
     if (status.classList.contains('error')) { status.textContent = ''; status.className = 'lead-status'; }
   };
 
+  // campos de dívida: só para casos do bancário do agro (o <optgroup data-agro> do tipo de caso).
+  // Sem JS eles continuam visíveis; com JS, ficam ocultos até a pessoa escolher um caso do agro.
+  const typeEl = form.elements.namedItem('type');
+  const agroOnly = Array.from(form.querySelectorAll('[data-agro-only]'));
+  const isAgro = () => {
+    const o = typeEl && typeEl.selectedOptions[0];
+    return !!(o && o.parentElement && o.parentElement.hasAttribute('data-agro'));
+  };
+  const syncAgro = () => {
+    const on = isAgro();
+    agroOnly.forEach(box => {
+      box.hidden = !on;
+      if (on) return;
+      const el = box.querySelector('select, input');   // oculto: sai vazio e sem marca de erro
+      if (el) { el.value = ''; el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); }
+      box.classList.remove('invalid', 'valid');
+    });
+    // sem os campos de dívida, o tipo de caso ocupa a linha inteira (não sobra buraco na grade)
+    const typeBox = typeEl && typeEl.closest('.field');
+    if (typeBox) typeBox.classList.toggle('field-full', !on);
+  };
+  if (typeEl) { typeEl.addEventListener('change', syncAgro); syncAgro(); }
+
   // regras: retornam null se ok, ou a mensagem de erro
   const onlyDigits = s => (s || '').replace(/\D/g, '');
   // telefone no formato nacional: tira o +55 (o WhatsApp mostra "+55 62 9xxxx-xxxx") e o 0 de
@@ -243,8 +266,8 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
       return null;
     },
     type: v => (!v ? 'Selecione o tipo de caso.' : null),
-    overdue: v => (!v ? 'Informe se possui dívida vencida.' : null),
-    amount: v => (!v ? 'Selecione uma faixa de valor (ou "Prefiro não informar").' : null),
+    overdue: v => (isAgro() && !v ? 'Informe se possui dívida vencida.' : null),
+    amount: v => (isAgro() && !v ? 'Selecione uma faixa de valor (ou "Prefiro não informar").' : null),
     message: () => null // opcional
   };
 
@@ -321,22 +344,23 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
         body: JSON.stringify({
           access_key: apiKey(),
           subject: 'Novo lead do site — ' + data.name,
-          from_name: 'Site • Matheus Ribeiro Advogados',
+          from_name: 'Site • MRA Advogados & Associados',
           Nome: data.name,
           WhatsApp: data.phone,
           'Cidade/UF': data.city || '—',
           'Tipo de caso': data.type,
-          'Dívida vencida': data.overdue,
-          'Valor aproximado': data.amount,
+          'Dívida vencida': data.overdue || '—',
+          'Valor aproximado': data.amount || '—',
           'Descrição': data.message || '—'
         })
       });
       const json = await res.json();
       if (!json.success) throw new Error(json.message || 'falha');
-      status.textContent = '✓ Recebemos seus dados. Em breve entraremos em contato.';
+      status.textContent = '✓ Recebemos seus dados. Retornaremos pelo WhatsApp informado, de segunda a sexta, das 08:00 às 18:00.';
       status.className = 'lead-status ok';
       if (window.umami) umami.track('lead-formulario'); // conversão: formulário enviado
       form.reset();
+      syncAgro();   // o tipo de caso volta ao "Selecione..." e os campos de dívida se escondem de novo
       // limpa marcações de validação após enviar
       Object.keys(rules).forEach(name => {
         const { el, box } = fieldOf(name);
@@ -344,7 +368,7 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
         if (el) { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); }
       });
     } catch (err) {
-      status.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+      status.textContent = 'Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp (62) 98225-4519.';
       status.className = 'lead-status error';
     } finally {
       if (btn) { btn.disabled = false; btn.classList.remove('is-loading'); btn.textContent = btnLabel; }
@@ -531,4 +555,148 @@ window.matchMedia('(max-width: 1100px)').addEventListener('change', e => { if (!
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   update();
+})();
+
+// ===== Nossa Essência e Nosso Espaço =====
+// Essência: a foto aproxima devagar e a placa de texto desliza de leve enquanto a seção passa pela tela.
+// Espaço (percurso): no computador a seção fica presa na tela (.tour--pin) e a rolagem troca as fotos;
+// no celular as fotos deslizam de lado. Tocar numa foto abre em tela cheia (<dialog id="lb">).
+(function () {
+  const tour = document.getElementById('espaco');
+  const essFoto = document.querySelector('.ess-foto');
+  const essPlaca = document.querySelector('.ess-placa');
+  if (!tour) return;
+  const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const desktop = window.matchMedia('(min-width: 901px)');
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const pad = n => String(n).padStart(2, '0');
+
+  const slides = Array.from(tour.querySelectorAll('.slide'));
+  const paradas = Array.from(tour.querySelectorAll('.parada'));
+  const pontos = Array.from(tour.querySelectorAll('.pontos button'));
+  const legenda = tour.querySelector('.legenda');
+  const contador = tour.querySelector('.contador');
+  const caixa = tour.querySelector('.paradas-box');
+  const palco = document.getElementById('palco');
+  const N = slides.length;
+  let atual = 0, modo = '', timer = null;
+
+  function ativa(i, forca) {
+    i = clamp(i, 0, N - 1);
+    if (i === atual && !forca) return;
+    atual = i;
+    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    paradas.forEach((b, k) => {
+      b.classList.toggle('on', k === i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    pontos.forEach((b, k) => b.classList.toggle('on', k === i));
+    if (legenda) legenda.innerHTML = slides[i].querySelector('.cap-texto').innerHTML;
+    if (contador) contador.textContent = pad(i + 1) + ' / ' + pad(N);
+    if (modo === 'auto' && caixa) caixa.style.setProperty('--p', ((i + 1) / N).toFixed(3));
+  }
+
+  // "pin" só com altura de tela normal; se a janela for muito alta ou baixa, as fotos trocam sozinhas ("auto")
+  function escolheModo() {
+    const vh = window.innerHeight;
+    const novo = !desktop.matches ? 'deslizar' : (vh >= 560 && vh <= 1400 ? 'pin' : 'auto');
+    if (novo === modo) return;
+    modo = novo;
+    tour.classList.toggle('tour--pin', modo === 'pin');
+    paraAuto();
+    if (modo === 'auto') {
+      if (caixa) caixa.style.setProperty('--p', ((atual + 1) / N).toFixed(3));
+      if (!reduz) iniciaAuto();
+    }
+  }
+  function progressoPin() {
+    const r = tour.getBoundingClientRect(), total = r.height - window.innerHeight;
+    const p = clamp(-r.top / total, 0, 1);
+    if (caixa) caixa.style.setProperty('--p', p.toFixed(4));
+    ativa(Math.min(N - 1, Math.floor(p * N)));
+  }
+  function iniciaAuto() { paraAuto(); timer = setInterval(() => ativa((atual + 1) % N), 5500); }
+  function paraAuto() { if (timer) { clearInterval(timer); timer = null; } }
+  tour.addEventListener('mouseenter', () => { if (modo === 'auto') paraAuto(); });
+  tour.addEventListener('mouseleave', () => { if (modo === 'auto' && !reduz) iniciaAuto(); });
+  tour.addEventListener('focusin', () => { if (modo === 'auto') paraAuto(); });
+
+  // clicar numa parada: no modo "pin" rola até o trecho dela; nos outros, mostra a foto
+  paradas.forEach((b, k) => b.addEventListener('click', () => {
+    if (modo === 'pin') {
+      const r = tour.getBoundingClientRect(), total = r.height - window.innerHeight;
+      window.scrollTo({ top: window.scrollY + r.top + (k + 0.5) / N * total, behavior: reduz ? 'auto' : 'smooth' });
+    } else { ativa(k); if (modo === 'auto' && !reduz) iniciaAuto(); }
+  }));
+
+  // celular: o traço de progresso acompanha a foto que está na tela
+  const passo = () => (N > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : palco.clientWidth);
+  let rafTrilho = 0;
+  palco.addEventListener('scroll', () => {
+    if (modo !== 'deslizar' || rafTrilho) return;
+    rafTrilho = requestAnimationFrame(() => { rafTrilho = 0; ativa(Math.round(palco.scrollLeft / passo())); });
+  }, { passive: true });
+  pontos.forEach((b, k) => b.addEventListener('click', () => {
+    palco.scrollTo({ left: k * passo(), behavior: reduz ? 'auto' : 'smooth' });
+  }));
+
+  // ---- foto em tela cheia ----
+  const lb = document.getElementById('lb');
+  const lbImg = document.getElementById('lb-img');
+  const lbTit = document.getElementById('lb-titulo');
+  const lbPos = document.getElementById('lb-pos');
+  let lbAtual = 0, quemAbriu = null;
+  function mostra(i) {
+    lbAtual = (i + N) % N;
+    const s = slides[lbAtual];
+    lbImg.src = s.dataset.full;
+    lbImg.alt = s.querySelector('img').alt;
+    lbTit.textContent = s.dataset.titulo;
+    lbPos.textContent = (lbAtual + 1) + ' de ' + N;
+  }
+  function abre(i) {
+    quemAbriu = document.activeElement; paraAuto(); mostra(i);
+    if (typeof lb.showModal === 'function') lb.showModal(); else lb.setAttribute('open', '');
+  }
+  function fecha() { if (typeof lb.close === 'function') lb.close(); else lb.removeAttribute('open'); }
+  if (lb) {
+    lb.addEventListener('close', () => { if (quemAbriu) quemAbriu.focus(); if (modo === 'auto' && !reduz) iniciaAuto(); });
+    slides.forEach((s, k) => s.querySelector('.abrir').addEventListener('click', () => abre(k)));
+    document.getElementById('lb-fechar').addEventListener('click', fecha);
+    document.getElementById('lb-ant').addEventListener('click', () => mostra(lbAtual - 1));
+    document.getElementById('lb-prox').addEventListener('click', () => mostra(lbAtual + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) fecha(); });   // clicar fora da foto fecha
+    lb.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') mostra(lbAtual - 1);
+      if (e.key === 'ArrowRight') mostra(lbAtual + 1);
+    });
+    let x0 = null;   // deslizar o dedo na foto troca de foto
+    lbImg.addEventListener('pointerdown', e => { x0 = e.clientX; });
+    lbImg.addEventListener('pointerup', e => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) mostra(lbAtual + (dx < 0 ? 1 : -1));
+    });
+  }
+
+  // ---- rolagem ----
+  function essencia() {
+    if (reduz || !essFoto) return;
+    const r = essFoto.getBoundingClientRect(), vh = window.innerHeight;
+    if (r.bottom < -200 || r.top > vh + 200) return;   // fora da tela: nada a fazer
+    const q = clamp((vh - r.top) / (vh + r.height), 0, 1);
+    essFoto.style.setProperty('--z', (1.14 - 0.14 * q).toFixed(4));
+    if (essPlaca) essPlaca.style.setProperty('--ty', ((0.5 - q) * 48).toFixed(1) + 'px');
+  }
+  let raf = 0;
+  function rolagem() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = 0; essencia(); if (modo === 'pin') progressoPin(); });
+  }
+  window.addEventListener('scroll', rolagem, { passive: true });
+  let tResize = 0;
+  window.addEventListener('resize', () => { clearTimeout(tResize); tResize = setTimeout(() => { escolheModo(); rolagem(); }, 150); });
+  escolheModo();
+  ativa(0, true);
+  rolagem();
 })();

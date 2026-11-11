@@ -21,7 +21,7 @@ Site institucional do escritório (Direito Bancário do Agronegócio), no ar em
 │  │  ├─ css/article.css      páginas de leitura (blog, artigos, privacidade) e cartões do blog
 │  │  ├─ js/main.js           interações da página inicial (menu, formulário, carrossel…)
 │  │  ├─ js/pages.js          interações das páginas internas (menu, ano no rodapé)
-│  │  ├─ img/marca/           logo (shield.png), favicon e imagem de compartilhamento (og-image.jpg)
+│  │  ├─ img/marca/           logo MRA, favicons e imagem de compartilhamento (og-image-mra.jpg)
 │  │  ├─ img/site/            fotos da página inicial (topo, escritório)
 │  │  ├─ img/equipe/          fotos da equipe (um arquivo por pessoa)
 │  │  ├─ img/blog/            capas dos artigos
@@ -78,8 +78,12 @@ Netlify → equipe → *Usage & billing*.
    Mantenha o `<article data-toc>`: o índice lateral "Nesta página" é montado sozinho a partir
    dos títulos `<h2>` do texto (aparece com 3 ou mais seções, em telas a partir de 1200px).
 3. Capa: coloque a imagem em `public/assets/img/blog/` (WebP, ~1200px de largura).
-4. Adicione o cartão do artigo em `public/blog/index.html`.
-5. Atualize o bloco "Do nosso Blog" em `public/index.html`.
+4. Em `public/blog/index.html`:
+   - o artigo novo entra na placa de destaque (`.post-destaque`): troque link, capa, categoria, título, resumo e data;
+   - o artigo que estava em destaque desce para "Artigos anteriores": duplique o modelo `.post-linha`
+     (o mais novo fica em cima);
+   - no topo, atualize o índice: o total em `.blog-total` e a contagem de cada tema (um tema novo vira um `<li>`).
+5. Atualize a placa do bloco "Do nosso Blog" em `public/index.html` (mesma estrutura do destaque, com `<h3>`).
 6. Inclua o endereço em `public/sitemap.xml`, com `<lastmod>` (data de publicação), e
    atualize o `<lastmod>` da linha do `/blog/` para a mesma data.
 7. Revise o texto com as **regras de conteúdo** abaixo antes de publicar.
@@ -90,6 +94,9 @@ Netlify → equipe → *Usage & billing*.
 `og:url`, JSON-LD, sitemap e links internos), em minúsculas e com hífens. O arquivo
 continua sendo `.html`; só o endereço é que não leva a extensão.
 
+**Tabelas nos artigos:** no celular (até 560px) cada linha da tabela vira um bloco, e cada `<td>` precisa de
+`data-label="Nome da coluna"` (é o rótulo que aparece em cima do valor). Exemplo em `blog/mp-1376-renegociacao-dividas-rurais.html`.
+
 ### Trocar uma imagem
 Use sempre um **nome de arquivo novo** (ex.: `og-image-2027.jpg`) e atualize as referências.
 As imagens ficam guardadas no navegador dos visitantes por 30 dias. Com o mesmo nome,
@@ -99,10 +106,33 @@ Algumas imagens têm **versões por tamanho de tela** (para o site abrir rápido
 Ao trocar, gere todas:
 | Imagem | Arquivos | Onde é referenciada |
 |---|---|---|
-| Foto do topo | `site/bg-producao-rural.webp` (2400px) e `-mobile.webp` (faixa central 640×1350) | `main.css` (`.hero-bg`) e os 2 `preload` no `<head>` do `index.html` |
-| Foto de Nossa Essência | `site/essencia-escritorio.webp` (1600px) e `-1100.webp` | `srcset` no `index.html` |
-| Escudo | `marca/shield-320.webp` nas páginas; `marca/shield.png` (grande) só nos dados estruturados | tags `<img>` e JSON-LD |
-| Ícones | `marca/favicon-96.png` (navegador/Google) e `favicon-180.png` (iPhone) | `<head>` de cada página e `_redirects` |
+| Foto do topo (fachada) | `site/hero-fachada.webp` (2400px, **com** a placa MRA; computador, texto centralizado), `hero-fachada-sem-placa.webp` (2200px; tablet e telas estreitas/altas, texto à esquerda) e `hero-fachada-mobile.webp` (foto vertical sem a placa, 619×1500) | `main.css` (`.hero-bg` e a media query `(min-width:1025px) and (min-aspect-ratio:5/4)`) e os 3 `preload` no `<head>` do `index.html` |
+| Foto de Nossa Essência (escritório completo) | `site/escritorio/essencia-recepcao-1800.webp` e `-900.webp` | `srcset` no `index.html` (`.ess-foto`) |
+| Percurso "Nosso espaço" | `site/escritorio/percurso-<parada>-1600.webp` e `-900.webp` (fachada, recepcao, espera) | `index.html` (`.slide`, com `data-full` = foto de 1600 para a tela cheia) |
+| Fachada do Contato | `site/escritorio/fachada-frente.webp` (900px) | `index.html` (`.contato-local`) |
+
+**Incluir uma parada no percurso "Nosso espaço"** (ex.: uma foto nova do escritório):
+1. Gere a foto em 1600px e 900px de largura (`percurso-<nome>-1600.webp` / `-900.webp`) em `site/escritorio/`.
+2. No `index.html`, dentro de `#espaco`: um `<li>` com o botão da parada em `.paradas`, um `<figure class="slide">`
+   no `.palco` (copie um existente e troque foto, título e legenda) e um botão em `.pontos`.
+3. Atualize o `--n` do `<div class="tour" ...>` (número de paradas) e os números "01 / 03" do contador.
+   O resto (fio de progresso, tela cheia, celular) se ajusta sozinho.
+| Imagem de compartilhamento (WhatsApp/redes) | `marca/og-image-mra.jpg` (1200×630) | `og:image` de cada página e JSON-LD |
+| Logo | `marca/mra-monograma.svg` (vetor: MRA + barra, degradê cobre) no cabeçalho, rodapé e 404; `marca/logo-mra.png` (o mesmo monograma em PNG) só nos dados estruturados | tags `<img>` e JSON-LD |
+| Ícones | `marca/favicon-mra.svg` (aba do navegador: letras MRA sem fundo, pretas no tema claro e champanhe no escuro), `favicon-mra-32.png` e `-48.png` (pretas sem fundo: Safari, Google e `/favicon.ico`), `favicon-mra-180.png` (iPhone: MRA no bronze, porque o iPhone pinta de preto o fundo transparente); há também `favicon-mra-512.png` (MRA no bronze, para redes e Perfil da Empresa) | `<head>` de cada página e `_redirects` |
+| Árvore da marca | `marca/arvore-mra.webp` (760px, cobre de uma cor só) e `arvore-mra-400.webp` (400px) | a de 760px fica atrás da missão (`.missao-arvore`); a de 400px aparece no canto dos cards de área ao passar o mouse (`.area-card::after` no `main.css`) |
+
+Os originais ficam em `imagens/escritorio-mra-2026-11/`, só no computador: fotos do escritório (sem compressão),
+`00-logo-mra-cobre-vetor.svg` (vetor da gráfica), `00-arvore-mra.png` e `00-logo-mra-png.png` (versão antiga, não usar).
+
+Sobre a logo:
+- O desenho certo é o do **vetor da gráfica** (`MRA_arquivos_grafica`), igual ao letreiro da fachada: traço grosso, R aberto à esquerda, A em ponta.
+- O PNG enviado em 06/11 é um redesenho diferente (traço fino, R fechado).
+- No site vai só o monograma (MRA + barra), sem a linha de baixo, porque:
+  - o vetor diz "ADVOGADOS **E** ASSOCIADOS", e o nome oficial e o letreiro usam "**&**";
+  - no cabeçalho essa linha ficaria com ~3px de altura.
+- O nome completo está no `alt` das imagens.
+- Cor: o degradê do PDF CMYK da gráfica (#E2AB77 → #C6884E → #A36C39 → #CC925B, na diagonal).
 
 ### Equipe
 - Fotos em `public/assets/img/equipe/<nome>.webp`, com cartões em `public/index.html` (seção "Quem Somos").
@@ -113,12 +143,13 @@ Ao trocar, gere todas:
 ### Onde ficam os dados que mudam
 | O quê | Onde |
 |---|---|
-| WhatsApp / telefone ((62) 98225-4519) | links `wa.me/556282254519` (sem o 9, como o WhatsApp registrou o número) em `public/index.html` (4×), `public/blog/index.html`, em cada artigo e página de área; telefone **com o 9** no JSON-LD do `index.html`, igual ao Perfil da Empresa no Google |
+| WhatsApp / telefone ((62) 98225-4519) | links `wa.me/556282254519` (sem o 9, como o WhatsApp registrou o número) em `public/index.html`, `public/blog/index.html`, em cada artigo e página de área, no rodapé e no menu do celular de todas as páginas; escrito **com o 9** no rodapé ("WhatsApp (62) 98225-4519") e no JSON-LD do `index.html`, igual ao Perfil da Empresa no Google |
+| Horário de atendimento (seg. a sex., 08:00 às 18:00) | rodapé (coluna "Contato") e menu do celular (`.nav-contato`) de cada página, e JSON-LD (`openingHoursSpecification`) do `index.html`. Ao mudar, atualize também o Perfil da Empresa no Google |
 | Link de avaliação do Google | `public/_redirects` (linha `/avaliar`) |
 | Chave do formulário (Web3Forms) | `public/assets/js/main.js` (`apiKey`, em base64) |
 | Analytics (Umami) | `<script … data-website-id>` no `<head>` de cada página |
 | Razão social, CNPJ, registro na OAB | rodapé de cada página, `privacidade.html` e JSON-LD do `index.html` |
-| Endereço do escritório | rodapé das 4 páginas, `privacidade.html` (seção 1) e JSON-LD (`address`) em `index.html` e `blog/index.html`. Ao mudar, atualize também a data da Política de Privacidade e o Perfil da Empresa no Google, com o endereço escrito igual |
+| Endereço do escritório | rodapé e menu do celular de cada página, `privacidade.html` (seção 1) e JSON-LD (`address`) em `index.html` e `blog/index.html`. Ao mudar, atualize também a data da Política de Privacidade e o Perfil da Empresa no Google, com o endereço escrito igual |
 
 ---
 
@@ -146,3 +177,7 @@ Base: Provimento 205/2021 e Código de Ética e Disciplina da OAB, mais a LGPD.
   imagens (antes da reorganização de 14/10/2026) → novos.
 - **Domínio:** registrado no Registro.br. Os registros de e-mail (Microsoft 365) na zona DNS
   não devem ser alterados.
+- **Ícones dos cards de área:** [Phosphor Icons](https://phosphoricons.com), estilo duotone, licença MIT
+  (Copyright (c) 2023 Phosphor Icons — uso livre, inclusive comercial, mantendo este aviso).
+  Os SVGs estão colados no `index.html`; a camada de preenchimento tem `class="ic-fill"` (o CSS anima no hover).
+  Para trocar um ícone: baixe o SVG duotone em phosphoricons.com e troque `opacity="0.2"` por `class="ic-fill"`.

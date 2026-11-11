@@ -1,24 +1,42 @@
-/* ===== Tokens ===== */
+/* ===== Tokens =====
+   Paleta "cobre envelhecido" (aprovada em 09/11/2026; antes: #4C2C0C, #DC7F22, #ECBC8C, #844C14).
+   Bronze e cobre fosco, tirados do material da marca: o degradê do PDF da logo (#E2AB77 → #C6884E → #A36C39)
+   e a cor medida nas letras de metal do letreiro (fachada #3C2E1E–#493A2A; recepção ~#352209).
+   Os nomes dos tokens (brown/copper) foram mantidos. */
 :root{
-  --navy:#002D35;          /* petróleo da marca */
-  --navy-deep:#001A1F;
-  --navy-soft:#0A3A43;
-  --gold:#B89253;          /* dourado da marca */
-  --gold-light:#D6B780;
-  --gold-deep:#8C6E3A;
-  --cream:#F4F1EA;
-  --ink:#0E1A1C;
-  --muted:#9AACB0;         /* cinza secundário — contraste AA em todos os fundos escuros */
-  --gold-text:#7A5C2A;     /* dourado para TEXTO sobre fundo creme (AA 5.5:1) */
-  --ink-muted:#4A5B5F;     /* texto secundário sobre creme (AA 6.3:1) */
+  --brown:#33251A;          /* bronze escuro: fundo das seções escuras */
+  --brown-deep:#211811;     /* bronze quase preto: topo, seções escuras, rodapé */
+  --brown-soft:#45331F;     /* bronze suave */
+  --copper:#B97C4E;         /* cobre fosco: fios, números, bordas, fim do degradê do botão (texto só grande: 4.3:1 sobre --brown, 5.0:1 sobre --brown-deep) */
+  --copper-light:#DCC1A2;   /* champanhe: texto de destaque sobre fundo escuro (AA 8.6:1 sobre --brown; 7.0:1 sobre --brown-soft) */
+  --copper-hi:#E2AB77;      /* cobre claro do degradê da logo: destaques grandes (missão, paradas, ícones no hover) */
+  --copper-deep:#81532F;    /* cobre escuro fosco (decorativo: barras e degradês) */
+  --cream:#F3EEE6;          /* creme de papel: fundo das seções claras */
+  --ink:#211811;            /* texto sobre creme (AA 15:1) */
+  --muted:#BDAE9D;          /* texto secundário: contraste AA em todos os fundos escuros (mín. 5.6:1, sobre --brown-soft) */
+  --copper-text:#81532F;    /* cobre para TEXTO sobre fundo creme (AA 5.7:1; 6.5:1 sobre branco) */
+  --ink-muted:#66574A;      /* texto secundário sobre creme (AA 6.0:1) */
   --card-bg:rgba(255,255,255,.035);        /* card plano unificado (fundos escuros) */
-  --card-border:rgba(214,183,128,.16);
+  --card-border:rgba(220,193,162,.16);
   --glass-bg:rgba(255,255,255,.08);
-  --glass-border:rgba(214,183,128,.22);
+  --glass-border:rgba(220,193,162,.22);
   --glass-blur:18px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
-  --shadow:0 24px 60px -20px rgba(0,20,24,.55);
+  --shadow:0 24px 60px -20px rgba(27,19,13,.55);
+  /* Placa de metal (cards em fundo escuro: áreas, valores, contato), como as letras do letreiro:
+     bronze opaco, mais claro no alto à esquerda; por cima, um grão fino de metal escovado (riscos claros
+     na horizontal) e manchas grandes de pátina (escuras). As duas texturas são SVG gerado (ruído), sem arquivo.
+     O filtro ocupa exatamente o ladrilho (x/y 0, 100%): com a área padrão (120%) aparecia uma emenda a cada 300px. */
+  --plate:linear-gradient(165deg,#3B2B1E 0%,#2F2218 52%,#261B13 100%);
+  --plate-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .9' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .96 0 0 0 0 .86 0 0 0 0 .74 0 0 0 .3 -.11'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  --plate-patina:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='p' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.011' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .03 0 0 0 0 .01 0 0 0 .95 -.36'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23p)'/%3E%3C/svg%3E");
+  /* sem contorno (pedido do cliente em 10/11): a placa se destaca pela profundidade — brilho bem leve só na
+     quina de cima, sombra na de baixo (espessura da chapa), sombra curta e nítida colada + sombra longa e suave */
+  --plate-shadow:inset 0 1px 0 rgba(220,193,162,.1),inset 0 -1px 0 rgba(0,0,0,.35),
+                 0 2px 4px rgba(0,0,0,.28),0 22px 44px -26px rgba(0,0,0,.9);
+  --plate-shadow-hover:inset 0 1px 0 rgba(220,193,162,.16),inset 0 -1px 0 rgba(0,0,0,.35),
+                 0 4px 8px rgba(0,0,0,.3),0 32px 58px -28px rgba(0,0,0,.95);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -26,7 +44,7 @@
 body{
   font-family:'Jost',system-ui,sans-serif;
   color:var(--cream);
-  background:var(--navy-deep);
+  background:var(--brown-deep);
   line-height:1.6;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
@@ -34,7 +52,7 @@ body{
 .container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
 .section{position:relative;padding:92px 0;z-index:2}
 h1,h2,h3,blockquote{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1.1}
-em{font-style:italic;color:var(--gold-light)}
+em{font-style:italic;color:var(--copper-light)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;height:auto;display:block}   /* height:auto: as tags <img> têm width/height (reservam espaço) sem distorcer */
 /* botões e campos herdam a fonte do site (por padrão o navegador usa Arial) */
@@ -47,14 +65,14 @@ html{scroll-padding-top:88px}
    (o "estilo antigo" da Cormorant faz o 1 parecer um I: "10." vira "IO.") */
 h1,h2,h3{text-wrap:balance;font-variant-numeric:lining-nums}
 p,li{text-wrap:pretty}
-/* foco pelo teclado: anel dourado em todos os links (botões, campos e cards têm o seu próprio) */
-a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-radius:2px}
+/* foco pelo teclado: anel cor de cobre em todos os links (botões, campos e cards têm o seu próprio) */
+a:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px;border-radius:2px}
 /* seções e o <main> recebem foco pelos atalhos internos: sem contorno em volta da seção inteira */
 [tabindex="-1"]:focus{outline:none}
 /* "Pular para o conteúdo": invisível até receber foco pelo teclado */
 .skip-link{
   position:absolute;left:16px;top:-64px;z-index:2000;padding:10px 18px;border-radius:8px;
-  background:var(--gold-light);color:var(--navy-deep);font-weight:600;transition:top .2s var(--ease);
+  background:var(--copper-light);color:var(--brown-deep);font-weight:600;transition:top .2s var(--ease);
 }
 .skip-link:focus{top:12px}
 
@@ -62,14 +80,14 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .scroll-progress{
   position:fixed;top:0;left:0;height:2px;width:100%;
   transform:scaleX(0);transform-origin:left center;
-  background:linear-gradient(90deg,var(--gold-deep),var(--gold-light));
-  z-index:1000;box-shadow:0 0 12px rgba(214,183,128,.6);
+  background:linear-gradient(90deg,var(--copper-deep),var(--copper-light));
+  z-index:1000;box-shadow:0 0 12px rgba(220,193,162,.6);
 }
 
 /* ===== Objetos jurídicos flutuantes ===== */
 .floating-objects{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .float-obj{
-  position:absolute;color:var(--gold);opacity:.06;
+  position:absolute;color:var(--copper);opacity:.06;
   width:160px;height:160px;
   will-change:transform;
 }
@@ -88,41 +106,42 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .site-header{
   position:fixed;top:0;left:0;width:100%;z-index:900;
   padding:18px 0;
+  /* borda transparente desde o início: sem ela, ao rolar a borda nascia na cor do texto (creme)
+     e o fio piscava claro por 0,4s antes de chegar ao tom certo */
+  border-bottom:1px solid transparent;
   /* propriedades explícitas (antes "all", que animava até o desfoque). O padding anima,
      mas como o header é fixo só ele é recalculado — não a página */
   transition:padding .4s var(--ease),background-color .4s var(--ease),border-color .4s var(--ease);
 }
 .site-header.scrolled{
   padding:10px 0;
-  background:rgba(0,26,31,.93); /* quase sólido: continua petróleo sobre as seções creme */
+  background:rgba(33,24,17,.93); /* quase sólido: continua marrom sobre as seções creme */
   backdrop-filter:blur(var(--glass-blur));
   -webkit-backdrop-filter:blur(var(--glass-blur));
   border-bottom:1px solid var(--glass-border);
 }
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand-mark{width:40px;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
-.brand-name{
-  font-family:'Cormorant Garamond',serif;font-size:1.32rem;font-weight:600;
-  letter-spacing:.02em;display:flex;flex-direction:column;line-height:1;
-}
-.brand-name small{font-family:'Jost',sans-serif;font-size:.58rem;letter-spacing:.38em;color:var(--gold);margin-top:3px;font-weight:400}
+/* logo: só o monograma MRA + barra (a linha "ADVOGADOS & ASSOCIADOS" ficaria com ~3px de altura aqui);
+   o nome completo vai no alt da imagem */
+.brand{display:flex;align-items:center}
+.brand-mark{height:34px;width:auto;filter:drop-shadow(0 3px 8px rgba(0,0,0,.35))}
+@media (max-width:600px){ .brand-mark{height:30px} }
 .nav-links{display:flex;align-items:center;gap:30px}
-.nav-links a{font-size:.92rem;letter-spacing:.03em;color:rgba(244,241,234,.82);transition:color .25s,opacity .25s;position:relative}
+.nav-links a{font-size:.92rem;letter-spacing:.03em;color:rgba(243,238,230,.82);transition:color .25s,opacity .25s;position:relative}
 .nav-links a:not(.nav-cta)::after{
-  content:'';position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--gold-light);transition:width .3s var(--ease);
+  content:'';position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--copper-light);transition:width .3s var(--ease);
 }
 .nav-links a:not(.nav-cta):hover,
 .nav-links a.is-active{color:#fff}
 .nav-links a:not(.nav-cta):hover::after,
 .nav-links a.is-active::after{width:100%}   /* .is-active = seção visível na tela (main.js) */
-.nav-links a:not(.nav-cta):focus-visible{outline:2px solid var(--gold-light);outline-offset:4px;border-radius:2px}
+.nav-links a:not(.nav-cta):focus-visible{outline:2px solid var(--copper-light);outline-offset:4px;border-radius:2px}
 .nav-cta{
-  border:1px solid var(--gold);color:var(--gold-light);
+  border:1px solid var(--copper);color:var(--copper-light);
   padding:9px 20px;border-radius:40px;transition:background-color .3s var(--ease),color .3s var(--ease);
 }
-@media (hover:hover){ .nav-cta:hover{background:var(--gold);color:var(--navy-deep)} }
-.nav-cta:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+@media (hover:hover){ .nav-cta:hover{background:var(--copper);color:var(--brown-deep)} }
+.nav-cta:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px}
 /* Botão do menu mobile — hambúrguer que vira X (aria-expanded controlado pelo JS) */
 .toggle{
   display:none;position:relative;width:44px;height:44px;padding:0;margin-right:-6px;   /* 44px: área de toque mínima */
@@ -136,7 +155,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .toggle[aria-expanded="true"] .bars:nth-child(1){transform:translateY(9px) rotate(45deg)}
 .toggle[aria-expanded="true"] .bars:nth-child(2){opacity:0}
 .toggle[aria-expanded="true"] .bars:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
-.toggle:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;border-radius:6px}
+.toggle:focus-visible{outline:2px solid var(--copper-light);outline-offset:2px;border-radius:6px}
 .nav-overlay{display:none}
 
 /* ===== Botões ===== */
@@ -146,22 +165,24 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease),
              color .35s var(--ease),background-color .35s var(--ease),opacity .25s ease;
 }
+/* degradê champanhe -> cobre: termina no cobre (e não no cobre escuro) para o texto marrom
+   ter contraste no botão inteiro (mín. 5.0:1; com o fim escuro caía para 2.5:1) */
 .btn-primary{
-  background:linear-gradient(135deg,var(--gold-light),var(--gold-deep));
-  color:var(--navy-deep);box-shadow:0 12px 30px -10px rgba(184,146,83,.7);
+  background:linear-gradient(135deg,var(--copper-light),var(--copper));
+  color:var(--brown-deep);box-shadow:0 12px 30px -10px rgba(185,124,78,.7);
 }
 .btn-ghost{border-color:var(--glass-border);color:var(--cream);backdrop-filter:blur(6px)}
 /* "subir" só em quem tem mouse — no toque o efeito ficaria grudado depois do toque */
 @media (hover:hover){
-  .btn-primary:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 18px 40px -10px rgba(184,146,83,.9)}
-  .btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);transform:translateY(-3px)}
+  .btn-primary:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 18px 40px -10px rgba(185,124,78,.9)}
+  .btn-ghost:hover{border-color:var(--copper);color:var(--copper-light);transform:translateY(-3px)}
 }
 /* ao pressionar (mouse ou dedo): leve "afundar", como um botão físico */
 .btn:active,
 .btn-primary:not(:disabled):active,
 .btn-ghost:active{transform:scale(.97);transition-duration:.08s}
-/* foco pelo teclado: anel dourado (não aparece no clique com o mouse) */
-.btn:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+/* foco pelo teclado: anel cor de cobre (não aparece no clique com o mouse) */
+.btn:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px}
 /* enviando: botão bloqueado, levemente apagado, com indicador girando */
 .btn:disabled{cursor:wait;opacity:.8}
 .btn.is-loading::before{
@@ -185,62 +206,92 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 /* svh (altura "pequena" da tela, estável) — NÃO usar dvh aqui: no celular o dvh muda quando a barra
    do navegador some/aparece; o hero crescia ao parar a rolagem e a página parecia "voltar para cima" */
 .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+/* caixa só 10% mais alta que o hero: o parallax (main.js) só desce a imagem, mais devagar que a rolagem,
+   então nunca abre vão; com 140% o "cover" cortava as laterais e a fachada aparecia ampliada demais */
 .hero-bg{
-  position:absolute;left:0;top:-20%;width:100%;height:140%;
-  background:url('/assets/img/site/bg-producao-rural.webp') center 40% / cover no-repeat;
-  filter:saturate(1.06);z-index:0;will-change:transform;
+  position:absolute;left:0;top:-5%;width:100%;height:110%;
+  /* tablet e telas estreitas/altas (texto à esquerda): foto SEM a placa, que ficaria cortada atrás do título.
+     A versão com a placa entra no layout centralizado (mais abaixo). Os pontos de corte se repetem nos preloads do index.html. */
+  background:url('/assets/img/site/hero-fachada-sem-placa.webp') center 45% / cover no-repeat;
+  z-index:0;will-change:transform;
 }
-/* celular em pé: só a faixa central da foto aparece -> versão recortada (110 KB em vez de 450 KB),
-   na mesma resolução. O mesmo ponto de corte (600px) está no preload do <head> do index.html. */
+/* celular em pé: foto vertical da fachada, já recortada sem a placa (o texto ocupa a tela toda).
+   O mesmo ponto de corte (600px) está no preload do <head> do index.html. */
 @media (max-width:600px){
-  .hero-bg{background-image:url('/assets/img/site/bg-producao-rural-mobile.webp')}
+  .hero-bg{background-image:url('/assets/img/site/hero-fachada-mobile.webp');background-position:center 40%}
 }
 .hero-overlay{
   position:absolute;inset:0;z-index:1;
   background:
-    linear-gradient(90deg, rgba(0,26,31,.86) 0%, rgba(0,26,31,.55) 45%, rgba(0,26,31,.22) 78%, rgba(0,26,31,.3) 100%),
+    linear-gradient(90deg, rgba(33,24,17,.86) 0%, rgba(33,24,17,.55) 45%, rgba(33,24,17,.22) 78%, rgba(33,24,17,.3) 100%),
     linear-gradient(180deg,
-      rgba(0,26,31,.74) 0%,
-      rgba(0,26,31,.44) 32%,
-      rgba(0,26,31,.5) 56%,
-      rgba(0,26,31,.74) 76%,
-      rgba(0,26,31,.93) 90%,
-      rgba(0,26,31,1) 100%);
+      rgba(33,24,17,.74) 0%,
+      rgba(33,24,17,.44) 32%,
+      rgba(33,24,17,.5) 56%,
+      rgba(33,24,17,.74) 76%,
+      rgba(33,24,17,.93) 90%,
+      rgba(33,24,17,1) 100%);
 }
 /* sem max-width no bloco: o texto começa na mesma linha do logo e das outras seções;
    quem limita a largura são o título (880px) e o subtítulo (620px) */
 .hero-content{position:relative;z-index:2;padding-top:120px;padding-bottom:100px} /* folga p/ o indicador de rolagem */
 .eyebrow{
-  display:inline-block;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
-  color:var(--gold-light);margin-bottom:22px;font-weight:500;
+  display:inline-block;text-wrap:balance;   /* sem palavra sozinha na 2ª linha no celular ("... O / PRODUTOR") */font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--copper-light);margin-bottom:22px;font-weight:500;
 }
 .hero-title{font-size:clamp(2.6rem,6vw,4.8rem);margin-bottom:24px;letter-spacing:-.01em;max-width:880px}
-.hero-sub{font-size:clamp(1.02rem,1.6vw,1.22rem);max-width:620px;color:rgba(244,241,234,.84);margin-bottom:38px}
+.hero-sub{font-size:clamp(1.02rem,1.6vw,1.22rem);max-width:620px;color:rgba(243,238,230,.84);margin-bottom:38px}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap}
 
 /* título em linhas (cada linha é uma "máscara" de onde o texto sobe) */
 .hero-title .ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em} /* não corta ç, q, p */
 .hero-title .ln > span{display:block}
 .hero-end{display:inline-block}
-/* "produz": dourado com brilho; padding evita cortar a inclinação do itálico */
+/* "produz": laranja com brilho; padding evita cortar a inclinação do itálico */
 /* itálico verdadeiro da Cormorant: só o peso 500 é carregado (1 arquivo, 38 KB) — todo itálico do site usa 500 */
 .hero-produz{
   display:inline-block;padding:0 .08em;margin:0 -.08em;color:transparent;font-weight:500;
-  background:linear-gradient(110deg,var(--gold-light) 0%,var(--gold-light) 42%,#FFF1CF 50%,var(--gold-light) 58%,var(--gold-light) 100%);
+  background:linear-gradient(110deg,var(--copper-light) 0%,var(--copper-light) 42%,#F2E4D3 50%,var(--copper-light) 58%,var(--copper-light) 100%);
   background-size:260% 100%;background-position:0 0;
   -webkit-background-clip:text;background-clip:text;
 }
-/* fio dourado ao lado do "Seja bem-vindo" */
+/* fio cor de cobre ao lado do "Seja bem-vindo" */
 .hero .eyebrow::before{
   content:'';display:inline-block;vertical-align:middle;width:34px;height:1px;margin:-3px 14px 0 0;
-  background:var(--gold);transform-origin:left center;
+  background:var(--copper);transform-origin:left center;
+}
+/* Computador (a partir de 1025px, tela deitada 5:4 ou mais larga): texto CENTRALIZADO e foto COM a placa,
+   ancorada à esquerda — a placa "MRA Advogados & Associados" aparece livre à esquerda e o prédio à direita,
+   emoldurando o texto. O escurecimento fica concentrado no centro (atrás do texto); as laterais ficam claras.
+   Conferido de 1100×700 a 1920×1080: a placa não encosta no subtítulo nem nos botões.
+   (Em janelas mais altas que isso a placa cresceria até o texto — por isso a condição de proporção.) */
+@media (min-width:1025px) and (min-aspect-ratio:5/4){
+  .hero-bg{background-image:url('/assets/img/site/hero-fachada.webp');background-position:left 45%}
+  .hero-overlay{
+    background:
+      radial-gradient(ellipse 46% 54% at 50% 50%, rgba(33,24,17,.82) 0%, rgba(33,24,17,.64) 55%, rgba(33,24,17,.3) 100%),
+      linear-gradient(180deg,
+        rgba(33,24,17,.6) 0%,
+        rgba(33,24,17,0) 22%,
+        rgba(33,24,17,0) 80%,
+        rgba(33,24,17,.86) 94%,
+        rgba(33,24,17,1) 100%);
+  }
+  .hero-content{text-align:center}
+  .hero-title,.hero-sub{margin-left:auto;margin-right:auto}
+  .hero-actions{justify-content:center}
+  /* centralizado: fio dos dois lados do "Seja bem-vindo" */
+  .hero .eyebrow::after{
+    content:'';display:inline-block;vertical-align:middle;width:34px;height:1px;margin:-3px 0 0 14px;
+    background:var(--copper);transform-origin:right center;
+  }
 }
 
-/* Indicador de rolagem: fio dourado vertical com uma gota de luz descendo.
+/* Indicador de rolagem: fio cor de cobre vertical com uma gota de luz descendo.
    Some sozinho quando o visitante começa a rolar (classe .is-hidden via main.js). */
 .scroll-hint{
   position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;
-  display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--gold-light);
+  display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--copper-light);
 }
 .scroll-hint > *{transition:opacity .45s var(--ease)}
 .scroll-hint.is-hidden > *{opacity:0}
@@ -250,10 +301,10 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   text-transform:uppercase;font-weight:500;opacity:.8;
 }
 .scroll-hint:hover .scroll-hint-label{opacity:1}
-.scroll-hint-line{position:relative;display:block;width:1px;height:46px;background:rgba(214,183,128,.25);overflow:hidden}
+.scroll-hint-line{position:relative;display:block;width:1px;height:46px;background:rgba(220,193,162,.25);overflow:hidden}
 .scroll-hint-line::after{
   content:'';position:absolute;left:0;top:0;width:1px;height:45%;
-  background:linear-gradient(180deg,transparent,var(--gold-light));
+  background:linear-gradient(180deg,transparent,var(--copper-light));
   animation:scrollDrop 2.2s cubic-bezier(.65,0,.35,1) infinite;
 }
 @keyframes scrollDrop{from{transform:translateY(-100%)}to{transform:translateY(230%)}}
@@ -267,31 +318,31 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 /* ===== Section heads ===== */
 .section-head{text-align:center;max-width:680px;margin:0 auto 52px}
 .section-head h2{font-size:clamp(2.1rem,4vw,3.2rem);margin:6px 0 16px}
-.section-head p{color:rgba(244,241,234,.72)}
+.section-head p{color:rgba(243,238,230,.72)}
 
 /* ===== Problema ===== */
-.problema{background:linear-gradient(180deg,var(--navy-deep),var(--navy))}
+.problema{background:linear-gradient(180deg,var(--brown-deep),var(--brown))}
 .problema-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:64px;align-items:center}
 .problema-quote{position:relative;padding-left:18px}
-.quote-mark{font-family:'Cormorant Garamond',serif;font-size:7rem;color:var(--gold);opacity:.32;line-height:.7;display:block}
+.quote-mark{font-family:'Cormorant Garamond',serif;font-size:7rem;color:var(--copper);opacity:.32;line-height:.7;display:block}
 .problema-quote blockquote{font-size:clamp(1.8rem,3.2vw,2.7rem);font-style:italic;font-weight:500;margin:-18px 0 18px}
-.quote-author{color:var(--gold-light);letter-spacing:.04em;font-size:.95rem}
-.problema-text p{margin-bottom:18px;color:rgba(244,241,234,.82)}
+.quote-author{color:var(--copper-light);letter-spacing:.04em;font-size:.95rem}
+.problema-text p{margin-bottom:18px;color:rgba(243,238,230,.82)}
 /* título da seção é um h2 (para o Google e leitores de tela) com cara de rótulo */
 .problema-quote .eyebrow{font-family:inherit;line-height:inherit;margin-bottom:16px}
-/* rótulo com fio dourado que separa texto de uma lista
+/* rótulo com fio cor de cobre que separa texto de uma lista
    (O Cenário: "Sinais de alerta" · Contato: "Como funciona") */
 .label-rule{
   display:flex;align-items:center;gap:14px;margin-top:30px;
   font-family:inherit;font-size:.74rem;font-weight:600;line-height:1.4;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--gold-light);
+  color:var(--copper-light);
 }
-.label-rule::after{content:'';flex:1;height:1px;background:rgba(214,183,128,.28)}
+.label-rule::after{content:'';flex:1;height:1px;background:rgba(220,193,162,.28)}
 .alert-list{list-style:none;margin-top:18px;display:grid;gap:12px}
-.alert-list li{position:relative;padding-left:32px;color:rgba(244,241,234,.9)}
+.alert-list li{position:relative;padding-left:32px;color:rgba(243,238,230,.9)}
 /* marcador: ícone de alerta em traço fino (mesmo traço 1.5 dos ícones das áreas) */
 .alert-list li::before{
-  content:'';position:absolute;left:0;top:3px;width:20px;height:20px;background:var(--gold-light);
+  content:'';position:absolute;left:0;top:3px;width:20px;height:20px;background:var(--copper-light);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9.25'/%3E%3Cpath d='M12 7.5v5.5'/%3E%3Cpath d='M12 16.5v.01' stroke-width='2.2'/%3E%3C/svg%3E") center/contain no-repeat;
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9.25'/%3E%3Cpath d='M12 7.5v5.5'/%3E%3Cpath d='M12 16.5v.01' stroke-width='2.2'/%3E%3C/svg%3E") center/contain no-repeat;
 }
@@ -299,8 +350,8 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .problema-text .problema-cta{margin:30px 0 0}
 .problema-cta a{
   display:inline-block;padding:6px 0; /* área de toque maior no celular */
-  color:var(--gold-light);font-weight:600;white-space:nowrap;
-  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:rgba(214,183,128,.45);
+  color:var(--copper-light);font-weight:600;white-space:nowrap;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:rgba(220,193,162,.45);
   transition:text-decoration-color .25s var(--ease);
 }
 .problema-cta a span{display:inline-block;transition:transform .3s var(--ease)}
@@ -308,80 +359,127 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   .problema-cta a:hover{text-decoration-color:currentColor}
   .problema-cta a:hover span{transform:translateX(4px)}
 }
-.problema-cta a:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:2px}
+.problema-cta a:focus-visible{outline:2px solid var(--copper);outline-offset:4px;border-radius:2px}
 
 /* ===== Áreas de Atuação ===== */
-.atuacao{position:relative;background:var(--navy);padding:92px 0}
+.atuacao{position:relative;background:var(--brown);padding:92px 0}
 .atuacao-head{text-align:center}
 .atuacao-head h2{font-size:clamp(2.1rem,4vw,3.2rem);margin:6px 0 14px}
-.atuacao-sub{color:rgba(244,241,234,.72);max-width:560px;margin:0 auto}
+.atuacao-sub{color:rgba(243,238,230,.72);max-width:560px;margin:0 auto}
 
-/* Grade de cards planos (estilo unificado do site): fundo sutil, borda fina dourada,
-   leve elevação + borda acesa no hover. */
+/* Grade de cards: placas de bronze sem contorno (--plate*); no hover a placa sobe, ganha um brilho
+   suave no metal e, com mouse, a árvore da marca aparece discreta no canto. */
 .areas-fallback{
   max-width:var(--maxw);margin:52px auto 0;padding:0 24px;
   display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
 }
 .area-card{
+  position:relative;isolation:isolate;overflow:hidden;   /* a árvore do hover fica dentro do card, atrás do texto */
   display:grid;grid-template-columns:auto 1fr;
   align-content:start;   /* cards esticados até a altura da linha: conteúdo fica no topo, alinhado entre vizinhos */
   grid-template-areas:"icon num" "title title" "desc desc";
   align-items:center;column-gap:16px;
   padding:32px 30px;border-radius:20px;
-  background:var(--card-bg);border:1px solid var(--card-border);
-  transition:transform .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease);
+  background:var(--plate-grain),var(--plate-patina),var(--plate);
+  box-shadow:var(--plate-shadow);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
 }
-.area-card:hover{
-  transform:translateY(-4px);border-color:rgba(214,183,128,.45);background:rgba(255,255,255,.055);
-  box-shadow:0 26px 50px -30px rgba(0,0,0,.75);
+.area-card:hover{transform:translateY(-4px);box-shadow:var(--plate-shadow-hover)}
+/* Só com mouse (quem usa toque nem baixa a imagem da árvore):
+   ::before = brilho suave no metal, vindo do canto de cima; ::after = árvore da marca no canto de baixo */
+@media (hover:hover){
+  .area-card::before{
+    content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+    background:radial-gradient(120% 85% at 0% 0%,rgba(220,193,162,.09),transparent 62%);
+    opacity:0;transition:opacity .45s var(--ease);
+  }
+  .area-card:hover::before{opacity:1}
+  .area-card::after{
+    content:'';position:absolute;z-index:-1;right:-34px;bottom:-44px;width:200px;height:200px;pointer-events:none;
+    background:url('/assets/img/marca/arvore-mra-400.webp') center / contain no-repeat;
+    opacity:0;transform:translateY(12px) scale(.94);transform-origin:bottom right;
+    transition:opacity .5s var(--ease),transform .7s var(--ease);
+  }
+  .area-card:hover::after{opacity:.14;transform:none}
 }
+@media (prefers-reduced-motion:reduce){ .area-card::after{transform:none;transition:opacity .3s ease} }
+/* Ícone: Phosphor Icons duotone (MIT) — contorno + uma área preenchida (.ic-fill) em tom suave.
+   Hover (só com mouse): uma faixa de luz atravessa o encaixe (reflexo no metal), o preenchimento
+   "enche de cobre" de baixo para cima e o ícone sobe um pouco, com um leve quique. */
 .area-card .card-icon{
-  grid-area:icon;margin:0;width:56px;height:56px;color:var(--gold-light);
-  display:grid;place-items:center;border-radius:14px;
-  background:rgba(184,146,83,.08);border:1px solid rgba(214,183,128,.28);
-  transition:color .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
+  grid-area:icon;margin:0;width:56px;height:56px;color:var(--copper-light);
+  display:grid;place-items:center;border-radius:14px;position:relative;overflow:hidden;
+  /* encaixe rebaixado na placa */
+  background:rgba(0,0,0,.18);border:1px solid rgba(185,124,78,.4);box-shadow:inset 0 1px 3px rgba(0,0,0,.4);
+  transition:color .4s var(--ease),border-color .4s var(--ease),background .4s var(--ease);
 }
-.area-card .card-icon svg{width:29px;height:29px;display:block}
-.area-card:hover .card-icon{color:var(--gold);border-color:var(--gold);background:rgba(184,146,83,.14)}
+.area-card .card-icon svg{width:30px;height:30px;display:block;transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
+.area-card .card-icon .ic-fill{opacity:.2;transition:opacity .45s var(--ease)}
+.area-card .card-icon::after{   /* faixa de luz, parada fora do encaixe até o hover */
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 28%,rgba(242,228,211,.30) 47%,rgba(242,228,211,.08) 55%,transparent 70%);
+  transform:translateX(-130%);
+}
+.area-card:hover .card-icon{color:var(--copper-hi);border-color:rgba(226,171,119,.7);background:rgba(185,124,78,.12)}
+@media (hover:hover){
+  .area-card:hover .card-icon svg{transform:translateY(-2px) scale(1.08)}
+  .area-card:hover .card-icon .ic-fill{opacity:.42;animation:icEnche .7s var(--ease) both}
+  .area-card:hover .card-icon::after{animation:icReflexo .95s var(--ease) .05s both}
+}
+@keyframes icReflexo{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
+@keyframes icEnche{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+@media (prefers-reduced-motion:reduce){
+  .area-card .card-icon svg{transition:none}
+  .area-card:hover .card-icon svg{transform:none}
+  .area-card:hover .card-icon .ic-fill,.area-card:hover .card-icon::after{animation:none}
+}
 .area-card .area-num{
   grid-area:num;justify-self:end;align-self:center;position:static;
-  font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--gold);opacity:.3;line-height:1;
+  font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--copper);opacity:.55;line-height:1;
   font-variant-numeric:lining-nums;   /* "01", não "OI" (algarismos de estilo antigo da Cormorant) */
+  text-shadow:0 -1px 0 rgba(0,0,0,.6),0 1px 0 rgba(220,193,162,.16);   /* gravado na placa: sombra em cima, brilho embaixo */
 }
+.nowrap{white-space:nowrap}   /* termos com hífen que não podem quebrar no meio ("pré-executividade") */
 .area-card h3{grid-area:title;margin:20px 0 10px;font-size:1.45rem;color:#fff}
-.area-card p{grid-area:desc;color:rgba(244,241,234,.74);font-size:.96rem;line-height:1.55}
+.area-card p{grid-area:desc;color:rgba(243,238,230,.74);font-size:.96rem;line-height:1.55}
 /* dica de swipe — só aparece no celular */
 .areas-hint{display:none;text-align:center;font-size:.8rem;letter-spacing:.06em;color:var(--muted);margin-top:4px}
+/* Outras áreas (rebranding MRA): segundo grupo, 4 cards por linha no computador */
+.atuacao-head--mais{margin-top:76px}
+.atuacao-head--mais h3{font-size:clamp(1.7rem,3vw,2.35rem);margin:6px 0 12px;color:#fff}
+.areas-mais{grid-template-columns:repeat(4,1fr)}
+.areas-mais .area-card{padding:28px 24px}
+@media (max-width:1100px){ .areas-mais{grid-template-columns:repeat(2,1fr)} }
 
 /* ===== Processo ===== */
-.processo{background:linear-gradient(180deg,var(--navy),var(--navy-deep))}
+.processo{background:linear-gradient(180deg,var(--brown),var(--brown-deep))}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
 .step{padding:32px 24px;border-radius:16px;position:relative}
-/* medalhão plano: círculo opaco (cobre a trilha) com aro dourado fino */
+/* medalhão plano: círculo opaco (cobre a trilha) com aro cor de cobre fino */
 .step-num{
-  font-family:'Cormorant Garamond',serif;font-size:1.6rem;line-height:1;color:var(--gold-light);
+  font-family:'Cormorant Garamond',serif;font-size:1.6rem;line-height:1;color:var(--copper-light);
   width:58px;height:58px;display:grid;place-items:center;
-  border:1px solid rgba(214,183,128,.45);border-radius:50%;background:var(--navy);
+  border:1px solid rgba(220,193,162,.45);border-radius:50%;background:var(--brown);
   font-variant-numeric:lining-nums;   /* "01", não "OI" — também nas páginas de área (ol.area-steps) */
   padding-bottom:2px; /* ajuste óptico: os algarismos alinhados assentam um pouco abaixo do centro */
   margin-bottom:24px;position:relative;z-index:1;
   transition:transform .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
 }
-.step:hover .step-num{transform:translateY(-3px);color:var(--gold);border-color:var(--gold)}
+.step:hover .step-num{transform:translateY(-3px);color:var(--copper);border-color:var(--copper)}
 /* Trilha que liga os passos — passa por trás dos medalhões.
    Geometria: medalhão de 58px dentro de .step (padding 32px 24px)
    -> centro em x=53px, y=61px. Grid de 4 colunas com gap de 24px. */
 .steps-line{
   position:absolute;top:61px;left:53px;right:calc(25% - 71px);height:1px;
-  background:rgba(214,183,128,.16);overflow:hidden;pointer-events:none;
+  background:rgba(220,193,162,.16);overflow:hidden;pointer-events:none;
 }
 .steps-line i{
   display:block;height:100%;width:100%;
   transform:scaleX(0);transform-origin:left center;will-change:transform;
-  background:linear-gradient(90deg,var(--gold-deep),var(--gold),var(--gold-light));
+  background:linear-gradient(90deg,var(--copper-deep),var(--copper),var(--copper-light));
 }
 .step h3{font-size:1.4rem;margin-bottom:10px;color:#fff}
-.step p{color:rgba(244,241,234,.72);font-size:.94rem}
+.step p{color:rgba(243,238,230,.72);font-size:.94rem}
 
 /* --- a trilha acende os passos (só com JS: .is-animated; sem JS ou com "reduzir movimento" tudo aparece).
        Acompanha a rolagem nos dois sentidos: ao subir, o fio recua e os passos voltam a se apagar. --- */
@@ -394,32 +492,174 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .steps.is-animated .step.is-on h3,
 .steps.is-animated .step.is-on p{opacity:1;transform:none}
 .steps.is-animated .step.is-on p{transition-delay:.08s}
-.steps.is-animated .step.is-on .step-num{border-color:var(--gold)}
+.steps.is-animated .step.is-on .step-num{border-color:var(--copper)}
 /* computador: medalhão, título e texto ocupam as mesmas linhas nos 4 passos (subgrid) —
    um título que quebra em 2 linhas não desalinha os textos vizinhos */
 @media (min-width:901px){
   .step{display:grid;grid-row:span 3;grid-template-rows:subgrid;row-gap:0;align-content:start}
 }
 
-/* ===== Sobre ===== */
-.sobre{background:var(--navy-deep)}
-.sobre-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:72px;align-items:center}
-.sobre-photo{position:relative}
-.photo-frame{padding:14px;border-radius:22px;overflow:hidden}
-/* a foto original é horizontal (16:9): no computador, recorte quadrado deslocado para incluir
-   as divisórias de vidro e a equipe ao fundo; no celular/tablet ela aparece inteira (ver media queries) */
-.photo-frame img{display:block;border-radius:14px;width:100%;object-fit:cover;aspect-ratio:1/1;object-position:62% center}
-.sobre-shield{position:absolute;width:120px;bottom:-30px;right:-20px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5));animation:floaty 9s ease-in-out infinite}
-.sobre-text h2{font-size:clamp(2rem,3.5vw,3rem);margin:6px 0 20px}
-.sobre-text p{color:rgba(244,241,234,.82);margin-bottom:16px}
-.sobre-badges{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.badge{padding:10px 18px;border-radius:40px;font-size:.84rem;letter-spacing:.04em;color:var(--gold-light)}
-/* Missão (destaque dentro da seção Sobre) */
-.sobre-missao{
-  border-left:3px solid var(--gold);padding:8px 0 8px 18px;margin:20px 0 6px;
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:1.2rem;line-height:1.42;color:var(--gold-light);
+/* ===== Sobre: Nossa Essência, missão e o percurso "Nosso espaço" (aprovado em 10/11/2026) ===== */
+/* overflow-x:clip (e não hidden): corta o que vaza para os lados sem quebrar o position:sticky do percurso */
+.sobre{background:var(--brown-deep);overflow-x:clip}
+/* chamada com fio cor de cobre antes (e, centralizada, também depois) */
+.eyebrow--fio{display:inline-flex;align-items:center;gap:14px}
+.eyebrow--fio::before{content:'';width:34px;height:1px;background:var(--copper);flex:none}
+.eyebrow--centro::after{content:'';width:34px;height:1px;background:var(--copper);flex:none}
+
+/* Nossa Essência: foto do escritório completo na largura toda (aproxima devagar ao rolar — main.js);
+   a placa de bronze com o texto entra por cima do canto de baixo à esquerda, deixando o letreiro (à direita) livre */
+.ess-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.ess-foto{
+  grid-column:1 / -1;grid-row:1;margin:0;border-radius:24px;overflow:hidden;aspect-ratio:16/9;
+  background:var(--brown-soft);box-shadow:0 40px 80px -40px rgba(0,0,0,.85);
 }
-.sobre-missao strong{color:var(--cream);font-style:normal;font-weight:600}
+.ess-foto img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.1));transform-origin:62% 45%;will-change:transform}
+.ess-local{grid-column:8 / -1;grid-row:2;align-self:start;margin:18px 4px 0 0;text-align:right;color:var(--muted);font-size:.86rem;letter-spacing:.04em}
+.ess-placa{
+  grid-column:1 / span 7;grid-row:2;position:relative;z-index:1;margin:-210px 0 0 56px;
+  padding:54px 50px 46px;border-radius:22px;
+  background:var(--plate-grain),var(--plate-patina),var(--plate);box-shadow:var(--plate-shadow);
+  transform:translateY(var(--ty,0px));will-change:transform;
+}
+.ess-placa h2{font-size:clamp(2.1rem,3.4vw,3rem);margin:0 0 22px}
+.ess-placa p{color:rgba(243,238,230,.82);margin-bottom:16px;max-width:60ch}
+.fatos{
+  list-style:none;margin:26px 0 0;padding:20px 0 0;border-top:1px solid rgba(220,193,162,.18);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:.84rem;letter-spacing:.05em;color:var(--copper-light);
+}
+.fatos li{display:flex;align-items:center;gap:16px}
+.fatos li + li::before{content:'';width:5px;height:5px;background:var(--copper);transform:rotate(45deg)}
+
+/* Missão: citação grande, com a árvore da marca bem apagada ao fundo */
+.missao{position:relative;text-align:center;padding:120px 0 130px}
+.missao-arvore{
+  --aw:min(520px,86vw);position:absolute;z-index:0;width:var(--aw);height:auto;opacity:.075;
+  left:calc(50% - var(--aw) / 2);top:calc(50% - var(--aw) / 2);pointer-events:none;user-select:none;
+}
+.missao > .container{position:relative;z-index:1}
+.missao .eyebrow{margin-bottom:0}
+.missao-texto{
+  max-width:880px;margin:28px auto 0;color:var(--cream);text-wrap:balance;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(1.75rem,3.5vw,2.8rem);line-height:1.22;
+}
+.missao-texto em{color:var(--copper-hi)}
+.missao-complemento{margin:26px auto 0;max-width:46ch;color:var(--muted)}
+
+/* Nosso espaço: percurso em paradas. Sem JS (ou no celular) fica como bloco normal;
+   o main.js põe .tour--pin no computador: a seção fica presa na tela e a rolagem troca as fotos */
+.tour{position:relative;background:linear-gradient(180deg,var(--brown-deep) 0%,var(--brown) 45%,var(--brown-deep) 100%)}
+.tour-sticky{padding:100px 0}
+.tour-grid{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.4fr);gap:60px;align-items:center}
+.tour-titulo{font-size:clamp(2.1rem,3.6vw,3.1rem);margin:0 0 34px}
+.tour--pin{height:calc(var(--n) * 72vh + 100vh)}
+.tour--pin .tour-sticky{position:sticky;top:0;height:100vh;padding:0;display:flex;align-items:center}
+.tour--pin .tour-sticky > .container{width:100%;padding-top:40px}   /* folga para o cabeçalho fixo */
+.tour--pin .palco{max-height:calc(100vh - 190px)}
+.paradas-box{position:relative;padding-left:26px}
+.paradas-box::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:1px;background:rgba(220,193,162,.16)}
+.paradas-box .linha{
+  position:absolute;left:0;top:10px;width:1px;height:calc((100% - 20px) * var(--p,0));
+  background:linear-gradient(180deg,var(--copper),var(--copper-hi));transition:height .5s var(--ease);
+}
+.tour--pin .paradas-box .linha{transition:none}
+.paradas{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.parada{
+  display:grid;grid-template-columns:44px 1fr;align-items:baseline;width:100%;padding:9px 0;border:0;background:none;
+  font:inherit;text-align:left;color:var(--muted);cursor:pointer;transition:color .35s var(--ease);
+}
+.parada .num{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-variant-numeric:lining-nums;color:rgba(185,124,78,.6);transition:color .35s var(--ease)}
+.parada .nome{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:600;line-height:1.2;opacity:.62;transition:opacity .35s var(--ease)}
+.parada:hover .nome{opacity:.9}
+.parada.on{color:var(--cream)}
+.parada.on .nome{opacity:1}
+.parada.on .num{color:var(--copper-hi)}
+.parada:focus-visible{outline:2px solid var(--copper-light);outline-offset:4px;border-radius:4px}
+.legenda{margin:26px 0 0 26px;min-height:5.2em;color:rgba(243,238,230,.78);max-width:40ch}
+.legenda a,.slide figcaption a{color:var(--copper-light);white-space:nowrap;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(220,193,162,.4)}
+.palco{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:var(--brown-soft);box-shadow:0 40px 80px -40px rgba(0,0,0,.9)}
+.slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 1s var(--ease)}
+.slide.on{opacity:1;z-index:1}
+.slide .abrir{display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.slide .abrir:focus-visible{outline:2px solid var(--copper-light);outline-offset:-4px}
+.slide img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.1);transition:transform 7s cubic-bezier(.2,.6,.3,1)}
+.slide.on img{transform:scale(1)}
+.slide figcaption{display:none}
+.palco-ui{position:absolute;z-index:2;inset:auto 18px 18px 18px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:40px;font-size:.8rem;letter-spacing:.06em;
+  color:var(--cream);background:rgba(33,24,17,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.chip svg{width:15px;height:15px}
+.contador{font-variant-numeric:tabular-nums}
+.pontos{display:none}
+
+/* Fotos em tela cheia (<dialog>) */
+.lb{width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:0;border:0;background:transparent;color:var(--cream)}
+.lb::backdrop{background:rgba(12,8,5,.94)}
+.lb[open]{display:grid;place-items:center}
+.lb figure{margin:0;display:grid;justify-items:center;gap:14px;padding:64px 16px 24px}
+.lb img{max-width:min(1400px,92vw);max-height:76vh;width:auto;height:auto;border-radius:12px;touch-action:pan-y}
+.lb figcaption{text-align:center}
+.lb figcaption h3{font-size:1.5rem;color:var(--cream)}
+.lb figcaption span{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
+.lb-btn{
+  position:fixed;z-index:2;width:48px;height:48px;border-radius:50%;border:1px solid rgba(220,193,162,.3);
+  background:rgba(33,24,17,.7);color:var(--cream);display:grid;place-items:center;cursor:pointer;
+}
+.lb-btn svg{width:20px;height:20px}
+.lb-btn:hover{border-color:var(--copper-hi)}
+.lb-btn:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px}
+.lb-fechar{top:16px;right:16px}
+.lb-ant{left:16px;top:calc(50% - 24px)}
+.lb-prox{right:16px;top:calc(50% - 24px)}
+
+@media (max-width:900px){
+  .ess-grid{grid-template-columns:minmax(0,1fr)}
+  .ess-foto{grid-column:1;aspect-ratio:4/3;border-radius:20px}
+  .ess-foto img{object-position:64% center}
+  .ess-local{display:none}   /* a placa cobre a base da foto e a legenda ficaria longe dela */
+  .ess-placa{grid-column:1;grid-row:2;margin:-60px 14px 0;padding:34px 24px 30px}
+  .missao{padding:90px 0 100px}
+  .tour-sticky{padding:80px 0 70px}
+  .tour-grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .tour-titulo{margin-bottom:26px}
+  .paradas-box,.legenda,.palco-ui{display:none}
+  /* fotos lado a lado para deslizar (a próxima "espia" à direita), com a legenda embaixo */
+  .palco{
+    aspect-ratio:auto;overflow-x:auto;overflow-y:hidden;border-radius:0;background:none;box-shadow:none;
+    display:flex;gap:14px;margin:0 -24px;padding:0 24px 4px;scroll-snap-type:x mandatory;scroll-padding-left:24px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .palco::-webkit-scrollbar{display:none}
+  .slide{position:relative;inset:auto;flex:0 0 86%;opacity:1;scroll-snap-align:start}
+  .slide .abrir{height:auto;border-radius:18px;overflow:hidden;aspect-ratio:1/1}
+  .slide img{transform:none;transition:none}
+  .slide figcaption{display:block;padding:16px 4px 0}
+  .slide figcaption .num{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--copper-hi);font-variant-numeric:lining-nums}
+  .slide figcaption h3{font-size:1.4rem;margin:2px 0 6px;color:var(--cream)}
+  .slide figcaption p{margin:0;color:rgba(243,238,230,.76);font-size:.94rem;line-height:1.55}
+  .pontos{display:flex;gap:6px;margin-top:24px}
+  .pontos button{flex:1;height:3px;padding:0;border:0;border-radius:3px;background:rgba(220,193,162,.18);cursor:pointer;position:relative}
+  .pontos button::after{content:'';position:absolute;inset:-12px 0}   /* área de toque maior que o traço */
+  .pontos button.on{background:var(--copper)}
+}
+@media (max-width:600px){
+  .lb-ant,.lb-prox{top:auto;bottom:20px}
+  .lb-ant{left:calc(50% - 60px)}
+  .lb-prox{right:calc(50% - 60px)}
+  .lb figure{padding-bottom:90px}
+}
+@media (max-width:420px){
+  .ess-placa{margin:-48px 10px 0;padding:30px 20px 26px}
+  .fatos{gap:8px 12px}
+  .fatos li{gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ess-foto img,.ess-placa{transform:none!important}
+  .slide,.slide img,.paradas-box .linha{transition:none}
+  .slide img{transform:none}
+}
 /* Valores */
 .valores{margin-top:72px;text-align:center}
 .valores .eyebrow{margin-bottom:26px}
@@ -428,39 +668,40 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
    um título que quebra em 2 linhas não desalinha as descrições dos vizinhos */
 .valor{
   display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:10px;align-content:start;
-  padding:28px 20px;border-radius:16px;background:var(--card-bg);
-  border:1px solid var(--card-border);border-top:2px solid var(--gold);
+  padding:28px 20px;border-radius:16px;
+  background:var(--plate-grain),var(--plate-patina),var(--plate);box-shadow:var(--plate-shadow);   /* placa de bronze */
+  border:0;border-top:2px solid var(--copper);   /* sem contorno; só o friso de cobre no alto */
   transition:transform .35s var(--ease),border-color .35s var(--ease)
 }
 /* "subir" só com mouse — no toque o efeito ficaria preso depois do toque */
-@media (hover:hover){ .valor:hover{transform:translateY(-5px);border-top-color:var(--gold-light)} }
+@media (hover:hover){ .valor:hover{transform:translateY(-5px);border-top-color:var(--copper-light)} }
 /* 1.06rem: "Responsabilidade e transparência" cabe em 1 linha a partir de 1200px
    (medido: precisa de ~222px, o cartão oferece ~228px). No tablet/celular volta a 1.16rem. */
 .valor h3{font-size:1.06rem;color:#fff}
-.valor p{color:rgba(244,241,234,.72);font-size:.9rem;line-height:1.5}
+.valor p{color:rgba(243,238,230,.72);font-size:.9rem;line-height:1.5}
 
 /* ===== Quem Somos / Equipe ===== */
 /* começa e termina no mesmo tom da seção acima (sem degrau); brilho suave atrás dos cards */
-.equipe{background:radial-gradient(70% 55% at 50% 55%, rgba(0,45,53,.6), transparent 72%), var(--navy-deep)}
-/* Nossa Essência e Quem Somos são duas seções escuras seguidas: o mesmo fio dourado reto do rodapé marca a passagem */
+.equipe{background:radial-gradient(70% 55% at 50% 55%, rgba(51,37,26,.6), transparent 72%), var(--brown-deep)}
+/* Nossa Essência e Quem Somos são duas seções escuras seguidas: o mesmo fio cor de cobre reto do rodapé marca a passagem */
 .equipe::before{
   content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:min(var(--maxw),90%);height:1px;
-  background:linear-gradient(90deg,transparent,rgba(214,183,128,.3),transparent);
+  background:linear-gradient(90deg,transparent,rgba(220,193,162,.3),transparent);
 }
 .team-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;margin-top:8px}
 .team-card{width:330px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;padding:0;
   transition:transform .4s var(--ease),border-color .4s,box-shadow .4s}
-.team-card:hover{transform:translateY(-8px);border-color:rgba(214,183,128,.5)}
+.team-card:hover{transform:translateY(-8px);border-color:rgba(220,193,162,.5)}
 .team-photo{position:relative;aspect-ratio:4/5;overflow:hidden}
 .team-photo img{width:100%;height:100%;object-fit:cover;object-position:center 45%;transition:transform .6s var(--ease)}
 .team-card:hover .team-photo img{transform:scale(1.05)}
-.team-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(0,26,31,.6))}
+.team-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(33,24,17,.6))}
 .team-info{padding:24px 26px 30px;text-align:center}
 .team-info h3{font-size:1.55rem;color:#fff;margin-bottom:4px}
-.team-role{display:block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:14px}
-.team-bio{color:rgba(244,241,234,.74);font-size:.92rem;margin-bottom:18px}
-.team-oab{display:inline-block;font-size:.76rem;letter-spacing:.05em;color:var(--gold-light);border:1px solid var(--glass-border);padding:6px 16px;border-radius:40px}
+.team-role{display:block;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--copper-light);margin-bottom:14px}
+.team-bio{color:rgba(243,238,230,.74);font-size:.92rem;margin-bottom:18px}
+.team-oab{display:inline-block;font-size:.76rem;letter-spacing:.05em;color:var(--copper-light);border:1px solid var(--glass-border);padding:6px 16px;border-radius:40px}
 
 /* ----- Carrossel expansível da equipe (adaptado de Simey/CodePen, cores da marca) ----- */
 .team-carousel{
@@ -479,7 +720,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 /* item ativo: largura fixa = largura do conteúdo (a imagem preenche 100%) */
 .team-carousel .tc-item[data-active],
 .team-carousel .tc-item[data-active]:hover{flex:0 0 var(--tc-w)}
-.team-carousel .tc-item:focus-visible{box-shadow:0 0 0 2px var(--gold), 0 12px 28px rgba(0,0,0,.3)}
+.team-carousel .tc-item:focus-visible{box-shadow:0 0 0 2px var(--copper), 0 12px 28px rgba(0,0,0,.3)}
 
 .team-carousel .tc-photo{position:absolute;inset:0}
 .team-carousel .tc-photo img{
@@ -489,10 +730,10 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 }
 .team-carousel .tc-item[data-active] .tc-photo img{filter:none}
 
-/* véu degradê (navy -> dourado) que sai de cena quando o item ativa */
+/* véu degradê (marrom -> cobre) que sai de cena quando o item ativa */
 .team-carousel .tc-item::after{
   content:'';position:absolute;inset:0;z-index:1;
-  background:linear-gradient(160deg, rgba(0,26,31,0) 35%, rgba(0,45,53,.5) 62%, rgba(184,146,83,.55) 100%);
+  background:linear-gradient(160deg, rgba(33,24,17,0) 35%, rgba(51,37,26,.5) 62%, rgba(185,124,78,.55) 100%);
   transition:transform .66s cubic-bezier(.55,.24,.18,1);
 }
 .team-carousel .tc-item[data-active]::after{transform:translateY(100%)}
@@ -501,18 +742,18 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   position:absolute;left:0;bottom:0;z-index:2;width:var(--tc-w);
   /* faixa escura mais alta e mais densa atrás do texto: nome e cargo legíveis sobre ternos claros e camisas brancas */
   padding:3.2em 1.3em 1.2em;display:flex;flex-direction:column;gap:7px;
-  background:linear-gradient(0deg, rgba(0,18,22,.95), rgba(0,18,22,.82) 45%, rgba(0,18,22,.4) 78%, transparent);
+  background:linear-gradient(0deg, rgba(25,18,12,.95), rgba(25,18,12,.82) 45%, rgba(25,18,12,.4) 78%, transparent);
 }
 .team-carousel .tc-name{
   color:#fff;font-family:'Cormorant Garamond',serif;font-size:1.7rem;line-height:1.05;white-space:nowrap;
 }
-/* cargo em dourado claro sólido (o degradê até o dourado escuro perdia contraste sobre a foto) */
+/* cargo em pêssego sólido (o degradê até o marrom cobre perdia contraste sobre a foto) */
 .team-carousel .tc-title{
   font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;white-space:nowrap;
-  color:var(--gold-light);
+  color:var(--copper-light);
 }
 .team-carousel .tc-oab{
-  align-self:flex-start;font-size:.78rem;letter-spacing:.05em;color:var(--gold-light);white-space:nowrap;
+  align-self:flex-start;font-size:.78rem;letter-spacing:.05em;color:var(--copper-light);white-space:nowrap;
   border:1px solid var(--glass-border);padding:4px 12px;border-radius:30px;
 }
 .team-carousel .tc-bio{display:none} /* só aparece no card empilhado (mobile) */
@@ -533,10 +774,10 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   transition:transform .3s var(--ease),border-color .3s var(--ease),color .3s var(--ease),background-color .3s var(--ease);
 }
 @media (hover:hover){
-  .team-nav button:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(184,146,83,.12);transform:translateY(-2px)}
+  .team-nav button:hover{border-color:var(--copper);color:var(--copper-light);background:rgba(185,124,78,.12);transform:translateY(-2px)}
 }
 .team-nav button:active{transform:scale(.92);transition-duration:.08s}
-.team-nav button:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+.team-nav button:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px}
 /* pausar/retomar a troca automática */
 .team-nav .tc-pause svg{width:15px;height:15px}
 .tc-pause .ic-play,.tc-pause.is-paused .ic-pause{display:none}
@@ -586,8 +827,8 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 @media (prefers-reduced-motion:reduce){ .team-carousel .tc-item[data-active]{animation:none} }
 
 /* ===== Contato ===== */
-/* sobe ao petróleo e volta ao escuro: encontra o rodapé no mesmo tom (sem emenda) */
-.contato{background:linear-gradient(180deg,var(--navy-deep) 0%,var(--navy) 48%,var(--navy-deep) 100%)}
+/* sobe ao marrom e volta ao escuro: encontra o rodapé no mesmo tom (sem emenda) */
+.contato{background:linear-gradient(180deg,var(--brown-deep) 0%,var(--brown) 48%,var(--brown-deep) 100%)}
 .contato{padding-top:64px} /* ao clicar em "Fale Conosco", o cartão chega mais perto do topo */
 /* Computador: duas colunas — título, "como funciona" e atalho do WhatsApp | formulário.
    A ordem no HTML é a do celular (título → atalho → formulário → como funciona);
@@ -598,29 +839,41 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   grid-template-areas:"head form" "how form" "alt form";
   grid-template-rows:auto auto 1fr;align-items:start;
 }
+/* o cartão usa .glass no HTML; aqui vira placa de bronze (opaca: o desfoque de fundo não é mais necessário) */
+.contato-card.glass{
+  background:var(--plate-grain),var(--plate-patina),var(--plate);
+  border:0;box-shadow:var(--plate-shadow);
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+}
 .contato-head{grid-area:head}
 .contato-how{grid-area:how}
 .contato-alt{grid-area:alt}
 .lead-form{grid-area:form}
 .contato-head .eyebrow{margin-bottom:14px}
 .contato-card h2{font-size:clamp(1.9rem,2.8vw,2.45rem);margin-bottom:14px}
-.contato-intro{color:rgba(244,241,234,.82)}
+.contato-intro{color:rgba(243,238,230,.82)}
 /* "Como funciona": 3 passos ligados por um fio */
 .contato-steps{list-style:none;display:grid;gap:12px;margin-top:16px;counter-reset:passo}
 .contato-steps li{
   position:relative;padding-left:44px;min-height:30px;counter-increment:passo;
-  font-size:.93rem;line-height:1.55;color:rgba(244,241,234,.74);
+  font-size:.93rem;line-height:1.55;color:rgba(243,238,230,.74);
 }
 .contato-steps li::before{
   content:counter(passo);position:absolute;left:0;top:-3px;width:30px;height:30px;border-radius:50%;
-  border:1px solid rgba(214,183,128,.45);display:grid;place-items:center;
-  font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;line-height:1;color:var(--gold-light);
+  border:1px solid rgba(220,193,162,.45);display:grid;place-items:center;
+  font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;line-height:1;color:var(--copper-light);
   font-variant-numeric:lining-nums; /* o "1" no estilo antigo da Cormorant parece um "ı" */
 }
-.contato-steps li:not(:last-child)::after{content:'';position:absolute;left:15px;top:31px;bottom:-11px;width:1px;background:rgba(214,183,128,.2)}
+.contato-steps li:not(:last-child)::after{content:'';position:absolute;left:15px;top:31px;bottom:-11px;width:1px;background:rgba(220,193,162,.2)}
 .contato-steps strong{color:var(--cream);font-weight:500}
+/* fachada com endereço e "Como chegar" (fim de "Como funciona"; no celular, depois do formulário) */
+.contato-local{margin-top:30px}
+.contato-local img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;border:1px solid var(--card-border)}
+.contato-local figcaption{margin-top:12px;font-size:.86rem;line-height:1.55;color:rgba(243,238,230,.74)}
+.contato-local a{color:var(--copper-light);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(220,193,162,.4)}
+.contato-local a:hover{text-decoration-color:var(--copper-light)}
 /* atalho para quem prefere conversar (no celular aparece ANTES do formulário) */
-.contato-alt{margin-top:28px;padding-top:22px;border-top:1px solid rgba(214,183,128,.16)}
+.contato-alt{margin-top:28px;padding-top:22px;border-top:1px solid rgba(220,193,162,.16)}
 .contato-or{display:block;font-size:.9rem;color:var(--muted);margin-bottom:12px}
 .contato-actions{display:flex;gap:12px;flex-wrap:wrap}
 .contato-actions .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 22px}
@@ -632,7 +885,8 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
 .field{display:flex;flex-direction:column;gap:7px}
 .field-full{grid-column:1 / -1}
-.lead-form label{font-size:.875rem;letter-spacing:.03em;color:var(--gold-light);font-weight:500}
+.field[hidden]{display:none}   /* campos de dívida: só aparecem para casos do bancário do agro (main.js) */
+.lead-form label{font-size:.875rem;letter-spacing:.03em;color:var(--copper-light);font-weight:500}
 .lead-form label .opt{color:var(--muted);font-weight:400;letter-spacing:0}
 .lead-form input,.lead-form select,.lead-form textarea{
   width:100%;padding:12px 15px;border-radius:12px;
@@ -642,23 +896,23 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   transition:border-color .25s var(--ease),background .25s,box-shadow .25s;
 }
 .lead-form textarea{resize:vertical;min-height:92px}
-.lead-form input::placeholder,.lead-form textarea::placeholder{color:rgba(244,241,234,.62)}   /* exemplos legíveis (contraste ≥ 4,5:1) */
+.lead-form input::placeholder,.lead-form textarea::placeholder{color:rgba(243,238,230,.62)}   /* exemplos legíveis (contraste ≥ 4,5:1) */
 .lead-form select{
   appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:42px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23D6B780' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 15px center;
 }
-.lead-form option{color:#0E1A1C;background:#F4F1EA}
+.lead-form option{color:#211811;background:#F3EEE6}
 .lead-form input:focus,.lead-form select:focus,.lead-form textarea:focus{
-  outline:none;border-color:var(--gold);background:rgba(255,255,255,.08);
-  box-shadow:0 0 0 3px rgba(184,146,83,.18);
+  outline:none;border-color:var(--copper);background:rgba(255,255,255,.08);
+  box-shadow:0 0 0 3px rgba(185,124,78,.18);
 }
 /* estado de erro por campo */
 .field.invalid input,.field.invalid select,.field.invalid textarea{
   border-color:#ff9b8a;background:rgba(255,80,60,.06);
   box-shadow:0 0 0 3px rgba(255,155,138,.14);
 }
-.field.valid input,.field.valid select,.field.valid textarea{border-color:rgba(184,146,83,.55)}
+.field.valid input,.field.valid select,.field.valid textarea{border-color:rgba(185,124,78,.55)}
 .field-error{
   color:#ff9b8a;font-size:.875rem;letter-spacing:.01em;line-height:1.3;
   max-height:0;opacity:0;overflow:hidden;transition:max-height .2s var(--ease),opacity .2s;
@@ -667,79 +921,72 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .lead-submit{margin-top:20px;width:100%}
 .lead-status{margin-top:14px;font-size:.9rem;text-align:center;min-height:1.2em}
 .lead-status.error{color:#ff9b8a}
-.lead-status.ok{color:var(--gold-light)}
+.lead-status.ok{color:var(--copper-light)}
 /* durante o envio o botão já mostra "Enviando…": aqui fica só para leitores de tela */
 .lead-status.is-sending{color:transparent} /* mantém o espaço (sem "pulo" no layout) */
 .lead-consent{margin-top:12px;font-size:.875rem;text-align:center;color:var(--muted)}
-.lead-consent a{color:var(--gold-light);text-decoration:underline;text-underline-offset:2px}
-.lead-consent a:hover{color:var(--gold)}
+.lead-consent a{color:var(--copper-light);text-decoration:underline;text-underline-offset:2px}
+.lead-consent a:hover{color:var(--copper)}
 @media (max-width:1100px){
   .contato-card{padding:42px 40px;column-gap:40px}
 }
 
 /* ===== Footer ===== */
-.site-footer{background:var(--navy-deep);padding:56px 0 40px;position:relative;z-index:2}
-/* divisória: fio dourado que esmaece nas pontas (no lugar da linha de ponta a ponta) */
+/* Rodapé (aprovado em 11/11/2026): marca + redes | Navegação | Contato | O escritório (dados legais da OAB),
+   e uma faixa final com os direitos autorais e a Política de Privacidade */
+.site-footer{background:var(--plate-patina),var(--brown-deep);position:relative;z-index:2}
+/* divisória: fio cor de cobre que esmaece nas pontas (no lugar da linha de ponta a ponta) */
 .site-footer::before{
   content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:min(var(--maxw),90%);height:1px;
-  background:linear-gradient(90deg,transparent,rgba(214,183,128,.3),transparent);
+  width:min(var(--maxw),92%);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(185,124,78,.6) 20%,rgba(226,171,119,.75) 50%,rgba(185,124,78,.6) 80%,transparent);
 }
-.footer-inner{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:32px;align-items:center}
-.footer-brand{display:flex;align-items:center;gap:14px}
-.footer-mark{width:42px}
-.footer-brand strong{font-family:'Cormorant Garamond',serif;font-size:1.2rem;display:block}
-.footer-brand span{font-size:.78rem;color:var(--gold-light);letter-spacing:.04em}
-/* grade 3 + 3 + 2 (cabe na coluna do meio sem quebrar os nomes) */
-.footer-nav{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;column-gap:24px;row-gap:2px}
-/* padding vertical: área de toque de ~44px sem mudar o espaçamento visual */
-.footer-nav a{font-size:.88rem;color:rgba(244,241,234,.7);transition:color .25s;white-space:nowrap;padding:10px 0}
-.footer-nav a:hover{color:var(--gold-light)}
-/* 14px: endereço, horário e dados legais são informação útil, não detalhe decorativo */
-.footer-meta{text-align:right;display:flex;flex-direction:column;gap:10px;font-size:.875rem;color:var(--muted);line-height:1.55}
-.footer-meta > span{text-wrap:balance}   /* sem "1317" ou "Google" sozinhos numa linha no celular */
-.footer-meta a{color:var(--gold-light);transition:color .25s;display:inline-block;padding:5px 0}
-.footer-meta a:hover{color:var(--gold)}
-/* notebooks pequenos: a coluna de dados ficava estreita e quebrava mal -> vai para uma linha própria */
-@media (min-width:901px) and (max-width:1100px){
-  .footer-inner{grid-template-columns:1fr 1fr}
-  .footer-meta{grid-column:1 / -1;text-align:center;align-items:center}
+.footer-grid{
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr) minmax(0,1.15fr) minmax(0,1.2fr);
+  gap:44px;padding-top:64px;padding-bottom:48px;
 }
-
-/* ----- Redes sociais com tooltip (adaptado de Uiverse by Zameerahmad01) ----- */
-.example-2{
-  list-style:none;display:flex;justify-content:center;align-items:center;
-  column-gap:6px;padding:0;margin:0;
+.footer-marca{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.footer-mark{height:32px;width:auto}
+.footer-nome{display:grid;gap:4px}
+.footer-nome strong{font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-weight:600;line-height:1.2;color:var(--cream)}
+.footer-nome span{font-size:.8rem;color:var(--copper-light);letter-spacing:.04em}
+/* redes: círculos com borda; no hover enchem de cobre (também usados no menu do celular, .nav-redes) */
+.footer-redes,.nav-redes{list-style:none;display:flex;gap:12px}
+.footer-redes{margin-top:6px}
+.footer-redes a,.nav-redes a{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid rgba(220,193,162,.25);color:var(--copper-light);
+  transition:border-color .3s var(--ease),background-color .3s var(--ease),color .3s var(--ease);
 }
-.footer-social{margin-top:34px}
-/* direitos autorais: fecha a página, centralizado abaixo das redes sociais */
-.footer-copy{margin-top:24px;padding:0 24px;text-align:center;font-size:.82rem;color:var(--muted);text-wrap:balance}
-.example-2 .icon-content{margin:0 10px;position:relative}
-/* balão na paleta do site (petróleo + creme), igual à dica do botão do WhatsApp */
-.example-2 .icon-content .tooltip{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  color:var(--cream);background:rgba(0,26,31,.94);border:1px solid var(--glass-border);
-  padding:6px 10px;border-radius:6px;opacity:0;visibility:hidden;
-  font-size:13px;white-space:nowrap;transition:all .3s ease;z-index:2;
+.footer-redes svg,.nav-redes svg{width:19px;height:19px}
+@media (hover:hover){
+  .footer-redes a:hover,.nav-redes a:hover{border-color:var(--copper);background-color:var(--copper);color:var(--brown-deep)}
 }
-.example-2 .icon-content:hover .tooltip,
-.example-2 .icon-content a:focus-visible ~ .tooltip{opacity:1;visibility:visible;top:-38px}
-.example-2 .icon-content a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
-.example-2 .icon-content a{
-  position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;
-  width:46px;height:46px;border-radius:50%;color:var(--gold-light);
-  background-color:transparent;border:1px solid var(--glass-border);
-  transition:all .3s ease-in-out;
+.footer-redes a:focus-visible,.nav-redes a:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px}
+/* título de coluna: maiúsculas espaçadas com o losango de cobre */
+.footer-titulo{
+  display:flex;align-items:center;gap:10px;margin-bottom:16px;
+  font-family:'Jost',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.26em;text-transform:uppercase;line-height:1.3;color:var(--copper-hi);
 }
-/* hover na linguagem do site (como as setas da equipe): borda dourada, ícone dourado claro e um
-   preenchimento dourado sutil que sobe — no lugar das cores próprias de cada rede */
-.example-2 .icon-content a:hover{border-color:var(--gold);color:var(--gold-light)}
-.example-2 .icon-content a svg{position:relative;z-index:1;width:24px;height:24px}
-.example-2 .icon-content a .filled{
-  position:absolute;top:auto;bottom:0;left:0;width:100%;height:0;
-  background-color:rgba(184,146,83,.16);transition:all .3s ease-in-out;
+.footer-titulo::before{content:'';width:6px;height:6px;background:var(--copper);transform:rotate(45deg);flex:none}
+.footer-links{list-style:none;display:grid}
+.footer-links a{display:inline-block;padding:6px 0;font-size:.92rem;color:rgba(243,238,230,.74);transition:color .25s}   /* ~36px de toque */
+.footer-links a:hover{color:var(--copper-light)}
+/* 14,7px: endereço, horário e dados legais são informação útil, não detalhe decorativo */
+.footer-dados{list-style:none;display:grid;gap:12px;font-size:.92rem;line-height:1.55;color:rgba(243,238,230,.74)}
+.footer-dados a{color:var(--copper-light);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(220,193,162,.35);transition:text-decoration-color .25s}
+.footer-dados a:hover{text-decoration-color:var(--copper-light)}
+.footer-base{border-top:1px solid rgba(220,193,162,.12)}
+.footer-base .container{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 24px;padding-top:22px;padding-bottom:28px}
+.footer-copy{font-size:.84rem;color:var(--muted)}
+.footer-base a{font-size:.84rem;color:var(--copper-light);padding:6px 0}
+.footer-base a:hover{color:var(--copper)}
+@media (max-width:1100px){
+  .footer-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 32px}
 }
-.example-2 .icon-content a:hover .filled{height:100%}
+/* telas médias: espaço à direita da faixa final para o botão flutuante do WhatsApp não cobrir "Política de Privacidade"
+   (no celular a faixa vira coluna alinhada à esquerda; em telas largas o botão fica fora do conteúdo) */
+@media (min-width:561px) and (max-width:1300px){ .footer-base .container{padding-right:100px} }
 
 /* ===== Entrada do hero (substitui a antiga tela de abertura) =====
    Nada bloqueia: a página rola desde o primeiro instante. As animações só existem
@@ -756,7 +1003,8 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 
 .hero-anim .hero-bg{animation:heroSettle 1.8s cubic-bezier(.16,1,.3,1) both}
 .hero-anim .hero .eyebrow{animation:heroFadeUp .6s var(--ease) .05s both}
-.hero-anim .hero .eyebrow::before{animation:heroRule .9s cubic-bezier(.16,1,.3,1) .2s both}
+.hero-anim .hero .eyebrow::before,
+.hero-anim .hero .eyebrow::after{animation:heroRule .9s cubic-bezier(.16,1,.3,1) .2s both}
 .hero-anim .hero-title .ln > span{animation:heroLineUp .85s cubic-bezier(.16,1,.3,1) .1s both}
 .hero-anim .hero-title .ln + .ln > span{animation-delay:.2s}      /* "produz." sobe junto com a 2ª linha */
 .hero-anim .hero-produz{animation:heroShimmer 1.4s ease-in-out .8s both}
@@ -770,54 +1018,47 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 .hero-anim:not(.hero-go) .hero-title .ln > span,
 .hero-anim:not(.hero-go) .hero-bg,
 .hero-anim:not(.hero-go) .hero-produz,
-.hero-anim:not(.hero-go) .hero .eyebrow::before{animation-play-state:paused}
+.hero-anim:not(.hero-go) .hero .eyebrow::before,
+.hero-anim:not(.hero-go) .hero .eyebrow::after{animation-play-state:paused}
 
 @media (prefers-reduced-motion:reduce){
   .hero-anim .hero-in,.hero-anim .hero-title .ln > span,.hero-anim .hero-bg,
-  .hero-anim .hero-produz,.hero-anim .hero .eyebrow::before{animation:none}
+  .hero-anim .hero-produz,.hero-anim .hero .eyebrow::before,.hero-anim .hero .eyebrow::after{animation:none}
 }
 
 /* ===== Seções claras (ritmo claro/escuro) =====
-   Fundo creme com texto petróleo. Usadas em: O Cenário, Como Atuamos e Do nosso Blog. */
+   Fundo creme com texto marrom. Usadas em: O Cenário, Como Atuamos e Do nosso Blog. */
 .section.section--light{background:var(--cream);color:var(--ink)}
 .section--light .eyebrow,
-.section--light em{color:var(--gold-text)}
+.section--light em{color:var(--copper-text)}
 .section--light h2,.section--light h3{color:var(--ink)}
 .section--light .section-head p{color:var(--ink-muted)}
 /* O Cenário */
-.section--light .quote-mark{color:var(--gold);opacity:.55}
-.section--light .quote-author{color:var(--gold-text)}
+.section--light .quote-mark{color:var(--copper);opacity:.55}
+.section--light .quote-author{color:var(--copper-text)}
 .section--light .problema-text p{color:var(--ink-muted)}
-.section--light .label-rule{color:var(--gold-text)}
-.section--light .label-rule::after{background:rgba(122,92,42,.22)}
+.section--light .label-rule{color:var(--copper-text)}
+.section--light .label-rule::after{background:rgba(129,83,47,.22)}
 .section--light .alert-list li{color:var(--ink)}
-.section--light .alert-list li::before{background:var(--gold-text)}
-.section--light .problema-cta a{color:var(--gold-text);text-decoration-color:rgba(122,92,42,.4)}
-.section--light .problema-cta a:focus-visible{outline-color:var(--gold-text)}
+.section--light .alert-list li::before{background:var(--copper-text)}
+.section--light .problema-cta a{color:var(--copper-text);text-decoration-color:rgba(129,83,47,.4)}
+.section--light .problema-cta a:focus-visible{outline-color:var(--copper-text)}
 /* Como Atuamos — medalhões e trilha sobre o creme */
 .section--light .step h3{color:var(--ink)}
 .section--light .step p{color:var(--ink-muted)}
-.section--light .step-num{background:var(--cream);color:var(--gold-text);border-color:rgba(122,92,42,.4)}
-.section--light .step:hover .step-num{color:var(--gold-text);border-color:var(--gold)}
-.section--light .steps-line{background:rgba(122,92,42,.14)}
+.section--light .step-num{background:var(--cream);color:var(--copper-text);border-color:rgba(129,83,47,.4)}
+.section--light .step:hover .step-num{color:var(--copper-text);border-color:var(--copper)}
+.section--light .steps-line{background:rgba(129,83,47,.14)}
 /* no creme: medalhão apagado mais suave; aceso ganha fundo branco (leve "luz") */
-.section--light .steps.is-animated .step:not(.is-on) .step-num{border-color:rgba(122,92,42,.2);color:rgba(122,92,42,.42)}
-.section--light .steps.is-animated .step.is-on .step-num{background:#fff;color:var(--gold-text)}
-/* Do nosso Blog — card branco com sombra suave */
-.section--light .post-card{
-  background:#fff;border:1px solid rgba(122,92,42,.14);
-  backdrop-filter:none;-webkit-backdrop-filter:none;
-  box-shadow:0 22px 48px -30px rgba(14,26,28,.35);
-}
-.section--light .post-card:hover{border-color:rgba(184,146,83,.6);box-shadow:0 30px 60px -30px rgba(14,26,28,.45)}
-.section--light .post-card :is(h2,h3){color:var(--ink)}
-.section--light .post-card:hover :is(h2,h3){color:var(--gold-text)}
-.section--light .post-excerpt,
-.section--light .post-meta{color:var(--ink-muted)}
-.section--light .btn-ghost{border-color:rgba(14,26,28,.22);color:var(--ink);backdrop-filter:none}
-@media (hover:hover){ .section--light .btn-ghost:hover{border-color:var(--gold);color:var(--gold-text)} }
+.section--light .steps.is-animated .step:not(.is-on) .step-num{border-color:rgba(129,83,47,.2);color:rgba(129,83,47,.42)}
+.section--light .steps.is-animated .step.is-on .step-num{background:#fff;color:var(--copper-text)}
+/* Do nosso Blog — a placa de bronze do artigo (article.css) sobre o creme: sombra mais quente e marcada */
+.section--light .post-destaque{box-shadow:inset 0 1px 0 rgba(220,193,162,.1),0 2px 4px rgba(33,24,17,.18),0 30px 60px -30px rgba(33,24,17,.7)}
+@media (hover:hover){ .section--light .post-destaque:hover{box-shadow:inset 0 1px 0 rgba(220,193,162,.16),0 4px 8px rgba(33,24,17,.2),0 38px 70px -30px rgba(33,24,17,.8)} }
+.section--light .btn-ghost{border-color:rgba(33,24,17,.22);color:var(--ink);backdrop-filter:none}
+@media (hover:hover){ .section--light .btn-ghost:hover{border-color:var(--copper);color:var(--copper-text)} }
 .section--light .btn:focus-visible,
-.section--light a:focus-visible{outline-color:var(--gold-text)} /* anel com contraste sobre o creme */
+.section--light a:focus-visible{outline-color:var(--copper-text)} /* anel com contraste sobre o creme */
 
 /* ===== Reveal animations ===== */
 /* estado inicial oculto — a animação de entrada é dirigida pela Anime.js */
@@ -825,7 +1066,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none}
-  .float-obj,.sobre-shield{animation:none}
+  .float-obj{animation:none}
   html{scroll-behavior:auto}
 }
 
@@ -834,7 +1075,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 /* "reduzir movimento": cabeçalho e menu mudam de estado sem animar */
 @media (prefers-reduced-motion:reduce){
   .site-header,.bars,.nav-links,.nav-overlay,.nav-links a,.nav-links a::after{transition:none!important}
-  .nav-links.open > a{animation:none!important}
+  .nav-links.open > a,.nav-links.open > .nav-contato{animation:none!important}
 }
 
 /* ===== Menu mobile/tablet (abaixo de 1100px os 7 itens não cabem numa linha) ===== */
@@ -844,7 +1085,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
     position:fixed;top:0;right:0;left:auto;bottom:auto;z-index:940;
     width:min(80vw,320px);height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior:contain;
     flex-direction:column;align-items:flex-start;gap:26px;padding:100px 32px 40px;
-    background:var(--navy-deep);   /* sólido: o desfoque não funciona dentro do header desfocado */
+    background:var(--brown-deep);   /* sólido: o desfoque não funciona dentro do header desfocado */
     border-left:1px solid var(--glass-border);box-shadow:-24px 0 60px -20px rgba(0,0,0,.6);
     transform:translateX(100%);visibility:hidden;
     transition:transform .4s var(--ease),visibility 0s linear .4s;   /* fechado: fora do Tab */
@@ -868,13 +1109,46 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
      vira referência dos elementos fixos dentro dele */
   .nav-overlay{
     display:block;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;
-    background:rgba(0,10,12,.62);opacity:0;visibility:hidden;
+    background:rgba(15,11,8,.62);opacity:0;visibility:hidden;
     transition:opacity .35s var(--ease),visibility 0s linear .35s;
   }
   .nav-overlay.open{opacity:1;visibility:visible;transition:opacity .35s var(--ease),visibility 0s}
   body.menu-open{overflow:hidden}   /* página atrás não rola com o menu aberto */
   body.menu-open .whatsapp-float{opacity:0;visibility:hidden}   /* não compete com o menu */
+
+  /* --- painel de bronze (aprovado em 11/11/2026): links na fonte dos títulos, seção atual com o losango,
+         "Fale Conosco" preenchido e, no pé, horário, endereço e atalhos (.nav-contato) --- */
+  .nav-links{
+    background:var(--plate-grain),var(--plate-patina),var(--plate);
+    border-left:1px solid rgba(185,124,78,.35);
+  }
+  .nav-links > a:not(.nav-cta){
+    display:flex;align-items:center;gap:12px;
+    font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:600;line-height:1.2;padding:8px 0;
+  }
+  .nav-links > a:not(.nav-cta)::after{display:none}   /* no painel, a seção atual é marcada pelo losango */
+  .nav-links > a.is-active::before{content:'';width:6px;height:6px;background:var(--copper);transform:rotate(45deg);flex:none}
+  .nav-links .nav-cta{
+    align-self:stretch;text-align:center;margin-top:16px;padding:12px 20px;border:0;
+    background:linear-gradient(135deg,var(--copper-light),var(--copper));color:var(--brown-deep);font-weight:500;
+  }
+  .nav-links .nav-contato{
+    display:grid;gap:12px;align-self:stretch;margin-top:auto;padding-top:22px;
+    border-top:1px solid rgba(220,193,162,.16);font-size:.88rem;line-height:1.5;color:rgba(243,238,230,.8);
+  }
+  .nav-links.open > .nav-contato{animation:navItemIn .5s var(--ease) .4s both}
+  .nav-contato-rot{font-size:.68rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--copper-hi)}
+  .nav-contato-linha{display:flex;align-items:flex-start;gap:10px}
+  .nav-contato-linha svg{width:17px;height:17px;flex:none;margin-top:2px;color:var(--copper-light)}
+  .nav-links .nav-contato a{font-size:inherit;letter-spacing:0;padding:0}
+  .nav-links .nav-contato a::after{display:none}
+  .nav-links .nav-contato-linha a{color:var(--copper-light);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(220,193,162,.4)}
+  .nav-links .nav-redes{margin-top:4px}
+  .nav-links .nav-redes a{color:var(--copper-light)}
+  @media (hover:hover){ .nav-links .nav-redes a:hover{color:var(--brown-deep)} }
 }
+/* computador: o bloco de contato do menu não aparece (o cabeçalho é uma linha só) */
+@media (min-width:1101px){ .nav-links .nav-contato{display:none} }
 /* celular deitado (tela baixa): o painel começa mais alto e mais compacto para "Fale Conosco" caber */
 @media (max-width:1100px) and (max-height:500px){
   .nav-links{padding-top:64px;gap:0}
@@ -883,13 +1157,13 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
 
 @media (max-width:900px){
   .section{padding:72px 0}
-  .problema-grid,.sobre-grid{grid-template-columns:1fr;gap:40px}
+  .problema-grid{grid-template-columns:1fr;gap:40px}
   .steps{grid-template-columns:repeat(2,1fr)}
   .steps-line{display:none}   /* grade 2x2 não comporta uma trilha única */
   .valores{margin-top:56px}
   .valores-grid{grid-template-columns:repeat(2,1fr)}
   /* uma coluna só: limita a linha do texto corrido (~75 caracteres) para leitura confortável */
-  .problema-text p,.sobre-text p,.contato-intro{max-width:56ch}   /* medido: ~75 caracteres por linha na Jost */
+  .problema-text p,.contato-intro{max-width:56ch}   /* medido: ~75 caracteres por linha na Jost */
   .valor{padding:28px 24px}
   .valor h3{font-size:1.16rem}   /* cartões largos: o título cabe no tamanho maior */
 
@@ -898,7 +1172,7 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   .areas-fallback{grid-template-columns:repeat(2,1fr);gap:20px;padding:0 30px}
   .area-card{padding:28px 24px;border-radius:18px;column-gap:14px}
   .area-card .card-icon{width:54px;height:54px}
-  .area-card .card-icon svg{width:26px;height:26px}
+  .area-card .card-icon svg{width:28px;height:28px}
   .area-card .area-num{font-size:2.7rem}
   .area-card h3{margin:18px 0 8px;font-size:1.32rem}
   .area-card p{font-size:.92rem}
@@ -907,12 +1181,6 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   .contato-alt{margin-top:24px}
   .lead-form{margin-top:32px}
   .contato-how .label-rule{margin-top:36px}
-  .footer-inner{grid-template-columns:1fr;text-align:center;gap:24px}
-  .footer-brand,.footer-meta{justify-content:center;text-align:center}
-  .footer-meta{align-items:center}
-  /* Nossa Essência: a foto aparece inteira, no formato horizontal original */
-  .photo-frame img{aspect-ratio:16/9;object-position:center}
-  .sobre-shield{width:76px;right:0;bottom:-24px}
 }
 @media (max-width:560px){
   /* Mobile: vira uma timeline — medalhão à esquerda, texto à direita,
@@ -927,20 +1195,19 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   .step p{grid-column:2;grid-row:2;margin-top:10px}
   .step:not(:last-child)::after{
     content:'';position:absolute;left:29px;top:66px;bottom:-30px;width:1px;
-    background:linear-gradient(180deg,var(--gold),rgba(214,183,128,.14));
+    background:linear-gradient(180deg,var(--copper),rgba(220,193,162,.14));
   }
   /* o fio vertical "escorre" até o próximo passo depois que este acende */
   .steps.is-animated .step:not(:last-child)::after{transform:scaleY(0);transform-origin:top;transition:transform 1s var(--ease) .3s}
   .steps.is-animated .step.is-on:not(:last-child)::after{transform:scaleY(1)}
-  /* Valores: lista compacta (sem caixas) com fio dourado — mesmo estilo de "Sinais de alerta" */
+  /* Valores: lista compacta (sem caixas) com fio cor de cobre — mesmo estilo de "Sinais de alerta" */
   .valores{text-align:left}
   .valores .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:2px}
-  .valores .eyebrow::after{content:'';flex:1;height:1px;background:rgba(214,183,128,.28)}
+  .valores .eyebrow::after{content:'';flex:1;height:1px;background:rgba(220,193,162,.28)}
   .valores-grid{grid-template-columns:1fr;gap:0}
-  .valor{display:block;grid-row:auto;padding:18px 0;border:0;border-radius:0;background:none}
-  .valor + .valor{border-top:1px solid rgba(214,183,128,.14)}
+  .valor{display:block;grid-row:auto;padding:18px 0;border:0;border-radius:0;background:none;box-shadow:none}   /* sem a sombra da placa: aqui é lista */
+  .valor + .valor{border-top:1px solid rgba(220,193,162,.14)}
   .valor h3{margin-bottom:6px}
-  .sobre-shield{width:60px;bottom:-18px}
   .section,.atuacao{padding:64px 0}
   /* Áreas: carrossel horizontal com swipe (o próximo card "espia" à direita) */
   .areas-fallback{
@@ -954,13 +1221,27 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   /* dentro do carrossel os cards já aparecem prontos (sem animação de entrada) */
   .areas-fallback .reveal{opacity:1!important;transform:none!important}
   .areas-hint{display:block}
-  .footer-nav{display:flex;flex-wrap:wrap;gap:0 20px}   /* o espaço entre linhas vem do padding dos links (área de toque) */
   .contato-card{padding:40px 22px}
   .lead-grid{grid-template-columns:1fr}
   .hero-content{padding-top:130px}
   .hero .eyebrow{letter-spacing:.24em}
   .hero .eyebrow::before{width:22px;margin-right:10px}
   .float-obj{display:none}
+
+  /* ---- Ajustes de celular (revisão de 10/11/2026, medidos em 390 e 360px) ---- */
+  /* título do topo: acompanha a largura da tela; em 360px ficava em 4 linhas ("A balança / do Direito / ...") */
+  .hero-title{font-size:clamp(2.2rem,10.2vw,2.6rem)}
+  /* botões do topo empilhados com a mesma largura (área de toque maior e alinhada) */
+  .hero-actions{flex-direction:column;align-items:stretch;gap:12px;max-width:380px}
+  .hero-actions .btn{text-align:center}
+  /* atalhos WhatsApp / E-mail lado a lado, mesma largura (em 360px o E-mail caía sozinho na linha de baixo) */
+  .contato-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .contato-actions .btn{justify-content:center;padding:12px 14px}
+  /* rodapé: blocos empilhados, alinhados à esquerda, cada um com o seu título; navegação em 2 colunas */
+  .footer-grid{grid-template-columns:minmax(0,1fr);gap:34px;padding-top:52px;padding-bottom:36px}
+  .footer-links{grid-template-columns:1fr 1fr;column-gap:20px}
+  .footer-links a{padding:8px 0}   /* ~40px de toque no celular */
+  .footer-base .container{flex-direction:column;align-items:flex-start}
 }
 
 /* ===== Botão flutuante do WhatsApp ===== */
@@ -983,15 +1264,15 @@ a:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px;border-ra
   .whatsapp-float:hover{transform:scale(1.08);box-shadow:0 16px 38px -6px rgba(37,211,102,.75),0 4px 14px rgba(0,0,0,.4)}
 }
 .whatsapp-float:active{transform:scale(.94);transition-duration:.08s}
-.whatsapp-float:focus-visible{outline:2px solid var(--gold-light);outline-offset:4px}
+.whatsapp-float:focus-visible{outline:2px solid var(--copper-light);outline-offset:4px}
 .wa-tip{
   position:absolute;right:70px;white-space:nowrap;
-  background:rgba(0,26,31,.94);color:var(--cream);font-size:.82rem;letter-spacing:.02em;
+  background:rgba(33,24,17,.94);color:var(--cream);font-size:.82rem;letter-spacing:.02em;
   padding:9px 15px;border-radius:10px;border:1px solid var(--glass-border);
   opacity:0;transform:translateX(8px);pointer-events:none;transition:.3s var(--ease);
   box-shadow:0 8px 20px -8px rgba(0,0,0,.6);
 }
-.wa-tip::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:rgba(0,26,31,.94);border-right:1px solid var(--glass-border);border-top:1px solid var(--glass-border)}
+.wa-tip::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:rgba(33,24,17,.94);border-right:1px solid var(--glass-border);border-top:1px solid var(--glass-border)}
 .whatsapp-float:hover .wa-tip{opacity:1;transform:translateX(0)}
 @media (max-width:560px){
   .whatsapp-float{width:54px;height:54px;right:16px;bottom:16px}
