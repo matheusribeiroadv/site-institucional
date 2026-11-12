@@ -64,6 +64,7 @@ syncHeader();
   // Textos aparecendo ao descer — animação Anime.js disparada por
   //    IntersectionObserver (detecção de viewport robusta e confiável)
   const play = el => {
+    if (el.dataset.vtVisivel) return;   // já mostrado pela transição da capa (transicoes.js): não piscar de novo
     const d = (parseInt(el.dataset.delay, 10) || 0) * 110;
     animate(el, {
       opacity: [0, 1],

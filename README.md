@@ -21,6 +21,7 @@ Site institucional do escritório (Direito Bancário do Agronegócio), no ar em
 │  │  ├─ css/article.css      páginas de leitura (blog, artigos, privacidade) e cartões do blog
 │  │  ├─ js/main.js           interações da página inicial (menu, formulário, carrossel…)
 │  │  ├─ js/pages.js          interações das páginas internas (menu, ano no rodapé)
+│  │  ├─ js/transicoes.js     transição entre páginas e o logo que se desenha (no <head> de todas as páginas, menos a 404)
 │  │  ├─ img/marca/           logo MRA, favicons e imagem de compartilhamento (og-image-mra.jpg)
 │  │  ├─ img/site/            fotos da página inicial (topo, escritório)
 │  │  ├─ img/equipe/          fotos da equipe (um arquivo por pessoa)
@@ -90,6 +91,10 @@ Netlify → equipe → *Usage & billing*.
 8. Depois do deploy, no Search Console: cole o endereço do artigo em **Inspeção de URL** e
    clique em **Solicitar indexação**. Faça o mesmo com `/blog/`.
 
+**Capa "viajando":** ao clicar num card do blog, a imagem cresce até virar a capa do artigo (e volta no "voltar").
+Não há passo extra: o par é achado sozinho, desde que o card tenha a `<img>` **dentro** do link para o artigo
+e a capa do artigo mantenha `class="article-cover"` (como nos modelos atuais).
+
 **Um endereço só por página:** use o endereço **sem `.html`** em todo lugar (canonical,
 `og:url`, JSON-LD, sitemap e links internos), em minúsculas e com hífens. O arquivo
 continua sendo `.html`; só o endereço é que não leva a extensão.
@@ -119,7 +124,7 @@ Ao trocar, gere todas:
 3. Atualize o `--n` do `<div class="tour" ...>` (número de paradas) e os números "01 / 03" do contador.
    O resto (fio de progresso, tela cheia, celular) se ajusta sozinho.
 | Imagem de compartilhamento (WhatsApp/redes) | `marca/og-image-mra.jpg` (1200×630) | `og:image` de cada página e JSON-LD |
-| Logo | `marca/mra-monograma.svg` (vetor: MRA + barra, degradê cobre) no cabeçalho, rodapé e 404; `marca/logo-mra.png` (o mesmo monograma em PNG) só nos dados estruturados | tags `<img>` e JSON-LD |
+| Logo | `marca/mra-monograma.svg` (vetor: MRA + barra, degradê cobre) no rodapé; no cabeçalho e na 404 o mesmo desenho vai **embutido no HTML** (`<svg class="brand-mark">` / `class="err-mark"`), para poder ser animado; `marca/logo-mra.png` (o mesmo monograma em PNG) só nos dados estruturados | rodapé: tag `<img>`; cabeçalho: as 8 páginas e a 404 (ver "Logo que se desenha" abaixo); JSON-LD |
 | Ícones | `marca/favicon-mra.svg` (aba do navegador: letras MRA sem fundo, pretas no tema claro e champanhe no escuro), `favicon-mra-32.png` e `-48.png` (pretas sem fundo: Safari, Google e `/favicon.ico`), `favicon-mra-180.png` (iPhone: MRA no bronze, porque o iPhone pinta de preto o fundo transparente); há também `favicon-mra-512.png` (MRA no bronze, para redes e Perfil da Empresa) | `<head>` de cada página e `_redirects` |
 | Árvore da marca | `marca/arvore-mra.webp` (760px, cobre de uma cor só) e `arvore-mra-400.webp` (400px) | a de 760px fica atrás da missão (`.missao-arvore`); a de 400px aparece no canto dos cards de área ao passar o mouse (`.area-card::after` no `main.css`) |
 
@@ -132,8 +137,19 @@ Sobre a logo:
 - No site vai só o monograma (MRA + barra), sem a linha de baixo, porque:
   - o vetor diz "ADVOGADOS **E** ASSOCIADOS", e o nome oficial e o letreiro usam "**&**";
   - no cabeçalho essa linha ficaria com ~3px de altura.
-- O nome completo está no `alt` das imagens.
+- O nome completo está no `alt` das imagens (e no `aria-label` do logo embutido).
 - Cor: o degradê do PDF CMYK da gráfica (#E2AB77 → #C6884E → #A36C39 → #CC925B, na diagonal).
+
+### Logo que se desenha e transição entre páginas
+- **Logo:** na primeira página aberta em cada aba, o contorno do M, R, A e da barra é traçado e o cobre preenche
+  no fim (~2,5s); nas páginas seguintes ele já aparece pronto. Na 404 o logo grande se desenha sempre.
+  Cada letra é um `<path pathLength="1">` dentro do `<svg>` embutido. **Se o logo mudar**, troque o SVG
+  embutido nas 8 páginas com cabeçalho e na 404 (mantendo um `<path>` por letra + a barra) e o arquivo do rodapé.
+- **Transição:** ao trocar de página, ela esmaece rápido; cabeçalho e botão do WhatsApp ficam parados, e a capa
+  do artigo "viaja" desde o card. Funciona no Chrome, Edge e Safari recentes; no Firefox a página abre como sempre.
+- Quem ativou "reduzir movimento"/"efeitos de animação desligados" no aparelho não vê nenhum dos dois (de propósito).
+- Código: `assets/js/transicoes.js` e os blocos "Monograma se desenhando" e "Transição entre páginas" do `main.css`.
+  Cuidado: cada `view-transition-name` só pode existir **uma vez por página**, senão o navegador cancela a transição.
 
 ### Equipe
 - Fotos em `public/assets/img/equipe/<nome>.webp`, com cartões em `public/index.html` (seção "Quem Somos").

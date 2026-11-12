@@ -126,10 +126,55 @@ a:focus-visible{outline:2px solid var(--copper-light);outline-offset:3px;border-
 }
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
 /* logo: só o monograma MRA + barra (a linha "ADVOGADOS & ASSOCIADOS" ficaria com ~3px de altura aqui);
-   o nome completo vai no alt da imagem */
+   o nome completo vai no aria-label. É SVG embutido (não <img>) para o traço poder ser animado */
 .brand{display:flex;align-items:center}
 .brand-mark{height:34px;width:auto;filter:drop-shadow(0 3px 8px rgba(0,0,0,.35))}
 @media (max-width:600px){ .brand-mark{height:30px} }
+
+/* ===== Monograma se desenhando =====
+   Cabeçalho: só na 1ª página vista na aba (html.traco, posta pelo transicoes.js). Página 404: sempre.
+   Cada letra (M, R, A) e a barra é um <path pathLength="1">: o contorno é traçado em sequência
+   e depois o cobre preenche tudo junto. Movimento reduzido: o logo aparece pronto. */
+@media (prefers-reduced-motion:no-preference){
+  html.traco .brand-mark path,
+  .err-mark path{
+    stroke:url(#mra-cobre);stroke-width:9;stroke-linejoin:round;
+    stroke-dasharray:1;stroke-dashoffset:1;fill-opacity:0;
+    animation:mraTraco 1.1s cubic-bezier(.65,0,.35,1) forwards,mraPreenche .8s ease forwards;
+    animation-delay:.3s,1.75s;
+  }
+  html.traco .brand-mark path:nth-child(2),.err-mark path:nth-child(2){animation-delay:.55s,1.75s}
+  html.traco .brand-mark path:nth-child(3),.err-mark path:nth-child(3){animation-delay:.8s,1.75s}
+  html.traco .brand-mark path:nth-child(4),.err-mark path:nth-child(4){animation-delay:1.05s,1.75s;animation-duration:.8s,.8s}
+  .err-mark path{stroke-width:6}   /* logo maior na 404: traço mais fino em unidades do desenho, mesma espessura na tela */
+}
+@keyframes mraTraco{to{stroke-dashoffset:0}}
+@keyframes mraPreenche{to{fill-opacity:1;stroke-opacity:0}}
+
+/* ===== Transição entre páginas (View Transitions) =====
+   Chrome/Edge 126+ e Safari 18.2+; nos demais a navegação é a de sempre. Movimento reduzido: sem transição.
+   A página esmaece rápido; cabeçalho, botão do WhatsApp e barra de progresso ficam parados (nomes próprios);
+   a capa do artigo "viaja" do card até o topo do artigo e volta (nome "capa", dado pelo transicoes.js).
+   ATENÇÃO: cada nome só pode existir UMA vez por página, senão o navegador cancela a transição inteira. */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+}
+.site-header{view-transition-name:cabecalho}
+.whatsapp-float{view-transition-name:whatsapp}
+.scroll-progress{view-transition-name:progresso}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.3s}
+/* cabeçalho: assume na hora o estado da página nova (rolado ou não têm alturas diferentes —
+   o esmaecimento padrão mostrava o menu duplicado) */
+::view-transition-group(cabecalho),::view-transition-new(cabecalho){animation:none}
+::view-transition-old(cabecalho){display:none}
+::view-transition-group(capa){
+  animation-duration:.6s;animation-timing-function:cubic-bezier(.2,.75,.2,1);
+  border-radius:18px;overflow:hidden;   /* cantos da capa durante o voo */
+}
+::view-transition-old(capa),::view-transition-new(capa){
+  height:100%;width:100%;object-fit:cover;   /* card 10:7 → capa 16:9 sem esticar */
+  animation-duration:.18s;   /* troca rápida card ↔ capa (recortes diferentes não ficam sobrepostos); o voo segue .6s */
+}
 .nav-links{display:flex;align-items:center;gap:30px}
 .nav-links a{font-size:.92rem;letter-spacing:.03em;color:rgba(243,238,230,.82);transition:color .25s,opacity .25s;position:relative}
 .nav-links a:not(.nav-cta)::after{

@@ -24,6 +24,8 @@
   <link rel="apple-touch-icon" href="/assets/img/marca/favicon-mra-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Transições entre páginas e o traço do monograma (precisa rodar antes de pintar) -->
+  <script src="/assets/js/transicoes.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/css/article.css" />
@@ -72,7 +74,7 @@
   <header class="site-header" id="siteHeader">
     <div class="container header-inner">
       <a href="/" class="brand">
-        <img src="/assets/img/marca/mra-monograma.svg" width="944" height="275" alt="MRA Advogados &amp; Associados" class="brand-mark" />
+        <svg class="brand-mark" viewBox="10 10 944 275" width="944" height="275" role="img" aria-label="MRA Advogados &amp; Associados"><defs><linearGradient id="mra-cobre" gradientUnits="userSpaceOnUse" x1="10" y1="10" x2="954" y2="349.5"><stop offset="0" stop-color="#E2AB77"/><stop offset="0.5" stop-color="#C6884E"/><stop offset="0.8" stop-color="#A36C39"/><stop offset="1" stop-color="#CC925B"/></linearGradient></defs><g fill="url(#mra-cobre)"><path pathLength="1" d="M87 115L177 193L267 115L267 250L317 250L317 10L177 132L37 10L37 250L87 250Z"/><path pathLength="1" d="M554 159.33L558.94 158.5L563.81 157.34L568.6 155.85L573.28 154.05L577.83 151.94L582.22 149.53L586.45 146.83L590.48 143.86L594.31 140.62L597.91 137.14L601.27 133.42L604.38 129.49L607.22 125.36L609.77 121.04L612.03 116.57L613.99 111.96L615.63 107.22L616.96 102.39L617.96 97.47L618.62 92.51L618.96 87.51L618.96 82.49L618.62 77.49L617.96 72.53L616.96 67.61L615.63 62.78L613.99 58.04L612.03 53.43L609.77 48.96L607.22 44.64L604.38 40.51L601.27 36.58L597.91 32.86L594.31 29.38L590.48 26.14L586.45 23.17L582.22 20.47L577.83 18.06L573.28 15.95L568.6 14.15L563.81 12.66L558.94 11.5L554 10.67L549.01 10.17L544 10L367 10L367 51L537.5 51L539.7 51.07L541.9 51.29L544.07 51.66L546.22 52.17L548.32 52.83L550.38 53.62L552.38 54.55L554.32 55.61L556.18 56.79L557.95 58.1L559.64 59.53L561.22 61.06L562.7 62.69L564.07 64.43L565.32 66.24L566.44 68.14L567.43 70.11L568.29 72.14L569.02 74.22L569.6 76.35L570.04 78.51L570.33 80.7L570.48 82.9L570.48 85.1L570.33 87.3L570.04 89.49L569.6 91.65L569.02 93.78L568.29 95.86L567.43 97.89L566.44 99.86L565.32 101.76L564.07 103.57L562.7 105.31L561.22 106.94L559.64 108.47L557.95 109.9L556.18 111.21L554.32 112.39L552.38 113.45L550.38 114.38L548.32 115.17L546.22 115.83L544.07 116.34L541.9 116.71L539.7 116.93L537.5 117L419 117L367 117L367 160L367 250L419 250L419 160L480.2 160L563 250L610 250L549.55 159.78Z"/><path pathLength="1" d="M927 250L777 10L767 10L617 250L680 250L772 96L862 250Z"/><path pathLength="1" d="M10 285L954 285L954 268L10 268Z"/></g></svg>
       </a>
       <!-- fundo escurecido atrás do menu mobile (tocar fecha o menu) -->
       <div class="nav-overlay" id="navOverlay"></div>
