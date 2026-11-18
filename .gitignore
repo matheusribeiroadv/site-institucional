@@ -12,6 +12,11 @@ imagens/
 # === Rascunhos de artigos (não vão para o site) ===
 drafts/
 
+# === Planilhas internas (modelos de importação do LuviAdv etc.): o repositório é PÚBLICO ===
+/*.xlsx
+/*.xls
+/*.csv
+
 # === Pasta de deploy manual antiga (desnecessária com o deploy automático) ===
 deploy/
 

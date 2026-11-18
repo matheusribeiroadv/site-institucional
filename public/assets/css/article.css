@@ -36,6 +36,9 @@ body.blog-page{ background:var(--brown-deep); }
 .blog-indice ul{ list-style:none; margin-top:18px; display:grid; gap:10px; }
 .blog-indice li{ display:flex; justify-content:space-between; align-items:center; gap:16px; }
 .blog-indice li > span:last-child{ color:var(--muted); font-size:.92rem; font-variant-numeric:tabular-nums; }
+.blog-guia{ display:inline-block; margin-top:20px; color:var(--copper-light); font-size:.95rem;
+  text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(220,193,162,.4); }
+.blog-guia:hover{ text-decoration-color:var(--copper); }
 .breadcrumb{
   font-size:.875rem; letter-spacing:.04em; color:var(--muted);
   margin-bottom:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
@@ -188,6 +191,13 @@ body.blog-page{ background:var(--brown-deep); }
 .article-body figure{ margin:1.6em 0; }
 .article-body figure img{ width:100%; border-radius:14px; box-shadow:var(--shadow); }
 .article-body figcaption{ font-size:.82rem; color:var(--muted); text-align:center; margin-top:10px; }
+/* chamada para o guia em PDF dentro do artigo */
+.article-body .article-guia{ display:grid; grid-template-columns:96px 1fr; gap:22px; align-items:center;
+  margin-top:2em; padding:22px; border:1px solid var(--glass-border); border-radius:16px; background:rgba(185,124,78,.07); }
+.article-guia img{ width:96px; border-radius:6px; box-shadow:var(--shadow); }
+.article-guia p{ margin:10px 0 12px; }
+.article-guia a{ font-weight:500; }
+@media (max-width:480px){ .article-body .article-guia{ grid-template-columns:72px 1fr; gap:16px; padding:18px; } .article-guia img{ width:72px; } }
 .article-body hr{ border:none; border-top:1px solid var(--glass-border); margin:2.4em 0; }
 
 /* tabelas no texto (ex.: condições de uma linha de crédito); rolam de lado em telas estreitas */
@@ -370,4 +380,54 @@ body.blog-page{ background:var(--brown-deep); }
   .blog-main{ padding-top:80px; }
   .article-body{ font-size:1.02rem; }
   .article-cta{ padding:30px 22px; }
+}
+
+/* ===================================================================
+   Página do guia em PDF (e-book) — cadastro que libera o download (ebook.js)
+   =================================================================== */
+/* capa ao lado da apresentação */
+.guia-topo{ display:grid; grid-template-columns:168px 1fr; gap:28px; align-items:start; margin-top:30px; }
+.guia-capa{
+  display:block; width:100%; height:auto; border-radius:4px;
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 18px 36px -14px rgba(0,0,0,.7);
+}
+.guia-topo .article-body{ padding-top:0; }
+.guia-topo .article-body > p:first-child{ margin-top:0; }
+
+/* cartão do formulário (mesmo fundo do CTA do artigo) */
+.guia-form{
+  margin:36px 0 0; padding:32px 30px 26px; border-radius:20px; border:1px solid var(--glass-border);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(185,124,78,.16), transparent 60%),
+    var(--brown);
+}
+.guia-form h2{ font-size:1.9rem; color:var(--cream); line-height:1.15; }
+.guia-form-intro{ margin:8px 0 22px; color:rgba(243,238,230,.78); }
+
+/* caixas de autorização: texto claro (não o cobre dos rótulos), caixa grande o bastante para o dedo */
+.eb-checks{ border:0; padding:0; margin:20px 0 0; display:grid; gap:14px; min-width:0; }
+.lead-form .eb-check{
+  display:grid; grid-template-columns:22px 1fr; column-gap:12px; align-items:start; cursor:pointer;
+  font-size:.93rem; font-weight:400; letter-spacing:0; line-height:1.5; color:rgba(243,238,230,.86);
+}
+.lead-form .eb-check input{
+  width:20px; height:20px; margin:2px 0 0; padding:0; accent-color:var(--copper); cursor:pointer; box-shadow:none;
+}
+.eb-check a{ color:var(--copper-light); text-decoration:underline; text-underline-offset:2px; }
+.eb-field{ gap:4px; }
+.field.eb-field.invalid .eb-check{ color:#ffd6cf; }
+.eb-whats{ margin-top:16px; }
+.eb-whats[hidden]{ display:none; }
+
+/* depois do cadastro: botão do PDF */
+.guia-pronto{ text-align:center; padding:6px 0 4px; }
+.guia-pronto h3{ font-size:1.6rem; color:var(--cream); outline:none; }
+.guia-pronto p{ margin:10px auto 22px; max-width:440px; color:rgba(243,238,230,.78); }
+.guia-pronto .btn{ text-decoration:none; color:var(--brown-deep); }
+.guia-pronto .guia-pronto-contato{ margin:20px auto 0; font-size:.9rem; }
+
+@media (max-width:560px){
+  .guia-topo{ grid-template-columns:1fr; gap:20px; }
+  .guia-capa{ max-width:190px; }
+  .guia-form{ padding:26px 20px 22px; }
 }

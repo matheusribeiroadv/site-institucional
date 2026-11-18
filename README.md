@@ -22,6 +22,8 @@ Site institucional do escritório (Direito Bancário do Agronegócio), no ar em
 │  │  ├─ js/main.js           interações da página inicial (menu, formulário, carrossel…)
 │  │  ├─ js/pages.js          interações das páginas internas (menu, ano no rodapé)
 │  │  ├─ js/transicoes.js     transição entre páginas e o logo que se desenha (no <head> de todas as páginas, menos a 404)
+│  │  ├─ js/ebook.js          cadastro da página do guia em PDF (libera o download)
+│  │  ├─ docs/                guias em PDF (e-books) — fora do Google; o acesso é pelo cadastro
 │  │  ├─ img/marca/           logo MRA, favicons e imagem de compartilhamento (og-image-mra.jpg)
 │  │  ├─ img/site/            fotos da página inicial (topo, escritório)
 │  │  ├─ img/equipe/          fotos da equipe (um arquivo por pessoa)
@@ -30,6 +32,7 @@ Site institucional do escritório (Direito Bancário do Agronegócio), no ar em
 │  ├─ _redirects              redirecionamentos (www, /avaliar, favicon, endereços antigos)
 │  ├─ robots.txt · sitemap.xml
 ├─ tools/preview.js           servidor da prévia local
+├─ tools/apps-script/         script da planilha de cadastros dos e-books (roda no Google, não no site)
 ├─ netlify.toml               configuração da Netlify (pasta publicada, cache, segurança)
 ├─ package.json               atalho "npm run preview"
 ├─ imagens/                   (só no computador) fotos originais e logos em alta
@@ -157,6 +160,95 @@ Sobre a logo:
   linhas de início e fim bem visíveis (veja o exemplo "CARD OCULTO TEMPORARIAMENTE" no
   `index.html`). Não use `hidden`: o carrossel continuaria passando pelo card escondido.
 
+### E-book e cadastro (guia em PDF)
+Página: `public/guia-renegociacao-dividas-rurais.html` · PDF: `public/assets/docs/guia-renegociacao-dividas-rurais.pdf`.
+Para baixar, a pessoa informa nome e e-mail e marca a caixa obrigatória. Há duas caixas opcionais: receber artigos
+por e-mail e "falar com a equipe" (que pede o WhatsApp). Os dados vão para uma **planilha do Google** do escritório,
+que tem três abas:
+
+| Aba | Quem entra | Para quê |
+|---|---|---|
+| Downloads | todo mundo | prova do consentimento (data, hora, texto exato das caixas) e lista da newsletter |
+| Contatos | só quem pediu contato | formato do modelo de contatos do LuviAdv |
+| Oportunidades | só quem pediu contato | formato do modelo de oportunidades do LuviAdv (`FUNIL EVERTON COMERCIAL` › `NOVA LEAD`) |
+
+**Regra da OAB:** quem **só baixou** não vai para o funil e **não recebe contato da equipe**, nem oferta de
+serviço (Provimento 205, Anexo Único). Só quem marcou "falar com a equipe" pode ser procurado.
+
+**Anti-robô (Cloudflare Turnstile):** cada cadastro precisa de um "passe" da Cloudflare, conferido pelo script da
+planilha. Sem passe válido, o cadastro é recusado, inclusive quando alguém envia direto ao endereço do script, sem
+passar pela página. Para o visitante, a verificação quase sempre é invisível. Ela só carrega quando a pessoa começa
+a preencher o formulário.
+
+**Criar as chaves do anti-robô** (uma vez; é gratuito):
+1. Crie uma conta em dash.cloudflare.com, com o e-mail do escritório.
+2. No menu, abra **Turnstile › Add widget**. Em nome, use "Site MRA — e-books".
+3. Em **Hostnames**, inclua `matheusribeiroadv.com.br`. Se o domínio mudar, inclua também o novo.
+4. Em **Widget mode**, escolha **Managed**. Clique em **Create**.
+5. Copie a **Site Key** (pública): ela vai em `data-turnstile="…"` no `<form id="ebookForm">` da página do guia.
+6. Copie a **Secret Key** (secreta): ela vai **só** no Apps Script (passo 4 abaixo). Nunca coloque no código nem
+   no GitHub, porque o repositório é público.
+
+**Instalar a planilha** (uma vez, na conta Google do escritório; uns 10 minutos):
+1. Em drive.google.com: **Novo › Planilhas Google**. Dê o nome "Cadastros do site — e-books".
+2. Na planilha: **Extensões › Apps Script**. Apague o conteúdo e cole todo o arquivo `tools/apps-script/ebook-cadastro.gs`.
+3. No topo do código, confira `EMPRESA_LUVIADV: 'MRA ADVOGADOS E ASSOCIADOS'`. Tem de ser o nome **exato** da empresa cadastrada
+   no LuviAdv (o modelo de contatos exige). Salve (ícone de disquete).
+4. No editor, abra a engrenagem **Configurações do projeto**. Em **Propriedades do script**, clique em
+   **Adicionar propriedade**. Em Propriedade, escreva `TURNSTILE_SECRET`. Em Valor, cole a Secret Key da Cloudflare.
+   Salve. Sem ela, o script recusa todos os cadastros.
+5. Na barra de cima, escolha a função `configurar` e clique em **Executar**. Autorize com a conta do escritório.
+   Se aparecer "o Google não verificou este app", clique em **Avançado › Acessar**: o app é o próprio script.
+   A permissão de "conectar a serviço externo" é para conferir o passe na Cloudflare.
+6. **Implantar › Nova implantação**. Em tipo, escolha **App da Web**. Executar como: **Eu**. Quem pode acessar:
+   **Qualquer pessoa**. Clique em **Implantar** e copie o endereço que termina em `/exec`.
+   "Qualquer pessoa" é necessário: quem envia é o navegador do visitante. O endereço só **recebe** cadastros; não
+   dá para ler a planilha por ele.
+7. Cole esse endereço em `data-endpoint="…"` no `<form id="ebookForm">` da página do guia.
+8. Teste: abra o endereço `/exec` no navegador (deve aparecer `{"ok":true,…}`). Depois faça um cadastro na
+   prévia local (`npm run preview`) e confira a linha na planilha. Apague as linhas de teste. Na prévia, o endereço
+   é `localhost`: para testar com as chaves reais, inclua `localhost` nos Hostnames do Turnstile e retire depois.
+9. Compartilhe a planilha **só** com quem precisa, nunca com "qualquer pessoa com o link".
+
+Se o código do script mudar: cole a versão nova e salve. Depois vá em **Implantar › Gerenciar implantações** e
+clique no lápis. Em Versão, escolha **Nova versão** e clique em Implantar. O endereço `/exec` continua o mesmo.
+
+**Importar no LuviAdv:**
+1. Abra a planilha. Aparece o menu **MRA**, às vezes só depois de recarregar a página.
+2. **MRA › 1. Baixar Contatos novos** › clique no link do .xlsx › importe no LuviAdv como **contatos**.
+3. Depois, **MRA › 2. Baixar Oportunidades novas** › importe como **oportunidades**. O LuviAdv exige que o
+   contato já exista; o vínculo entre os dois é o telefone.
+
+Cada exportação leva só os cadastros novos (a coluna `_exportado_em` marca os já enviados). Os arquivos
+temporários vão para a lixeira do Drive em 2 dias.
+
+**Guarda e cancelamento (LGPD):**
+- Todo dia, de madrugada, a planilha apaga quem **só baixou** há mais de 12 meses. Quem assinou a newsletter
+  fica até cancelar.
+- Pedido de cancelamento ou exclusão (pelo e-mail do escritório): apague as linhas da pessoa nas três abas e,
+  se for o caso, no LuviAdv.
+
+**Textos das caixas = prova do consentimento:** a página e o script (`TEXTOS.v1`) precisam ter o **mesmo** texto.
+Para mudar um texto:
+1. Crie `v2` em `TEXTOS` no script.
+2. Troque `data-textos="v1"` por `"v2"` na página.
+3. Reimplante o script.
+
+Quando a Política de Privacidade mudar, atualize também `POLITICA` no script.
+
+**Antes de publicar a página do guia:**
+1. Aprovação do Dr. Matheus para o e-book e para a nova versão da Política de Privacidade. Publique as duas juntas.
+2. Planilha instalada, com `data-endpoint` e `data-turnstile` preenchidos na página e `TURNSTILE_SECRET` no script.
+   Sem o endereço, a página avisa que o cadastro não está configurado.
+3. Retire a linha `<meta name="robots" content="noindex" />` da página e inclua o endereço
+   `/guia-renegociacao-dividas-rurais` no `sitemap.xml`.
+4. Crie links para a página: no fim do artigo da MP 1.376 e no blog.
+
+**Atualizar o e-book** (por exemplo, quando a lei for sancionada):
+1. Troque o PDF em `assets/docs/` **com o mesmo nome**. A pasta não tem cache longo, então os visitantes recebem
+   a versão nova logo.
+2. Atualize a data na página do guia ("Atualizado em…") e no aviso final.
+
 ### Onde ficam os dados que mudam
 | O quê | Onde |
 |---|---|
@@ -164,6 +256,7 @@ Sobre a logo:
 | Horário de atendimento (seg. a sex., 08:00 às 18:00) | rodapé (coluna "Contato") e menu do celular (`.nav-contato`) de cada página, e JSON-LD (`openingHoursSpecification`) do `index.html`. Ao mudar, atualize também o Perfil da Empresa no Google |
 | Link de avaliação do Google | `public/_redirects` (linha `/avaliar`) |
 | Chave do formulário (Web3Forms) | `public/assets/js/main.js` (`apiKey`, em base64) |
+| Endereço da planilha de cadastros do e-book | `data-endpoint` do `<form id="ebookForm">` em `public/guia-renegociacao-dividas-rurais.html` (ver "E-book e cadastro") |
 | Analytics (Umami) | `<script … data-website-id>` no `<head>` de cada página |
 | Razão social, CNPJ, registro na OAB | rodapé de cada página, `privacidade.html` e JSON-LD do `index.html` |
 | Endereço do escritório | rodapé e menu do celular de cada página, `privacidade.html` (seção 1) e JSON-LD (`address`) em `index.html` e `blog/index.html`. Ao mudar, atualize também a data da Política de Privacidade e o Perfil da Empresa no Google, com o endereço escrito igual |
