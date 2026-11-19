@@ -1,15 +1,19 @@
 /**
  * Cadastro dos e-books do site → planilha do Google (Apps Script).
  *
- * Recebe o formulário da página do guia e grava em 3 abas:
+ * Recebe o formulário da página do guia e grava em 3 abas desta planilha:
  *   - Downloads:     todo mundo que baixou (com a prova do consentimento). NÃO vai para o funil de vendas.
  *   - Contatos:      só quem marcou "Quero falar com a equipe", no formato do modelo de contatos do LuviAdv.
  *   - Oportunidades: as mesmas pessoas, no formato do modelo de oportunidades do LuviAdv.
- * Menu "MRA" na planilha: baixar Contatos e Oportunidades novos em .xlsx para importar no LuviAdv
- * (primeiro os Contatos, depois as Oportunidades: o LuviAdv exige o contato cadastrado antes).
+ * Quem pediu contato vai também para as planilhas de importação do escritório (uma planilha por arquivo,
+ * como o LuviAdv exige): Contatos_Leads e CRM_Leads. As colunas são casadas pelo NOME do cabeçalho.
+ * Importação no LuviAdv: baixar cada uma em .xlsx, primeiro Contatos_Leads, depois CRM_Leads.
+ * Nomes de pessoas: caixa alta, sem acento e sem caractere especial (padrão do escritório).
  *
- * Anti-robô: todo envio precisa de um passe do Cloudflare Turnstile, conferido aqui com a chave secreta
- * (guardada em Propriedades do script › TURNSTILE_SECRET — NUNCA no código: o repositório do site é público).
+ * Propriedades do script (Configurações do projeto › Propriedades do script) — NUNCA no código, o repositório é público:
+ *   - TURNSTILE_SECRET: chave secreta do anti-robô (Cloudflare Turnstile);
+ *   - CONTATOS_LEADS_ID e CRM_LEADS_ID: o código de cada planilha (o trecho do endereço entre /d/ e /edit).
+ * Depois de configurar ou mudar essas planilhas, rode `conferirListas` no editor.
  *
  * Instalação e manutenção: README do site, seção "E-book e cadastro".
  * Se mudar o texto de uma caixa de consentimento no site, mude também em TEXTOS (e crie uma versão nova).
@@ -44,8 +48,10 @@ const TEXTOS = {
 };
 
 // Colunas. Contatos e Oportunidades seguem os modelos do LuviAdv (mesma ordem e mesmos nomes);
-// as colunas que começam com "_" são de controle e NÃO vão para o arquivo de importação.
-const CONTROLE = ['_registrado_em', '_exportado_em'];
+// as colunas que começam com "_" são de controle desta planilha. `_na_planilha_luviadv` diz se a
+// pessoa entrou em Contatos_Leads/CRM_Leads ("Sim") ou o erro (aí, copie a linha à mão).
+const CONTROLE = ['_registrado_em', '_na_planilha_luviadv'];
+const LISTAS = { Contatos: 'CONTATOS_LEADS_ID', Oportunidades: 'CRM_LEADS_ID' };
 const CAB = {
   Downloads: ['data_hora', 'ebook', 'nome', 'email', 'newsletter', 'pediu_contato', 'whatsapp',
     'consentimentos', 'politica', 'pagina'],
@@ -66,6 +72,51 @@ function limpo(v, max) {
   s = s.slice(0, max);
   if (/^[=+\-@]/.test(s)) s = "'" + s;
   return s;
+}
+
+// nome de pessoa no padrão do escritório: "João D'Ávila-Çé" → "JOAO D AVILA CE"
+function nomePadrao(v) {
+  return String(v == null ? '' : v).normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^A-Za-z ]/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+}
+
+// cabeçalho comparável: "É_Lead " → "e_lead"
+function chaveCab(h) {
+  return String(h == null ? '' : h).normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .trim().toLowerCase().replace(/\s+/g, '_');
+}
+
+// encaixa `valores` (na ordem de `nossoCab`) nas colunas de `cabDestino`, pelo nome.
+// Recusa se o destino não tiver quase todas as colunas do modelo (planilha errada ou cabeçalho mudado).
+function alinharPorCabecalho(cabDestino, nossoCab, valores) {
+  const pos = {};
+  nossoCab.forEach((c, i) => { pos[chaveCab(c)] = i; });
+  const linha = cabDestino.map(h => (chaveCab(h) in pos ? valores[pos[chaveCab(h)]] : ''));
+  const achadas = cabDestino.filter(h => chaveCab(h) in pos).length;
+  if (achadas < Math.ceil(nossoCab.length * 0.8)) {
+    throw new Error(`cabeçalho diferente do modelo (${achadas} de ${nossoCab.length} colunas reconhecidas)`);
+  }
+  return linha;
+}
+
+// chaves para achar a mesma pessoa: telefone = DDD + 8 últimos dígitos (com ou sem o 9, com ou sem +55)
+function chaveTel(v) {
+  let d = String(v == null ? '' : v).replace(/\D/g, '');
+  if ((d.length === 12 || d.length === 13) && d.startsWith('55')) d = d.slice(2);
+  return d.length === 10 || d.length === 11 ? d.slice(0, 2) + d.slice(-8) : '';
+}
+function chaveEmail(v) {
+  return String(v == null ? '' : v).trim().toLowerCase();
+}
+
+// a pessoa ({tel, email}) aparece em `linhas` (colunas achadas pelo nome em `cab`)? `filtro` opcional por linha
+function achaPessoa(cab, linhas, pessoa, filtro) {
+  const k = cab.map(chaveCab);
+  const iTel = ['telefone', 'telefone_secundario', 'contato_telefone'].map(c => k.indexOf(c)).filter(i => i >= 0);
+  const iEmail = k.indexOf('email');
+  return linhas.some(l => (!filtro || filtro(l)) && (
+    (pessoa.tel && iTel.some(i => chaveTel(l[i]) === pessoa.tel)) ||
+    (pessoa.email && iEmail >= 0 && chaveEmail(l[iEmail]) === pessoa.email)));
 }
 
 // WhatsApp brasileiro → "(62) 99999-0000"; null se inválido
@@ -116,9 +167,10 @@ function montarLinhas(v, agora, fmt) {
   if (v.newsletter) aceitos.push(v.textos.newsletter);
   if (v.contato) aceitos.push(v.textos.contato);
   const consentimentos = aceitos.map(t => `"${t}"`).join(' | ');
+  const nome = nomePadrao(v.nome);   // padrão do escritório: caixa alta, sem acento nem caractere especial
   const linhas = {
     Downloads: porCabecalho(CAB.Downloads, {
-      data_hora: dataHora, ebook: v.ebook, nome: v.nome, email: v.email,
+      data_hora: dataHora, ebook: v.ebook, nome, email: v.email,
       newsletter: v.newsletter ? 'Sim' : 'Não', pediu_contato: v.contato ? 'Sim' : 'Não',
       whatsapp: v.whatsapp, consentimentos, politica: CONFIG.POLITICA, pagina: v.pagina,
     }),
@@ -127,19 +179,19 @@ function montarLinhas(v, agora, fmt) {
     const obs = `Pediu contato pelo site ao baixar o e-book "${v.ebook}" em ${fmt(agora, 'dd/MM/yyyy HH:mm')}. ` +
       `Texto aceito: "${v.textos.contato}". E-mail: ${v.email}.`;
     linhas.Contatos = porCabecalho(CAB.Contatos, {
-      empresa: CONFIG.EMPRESA_LUVIADV, nome: v.nome, tipo_pessoa: CONFIG.TIPO_PESSOA,
+      empresa: CONFIG.EMPRESA_LUVIADV, nome, tipo_pessoa: CONFIG.TIPO_PESSOA,
       'é_lead': 'Sim', 'é_cliente': 'Não', 'é_fornecedor': 'Não', 'é_parceiro': 'Não',
       email: v.email, telefone: v.whatsapp, responsavel: CONFIG.RESPONSAVEL, origem: CONFIG.ORIGEM_CONTATO,
       tags: CONFIG.TAGS_CONTATO, observacoes: obs,
-    }).concat([dataHora, '']);
+    });
     linhas.Oportunidades = porCabecalho(CAB.Oportunidades, {
-      contato_telefone: v.whatsapp, contato_nome: v.nome, titulo: `E-book: ${v.ebook}`,
+      contato_telefone: v.whatsapp, contato_nome: nome, titulo: `E-book: ${v.ebook}`,
       funil: CONFIG.FUNIL, etapa: CONFIG.ETAPA, status: 'aberta', responsavel: CONFIG.RESPONSAVEL,
       etiqueta: CONFIG.ETIQUETAS_OPORTUNIDADE, observacoes: obs,
       criado_em: data, etapa_desde: data, atualizado_em: data,
-    }).concat([dataHora, '']);
+    });
   }
-  return linhas;
+  return linhas;   // Contatos/Oportunidades sem as colunas de controle (o doPost acrescenta)
 }
 
 // "dd/MM/yyyy HH:mm[:ss]" → Date (para a limpeza)
@@ -200,14 +252,24 @@ function doPost(e) {
     const chave = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5,
       [v.email, v.ebookId, v.contato, v.newsletter].join('|')));
     if (cache.get(chave)) return json({ ok: true });         // clique duplo / reenvio: não duplica linhas
-    const linhas = montarLinhas(v, new Date(), (dt, p) => Utilities.formatDate(dt, CONFIG.FUSO, p));
+    const agora = new Date();
+    const linhas = montarLinhas(v, agora, (dt, p) => Utilities.formatDate(dt, CONFIG.FUSO, p));
+    const registrado = Utilities.formatDate(agora, CONFIG.FUSO, 'dd/MM/yyyy HH:mm:ss');
     const lock = LockService.getScriptLock();
     lock.waitLock(15000);
     try {
+      // 1º as planilhas de importação (se falharem, o cadastro fica registrado aqui com o erro).
+      // Quem já está nelas ou já foi enviado antes NÃO vai de novo (evita contato e oportunidade duplicados).
+      let situacao = '';
+      if (linhas.Contatos) {
+        const onde = procurarPessoa({ tel: chaveTel(v.whatsapp), email: chaveEmail(v.email) });
+        situacao = onde.length ? `Repetido — já estava em ${onde.join(' e ')}; não reenviado` : enviarListas(linhas);
+      }
       const ss = SpreadsheetApp.getActiveSpreadsheet();
       Object.keys(linhas).forEach(aba => {
+        const l = aba === 'Downloads' ? linhas[aba] : linhas[aba].concat([registrado, situacao]);
         const sh = ss.getSheetByName(aba);
-        sh.getRange(sh.getLastRow() + 1, 1, 1, linhas[aba].length).setNumberFormat('@').setValues([linhas[aba]]);
+        sh.getRange(sh.getLastRow() + 1, 1, 1, l.length).setNumberFormat('@').setValues([l]);
       });
     } finally {
       lock.releaseLock();
@@ -239,52 +301,70 @@ function configurar() {
   ScriptApp.newTrigger('limpar').timeBased().everyDays(1).atHour(3).create();
 }
 
-function onOpen() {
-  SpreadsheetApp.getUi().createMenu('MRA')
-    .addItem('1. Baixar Contatos novos para o LuviAdv', 'exportarContatos')
-    .addItem('2. Baixar Oportunidades novas para o LuviAdv', 'exportarOportunidades')
-    .addToUi();
-}
-function exportarContatos() { exportar('Contatos'); }
-function exportarOportunidades() { exportar('Oportunidades'); }
-
-// cria um arquivo só com as linhas ainda não exportadas, no formato do modelo, e mostra o link do .xlsx
-function exportar(aba) {
-  const ui = SpreadsheetApp.getUi();
-  if (aba === 'Contatos' && !CONFIG.EMPRESA_LUVIADV) {
-    ui.alert('Falta configurar EMPRESA_LUVIADV no script (nome exato da empresa no LuviAdv).');
-    return;
-  }
-  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(aba);
-  const n = CAB[aba].length;
-  const ultima = sh.getLastRow();
-  if (ultima < 2) { ui.alert(`A aba ${aba} ainda não tem cadastros.`); return; }
-  const valores = sh.getRange(2, 1, ultima - 1, n + CONTROLE.length).getValues();
-  const novas = [];
-  valores.forEach((l, i) => { if (!l[n + 1]) novas.push(i); });
-  if (!novas.length) { ui.alert(`Nenhum cadastro novo em ${aba} desde a última exportação.`); return; }
-  const agora = Utilities.formatDate(new Date(), CONFIG.FUSO, 'dd-MM-yyyy HH.mm');
-  const arq = SpreadsheetApp.create(`LuviAdv ${aba} ${agora}`);
-  const modelo = arq.getSheets()[0].setName('Modelo');
-  const dados = [CAB[aba]].concat(novas.map(i => valores[i].slice(0, n)));
-  modelo.getRange(1, 1, dados.length, n).setNumberFormat('@').setValues(dados);
-  SpreadsheetApp.flush();
-  const marca = Utilities.formatDate(new Date(), CONFIG.FUSO, 'dd/MM/yyyy HH:mm');
-  novas.forEach(i => sh.getRange(i + 2, n + 2).setValue(marca));
-  const temp = JSON.parse(PropertiesService.getScriptProperties().getProperty('temporarios') || '[]');
-  temp.push({ id: arq.getId(), em: Date.now() });
-  PropertiesService.getScriptProperties().setProperty('temporarios', JSON.stringify(temp));
-  const url = `https://docs.google.com/spreadsheets/d/${arq.getId()}/export?format=xlsx`;
-  const aviso = aba === 'Contatos' ? 'Importe este arquivo no LuviAdv ANTES das Oportunidades.' :
-    'Confira se os Contatos destas pessoas já foram importados no LuviAdv.';
-  ui.showModalDialog(HtmlService.createHtmlOutput(
-    `<p style="font-family:sans-serif">${novas.length} cadastro(s) novo(s).<br>${aviso}</p>` +
-    `<p style="font-family:sans-serif"><a href="${url}" target="_blank">Baixar o arquivo .xlsx</a></p>` +
-    '<p style="font-family:sans-serif;color:#666;font-size:12px">O arquivo temporário vai para a lixeira em 2 dias.</p>'
-  ).setWidth(420).setHeight(190), `Exportar ${aba}`);
+// 1ª aba da planilha de importação (Contatos_Leads ou CRM_Leads) e o seu cabeçalho
+function abaDaLista(aba) {
+  const id = PropertiesService.getScriptProperties().getProperty(LISTAS[aba]);
+  if (!id) throw new Error(`falta a propriedade ${LISTAS[aba]}`);
+  const sh = SpreadsheetApp.openById(id.trim()).getSheets()[0];
+  if (sh.getLastColumn() < 1) throw new Error(`a planilha de ${aba} está sem cabeçalho`);
+  return { sh, cab: sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0] };
 }
 
-/** Roda todo dia (gatilho criado por configurar): aplica o prazo de guarda e apaga exportações temporárias. */
+// onde a pessoa já está: no histórico desta planilha (só o que chegou às listas, "Sim") e em
+// Contatos_Leads/CRM_Leads (inclusive leads de outras origens ainda não importados)
+function procurarPessoa(pessoa) {
+  const onde = [];
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  Object.keys(LISTAS).forEach(aba => {
+    const sh = ss.getSheetByName(aba);
+    const n = CAB[aba].length;
+    if (sh && sh.getLastRow() >= 2) {
+      const vals = sh.getRange(1, 1, sh.getLastRow(), n + CONTROLE.length).getValues();
+      if (achaPessoa(CAB[aba], vals.slice(1), pessoa, l => l[n + 1] === 'Sim')) onde.push(`histórico de ${aba}`);
+    }
+    try {
+      const { sh: lista, cab } = abaDaLista(aba);
+      if (lista.getLastRow() >= 2 &&
+          achaPessoa(cab, lista.getRange(2, 1, lista.getLastRow() - 1, cab.length).getValues(), pessoa)) {
+        onde.push(lista.getParent().getName());
+      }
+    } catch (e) { /* planilha indisponível: o enviarListas registra o erro */ }
+  });
+  return onde;
+}
+
+// grava a pessoa em Contatos_Leads e CRM_Leads; devolve "Sim" ou o erro (para a coluna de controle)
+function enviarListas(linhas) {
+  const erros = [];
+  Object.keys(LISTAS).forEach(aba => {
+    try {
+      const { sh, cab } = abaDaLista(aba);
+      const l = alinharPorCabecalho(cab, CAB[aba], linhas[aba]);
+      sh.getRange(sh.getLastRow() + 1, 1, 1, l.length).setNumberFormat('@').setValues([l]);
+    } catch (e) {
+      console.error(aba, e);
+      erros.push(`${aba}: ${e.message}`);
+    }
+  });
+  return erros.length ? 'ERRO — copiar à mão. ' + erros.join('; ') : 'Sim';
+}
+
+/**
+ * Rode pelo editor (Executar › conferirListas) depois de configurar CONTATOS_LEADS_ID e CRM_LEADS_ID:
+ * pede a autorização para abrir as duas planilhas e confere os cabeçalhos, SEM gravar nada.
+ */
+function conferirListas() {
+  Object.keys(LISTAS).forEach(aba => {
+    const { sh, cab } = abaDaLista(aba);
+    alinharPorCabecalho(cab, CAB[aba], CAB[aba]);
+    const faltam = CAB[aba].filter(c => !cab.map(chaveCab).includes(chaveCab(c)));
+    console.log(`${aba}: OK — "${sh.getParent().getName()}" › aba "${sh.getName()}"` +
+      (faltam.length ? ` (colunas do modelo que não existem lá e ficarão de fora: ${faltam.join(', ')})` : ''));
+  });
+}
+
+/** Roda todo dia (gatilho criado por configurar): aplica o prazo de guarda e apaga arquivos temporários
+ *  que sobraram da exportação antiga (menu MRA, já removido). */
 function limpar() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const agora = new Date();

@@ -169,8 +169,21 @@ que tem três abas:
 | Aba | Quem entra | Para quê |
 |---|---|---|
 | Downloads | todo mundo | prova do consentimento (data, hora, texto exato das caixas) e lista da newsletter |
-| Contatos | só quem pediu contato | formato do modelo de contatos do LuviAdv |
-| Oportunidades | só quem pediu contato | formato do modelo de oportunidades do LuviAdv (`FUNIL EVERTON COMERCIAL` › `NOVA LEAD`) |
+| Contatos | só quem pediu contato | histórico, no formato do modelo de contatos do LuviAdv |
+| Oportunidades | só quem pediu contato | histórico, no formato do modelo de oportunidades do LuviAdv (`FUNIL EVERTON COMERCIAL` › `NOVA LEAD`) |
+
+Quem pediu contato vai **também** para as planilhas de importação do escritório, que são arquivos separados
+(o LuviAdv importa uma planilha por arquivo): **Contatos_Leads** e **CRM_Leads**. O script grava na 1ª aba de
+cada uma, casando as colunas **pelo nome do cabeçalho** (a ordem não importa). Se uma delas falhar, o cadastro
+continua registrado aqui e a coluna `_na_planilha_luviadv` mostra o erro: copie a linha à mão.
+Nomes de pessoas são gravados em **caixa alta, sem acento e sem caractere especial** ("João D'Ávila" → "JOAO D AVILA").
+
+**Duplicidade:** antes de enviar, o script procura a pessoa pelo **WhatsApp** (DDD + 8 últimos dígitos, então
+com ou sem o 9 e com ou sem +55 dá no mesmo) **ou pelo e-mail**. Ele procura em Contatos_Leads e CRM_Leads
+(inclusive leads de outras origens ainda não importados) e no histórico desta planilha (abas Contatos e
+Oportunidades, só as linhas com "Sim"). Se achar, não reenvia, e `_na_planilha_luviadv` fica "Repetido — já
+estava em …". A aba Downloads registra **todo** cadastro, inclusive repetido, porque cada um é uma prova de
+consentimento. O histórico vale pelo prazo de guarda (12 meses): quem voltar depois disso é enviado de novo.
 
 **Regra da OAB:** quem **só baixou** não vai para o funil e **não recebe contato da equipe**, nem oferta de
 serviço (Provimento 205, Anexo Único). Só quem marcou "falar com a equipe" pode ser procurado.
@@ -197,9 +210,13 @@ a preencher o formulário.
 4. No editor, abra a engrenagem **Configurações do projeto**. Em **Propriedades do script**, clique em
    **Adicionar propriedade**. Em Propriedade, escreva `TURNSTILE_SECRET`. Em Valor, cole a Secret Key da Cloudflare.
    Salve. Sem ela, o script recusa todos os cadastros.
+   Adicione também `CONTATOS_LEADS_ID` e `CRM_LEADS_ID`: o código de cada planilha de importação, que é o trecho
+   do endereço dela entre `/d/` e `/edit`.
 5. Na barra de cima, escolha a função `configurar` e clique em **Executar**. Autorize com a conta do escritório.
    Se aparecer "o Google não verificou este app", clique em **Avançado › Acessar**: o app é o próprio script.
    A permissão de "conectar a serviço externo" é para conferir o passe na Cloudflare.
+   Depois, execute `conferirListas`: ela pede a permissão para abrir Contatos_Leads e CRM_Leads e confere os
+   cabeçalhos, sem gravar nada. O resultado aparece no **Registro de execução**: "Contatos: OK" e "Oportunidades: OK".
 6. **Implantar › Nova implantação**. Em tipo, escolha **App da Web**. Executar como: **Eu**. Quem pode acessar:
    **Qualquer pessoa**. Clique em **Implantar** e copie o endereço que termina em `/exec`.
    "Qualquer pessoa" é necessário: quem envia é o navegador do visitante. O endereço só **recebe** cadastros; não
@@ -213,20 +230,18 @@ a preencher o formulário.
 Se o código do script mudar: cole a versão nova e salve. Depois vá em **Implantar › Gerenciar implantações** e
 clique no lápis. Em Versão, escolha **Nova versão** e clique em Implantar. O endereço `/exec` continua o mesmo.
 
-**Importar no LuviAdv:**
-1. Abra a planilha. Aparece o menu **MRA**, às vezes só depois de recarregar a página.
-2. **MRA › 1. Baixar Contatos novos** › clique no link do .xlsx › importe no LuviAdv como **contatos**.
-3. Depois, **MRA › 2. Baixar Oportunidades novas** › importe como **oportunidades**. O LuviAdv exige que o
-   contato já exista; o vínculo entre os dois é o telefone.
+**Importar no LuviAdv** (do jeito que o escritório já faz):
+1. Abra **Contatos_Leads** › **Arquivo › Fazer download › Microsoft Excel (.xlsx)** › importe no LuviAdv como **contatos**.
+2. Depois, **CRM_Leads** › mesmo caminho › importe como **oportunidades**. O LuviAdv exige que o contato já
+   exista; o vínculo entre os dois é o telefone.
 
-Cada exportação leva só os cadastros novos (a coluna `_exportado_em` marca os já enviados). Os arquivos
-temporários vão para a lixeira do Drive em 2 dias.
+Se mudar o cabeçalho ou trocar uma dessas planilhas, atualize a propriedade e rode `conferirListas` de novo.
 
 **Guarda e cancelamento (LGPD):**
 - Todo dia, de madrugada, a planilha apaga quem **só baixou** há mais de 12 meses. Quem assinou a newsletter
   fica até cancelar.
-- Pedido de cancelamento ou exclusão (pelo e-mail do escritório): apague as linhas da pessoa nas três abas e,
-  se for o caso, no LuviAdv.
+- Pedido de cancelamento ou exclusão (pelo e-mail do escritório): apague as linhas da pessoa nas três abas, em
+  Contatos_Leads e CRM_Leads e, se for o caso, no LuviAdv.
 
 **Textos das caixas = prova do consentimento:** a página e o script (`TEXTOS.v1`) precisam ter o **mesmo** texto.
 Para mudar um texto:
