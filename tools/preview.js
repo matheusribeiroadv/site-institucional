@@ -41,7 +41,10 @@ http.createServer((req, res) => {
       res.writeHead(404, { 'Content-Type': TYPES['.html'] });
       return fs.createReadStream(path.join(ROOT, '404.html')).pipe(res);
     }
-    res.writeHead(200, { 'Content-Type': TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' });
+    const cab = { 'Content-Type': TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' };
+    // igual ao netlify.toml: os PDFs de /assets/docs baixam direto em vez de abrir numa aba
+    if (/[\\/]assets[\\/]docs[\\/].+\.pdf$/i.test(file)) cab['Content-Disposition'] = 'attachment; filename="' + path.basename(file) + '"';
+    res.writeHead(200, cab);
     res.end(data);
   });
 }).listen(PORT, () => {

@@ -29,6 +29,13 @@
   [headers.values]
     X-Robots-Tag = "noindex"
 
+# O PDF do guia baixa direto (sem isso, alguns navegadores abrem numa aba em vez de salvar).
+# Nome do arquivo sem acentos, para não virar "Renegocia%C3%A7%C3%A3o" em navegador antigo.
+[[headers]]
+  for = "/assets/docs/guia-renegociacao-dividas-rurais.pdf"
+  [headers.values]
+    Content-Disposition = "attachment; filename=\"Guia - Renegociacao de Dividas Rurais - MRA.pdf\""
+
 # /favicon.ico é servido a partir de /assets/img/marca (ver _redirects): mesmo cache das imagens
 [[headers]]
   for = "/favicon.ico"
