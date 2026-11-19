@@ -139,6 +139,33 @@
     captcha: 'Não foi possível confirmar a verificação de segurança. Tente de novo; se continuar, fale conosco pelo WhatsApp (62) 98225-4519.'
   };
 
+  // ---------- celular: abrir o PDF num app de leitura (Adobe, Drive, Arquivos…) ----------
+  // Um site não abre um app específico; o caminho que funciona no Android e no iPhone é a tela de
+  // compartilhar do aparelho com o próprio arquivo. O PDF é buscado antes do toque porque o
+  // navigator.share só vale logo depois do toque (o iPhone recusa se houver espera no meio).
+  var prepararCelular = function () {
+    var caixa = pronto.querySelector('.guia-celular');
+    var celular = window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!caixa || !celular) return;
+    caixa.hidden = false;
+    var instrucao = pronto.querySelector('h3 + p');
+    if (instrucao) instrucao.textContent = instrucao.textContent.replace('Clique no botão', 'Toque no botão');
+    var link = pronto.querySelector('a[download]');
+    var abrir = caixa.querySelector('.guia-abrir-app');
+    if (!navigator.share || !navigator.canShare || typeof File !== 'function') return;
+    fetch(link.getAttribute('href'))
+      .then(function (r) { if (!r.ok) throw new Error(); return r.blob(); })
+      .then(function (b) {
+        var arquivo = new File([b], link.getAttribute('download') || 'guia.pdf', { type: 'application/pdf' });
+        if (!navigator.canShare({ files: [arquivo] })) return;
+        abrir.hidden = false;
+        abrir.addEventListener('click', function () {
+          navigator.share({ files: [arquivo] }).catch(function () {});   // fechar a tela não é erro
+        });
+      })
+      .catch(function () {});   // sem o botão extra, o download normal continua valendo
+  };
+
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
     var ordem = ['nome', 'email', 'aceite', 'whatsapp'];
@@ -188,6 +215,7 @@
         pronto.hidden = false;
         pronto.querySelector('.guia-pronto-contato').hidden = !dados.contato;
         pronto.querySelector('h3').focus();
+        prepararCelular();
         if (window.umami && window.umami.track) {
           window.umami.track('ebook-cadastro', { newsletter: dados.newsletter ? 'sim' : 'nao', contato: dados.contato ? 'sim' : 'nao' });
         }

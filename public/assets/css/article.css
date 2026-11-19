@@ -424,6 +424,9 @@ body.blog-page{ background:var(--brown-deep); }
 .guia-pronto h3{ font-size:1.6rem; color:var(--cream); outline:none; }
 .guia-pronto p{ margin:10px auto 22px; max-width:440px; color:rgba(243,238,230,.78); }
 .guia-pronto .btn{ text-decoration:none; color:var(--brown-deep); }
+.guia-celular{ margin-top:14px; }
+.guia-celular[hidden],.guia-abrir-app[hidden]{ display:none; }
+.guia-celular p{ margin:14px auto 0; font-size:.9rem; }
 .guia-pronto .guia-pronto-contato{ margin:20px auto 0; font-size:.9rem; }
 
 @media (max-width:560px){
