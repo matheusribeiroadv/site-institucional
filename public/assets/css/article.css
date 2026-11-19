@@ -427,6 +427,7 @@ body.blog-page{ background:var(--brown-deep); }
 .guia-celular{ margin-top:14px; }
 .guia-celular[hidden],.guia-abrir-app[hidden]{ display:none; }
 .guia-celular p{ margin:14px auto 0; font-size:.9rem; }
+.guia-celular p + p{ margin-top:8px; }
 .guia-pronto .guia-pronto-contato{ margin:20px auto 0; font-size:.9rem; }
 
 @media (max-width:560px){

@@ -139,10 +139,11 @@
     captcha: 'Não foi possível confirmar a verificação de segurança. Tente de novo; se continuar, fale conosco pelo WhatsApp (62) 98225-4519.'
   };
 
-  // ---------- celular: abrir o PDF num app de leitura (Adobe, Drive, Arquivos…) ----------
-  // Um site não abre um app específico; o caminho que funciona no Android e no iPhone é a tela de
-  // compartilhar do aparelho com o próprio arquivo. O PDF é buscado antes do toque porque o
-  // navigator.share só vale logo depois do toque (o iPhone recusa se houver espera no meio).
+  // ---------- celular: botão "Abrir com…" (Adobe Acrobat ou outro leitor de PDF) ----------
+  // Um site não abre um app específico: no Android pede o menu "Abrir com" do sistema; no iPhone
+  // usa a tela de compartilhar com o arquivo, que é por onde o iOS abre um PDF em outro app.
+  // No iPhone o PDF é buscado antes do toque porque o navigator.share só vale logo depois do
+  // toque (o iOS recusa se houver espera no meio).
   var prepararCelular = function () {
     var caixa = pronto.querySelector('.guia-celular');
     var celular = window.matchMedia('(pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -152,13 +153,32 @@
     if (instrucao) instrucao.textContent = instrucao.textContent.replace('Clique no botão', 'Toque no botão');
     var link = pronto.querySelector('a[download]');
     var abrir = caixa.querySelector('.guia-abrir-app');
+    var dica = function () {
+      abrir.hidden = false;
+      caixa.querySelector('.guia-celular-dica').textContent =
+        'Para preencher o modelo de requerimento no celular, toque em “Abrir com…” e escolha o Adobe Acrobat Reader (ou outro leitor de PDF).';
+    };
+
+    // Android: pede ao sistema o menu "Abrir com" (link intent:// do Chrome/Samsung Internet).
+    // Se o sistema não oferecer outro app, o navegador segue o endereço de reserva: o próprio PDF.
+    if (/Android/i.test(navigator.userAgent)) {
+      var pdf = new URL(link.getAttribute('href'), location.href);
+      abrir.setAttribute('data-intent', 'intent://' + pdf.host + pdf.pathname +
+        '#Intent;scheme=' + pdf.protocol.replace(':', '') + ';action=android.intent.action.VIEW;type=application/pdf;' +
+        'S.browser_fallback_url=' + encodeURIComponent(pdf.href) + ';end');
+      abrir.addEventListener('click', function () { location.href = abrir.getAttribute('data-intent'); });
+      dica();
+      return;
+    }
+
+    // iPhone: o "Abrir com" do iOS é a tela de compartilhar com o arquivo (Acrobat, Arquivos…).
     if (!navigator.share || !navigator.canShare || typeof File !== 'function') return;
     fetch(link.getAttribute('href'))
       .then(function (r) { if (!r.ok) throw new Error(); return r.blob(); })
       .then(function (b) {
         var arquivo = new File([b], link.getAttribute('download') || 'guia.pdf', { type: 'application/pdf' });
         if (!navigator.canShare({ files: [arquivo] })) return;
-        abrir.hidden = false;
+        dica();
         abrir.addEventListener('click', function () {
           navigator.share({ files: [arquivo] }).catch(function () {});   // fechar a tela não é erro
         });
